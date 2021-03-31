@@ -6,8 +6,8 @@ module.exports = {
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'shared/favicon.ico',
-  organizationName: 'Weaver', 
-  projectName: 'documentation',
+  organizationName: 'VRamakrishna',
+  projectName: 'VRamakrishna.github.io',
   themeConfig: {
     navbar: {
       title: 'Weaver',
