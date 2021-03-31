@@ -1,8 +1,8 @@
 module.exports = {
   title: 'Weaver: DLT Interoperability Framework',
   tagline: 'Documentation',
-  url: 'https://pages.github.com',
-  baseUrl: '/VRamakrishna/weaver-dlt-interoperability/',
+  url: 'https://VRamakrishna.github.io',
+  baseUrl: '/weaver-dlt-interoperability/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'shared/favicon.ico',
