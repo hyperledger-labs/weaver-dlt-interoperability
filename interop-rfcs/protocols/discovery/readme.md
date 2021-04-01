@@ -1,3 +1,0 @@
-# Discovery Protocol
-
-TODO

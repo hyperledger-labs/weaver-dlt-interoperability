@@ -1,8 +1,0 @@
----
-  - name: Remove OpenShift CLI installation
-    file: 
-      path: "{{ openshift_cli.bin_directory }}"
-      state: absent
-    tags:
-      - openshift_cli
-

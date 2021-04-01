@@ -1,4 +1,0 @@
-# Fair Exchange
-
-## Summary
-

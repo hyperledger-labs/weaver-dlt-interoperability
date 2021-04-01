@@ -1,4 +1,0 @@
----
-id: authentication
-title: Authentication
----

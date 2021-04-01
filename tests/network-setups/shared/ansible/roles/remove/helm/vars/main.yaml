@@ -1,4 +1,0 @@
----
-
-helm:
-  bin_directory: "~/bin/helm"
