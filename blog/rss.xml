@@ -8,18 +8,18 @@
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <item>
-            <title><![CDATA[Emergence of Enterprise DLT Interoperability]]></title>
-            <link>https://hyperledger-labs.github.io/weaver-dlt-interoperability/blog/emergence-enterprise-interoperability</link>
+            <title><![CDATA[emergence-enterprise-interoperability]]></title>
+            <link>https://hyperledger-labs.github.io/weaver-dlt-interoperability/blog/2021/01/21/emergence-enterprise-interoperability</link>
             <guid>emergence-enterprise-interoperability</guid>
             <pubDate>Thu, 21 Jan 2021 00:00:00 GMT</pubDate>
-            <description><![CDATA[It is instructive to know the course taken by blockchain technology and its applications over the past few years, as this will allow us to understand where we are, where are headed, and thereby motivate the necessity of interoperability.]]></description>
+            <description><![CDATA[<!--]]></description>
         </item>
         <item>
-            <title><![CDATA[Enabling Cross-Chain Asset Exchange On Permissioned Blockchains]]></title>
-            <link>https://hyperledger-labs.github.io/weaver-dlt-interoperability/blog/cross-chain-asset</link>
+            <title><![CDATA[cross-chain-asset]]></title>
+            <link>https://hyperledger-labs.github.io/weaver-dlt-interoperability/blog/2021/01/21/cross-chain-asset</link>
             <guid>cross-chain-asset</guid>
             <pubDate>Thu, 21 Jan 2021 00:00:00 GMT</pubDate>
-            <description><![CDATA[Introduction]]></description>
+            <description><![CDATA[<!--]]></description>
         </item>
     </channel>
 </rss>
