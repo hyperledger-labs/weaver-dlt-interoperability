@@ -70,7 +70,7 @@ test:
 
 .PHONY: initialise-vault
 initialise-vault:
-	./clients/build/install/clients/bin/clients configure-all network1,network2,Corda_Network
+	./clients/build/install/clients/bin/clients configure-all network1,network2
 
 .PHONY: initialise-vault-docker
 initialise-vault-docker:
