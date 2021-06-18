@@ -88,8 +88,11 @@ fun configDataHelper(config: Map<String, String>) {
  */
 fun configNetworkHelper(network: String, config: Map<String, String>) {
     val result_membership = createMembershipFromFile(network, config)
+    println(result_membership)
     val result_access_control = createAccessControlPolicyFromFile(network, config)
+    println(result_access_control)
     val result_verification_policy = createVerificationPolicyFromFile(network, config)
+    println(result_verification_policy)
 }
 
 /**
