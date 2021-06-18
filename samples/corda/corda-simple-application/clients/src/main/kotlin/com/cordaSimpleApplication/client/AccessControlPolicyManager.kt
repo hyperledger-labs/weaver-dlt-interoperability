@@ -30,6 +30,7 @@ class CreateAccessControlPolicyCommand : CliktCommand(
     val network: String by argument()
     override fun run() = runBlocking {
         val result = createAccessControlPolicyFromFile(network, config)
+        println(result)
     }
 }
 

@@ -31,6 +31,7 @@ class CreateVerificationPolicyCommand : CliktCommand(help = "Creates a Verificat
     val network by argument()
     override fun run() = runBlocking {
         val result = createVerificationPolicyFromFile(network, config)
+        println(result)
     }
 }
 

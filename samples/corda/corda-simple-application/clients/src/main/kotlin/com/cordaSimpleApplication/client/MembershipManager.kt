@@ -29,6 +29,7 @@ class CreateMembershipCommand : CliktCommand(help = "Creates a Membership for an
     val network by argument()
     override fun run() = runBlocking {
         val result = createMembershipFromFile(network, config)
+        println(result)
     }
 }
 
