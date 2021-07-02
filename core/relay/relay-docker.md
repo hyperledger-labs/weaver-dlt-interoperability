@@ -152,6 +152,7 @@ To run with Docker Compose please refer to the comments in the [docker-compose.y
 * To deploy relay, run: `docker-compose up relay-server -d` (Given relay-server is the service name in docker-compose).
 * Also `make start` does the above 2 steps, if service name is not changed.
 * Modify `docker/remote-relay-dns-config` in case relay names or container host names or ports are changed from default provided in template env files.
+* Can alternately use `RELAY_CONFIG` docker env variable, uncomment line `82`, and comment line `84` and `105` in volumes. Then in `.env`, variable `PATH_TO_REMOTE_RELAYS_DEFINITIONS` can be ignored/deleted.
 
 
 
