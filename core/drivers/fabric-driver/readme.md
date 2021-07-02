@@ -67,6 +67,8 @@ Can pass in a variable 'local' for working with fabric and docker: `local` (ex: 
 
 Can pass in a config file for the driver to be run with: `DRIVER_CONFIG` (ex: DRIVER_CONFIG=../custom_config.json)
 
+`INTEROP_CHAINCODE` stores the name of the interop chaincode installed.
+
 NOTE: When specifying ensure that they match the config that the relay is using.
 
 
