@@ -147,7 +147,7 @@ To run with Docker Compose please refer to the comments in the [docker-compose.y
 **Some sample steps to deploy relay using docker-compose when Config File is available:**
 
 * Copy `.env.template` file to `.env` (depending upon whether relay is for fabric or corda), and make sure the values are accurate, update the paths accordingly.
-* Keep following Environment Variables in .env and delete/ignore rest:
+* Keep following Environment Variables in `.env` and delete/ignore rest:
     * RELAY_NAME: Keep it same as in relay config file.
     * RELAY_PORT: Port for grpc relay server.
     * PATH_TO_CONFIG: Path to the relay's config file. e.g. `./config/Fabric_Relay.toml`.
@@ -160,7 +160,7 @@ To run with Docker Compose please refer to the comments in the [docker-compose.y
 **Some sample steps to deploy relay using docker-compose when Config is not available:**
 
 * Copy `.env.template.2` file to `.env`, and make sure the values are accurate, update the paths accordingly.
-* Keep following Environment Variables in .env and delete/ignore rest:
+* Keep following Environment Variables in `.env` and delete/ignore rest:
     * RELAY_NAME: Name for the relay.
     * RELAY_PORT: Port for grpc relay server.
     * DRIVER_NAME: Driver host name.
