@@ -5,7 +5,7 @@
  -->
 # Creating Relay Config file
 
-Samples are present in [relay/config](./relay/config) directory. \
+Samples are present in [config](./config) directory. \
 Define environment variable `RELAY_CONFIG`, which stores path to the relay config file.
 
 ## Components Overview
