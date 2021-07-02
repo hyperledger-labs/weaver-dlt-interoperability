@@ -13,7 +13,7 @@ Define environment variable `RELAY_CONFIG`, which stores path to the relay confi
 * **name**: Name of the relay. e.g. `Fabric_Relay`
 * **port**: Port number for relay grpc server. e.g. `9080`
 * **hostname**: Hostname for grpc server. e.g. `0.0.0.0`
-* **db_path** and **remote_db_path**: Not required to change, can use Relay name in the path, to uniquely identify path per relay.
+* **db_path** and **remote_db_path**: Not required to change, can use Relay name in the path, to uniquely identify path per relay. e.g. `db/<relay-name>/requests` and `db/<relay-name>/remote_request` respectively.
 * **[networks]**: Define list of networks to which this relay will act as local relay. \
     Format:
     ```
@@ -75,7 +75,7 @@ Define environment variable `RELAY_CONFIG`, which stores path to the relay confi
     ```
     **Note**: `<driver-name>` has nothing to do with anything related to driver's configuration. It is solely used in relay only.
     
-* **TLS**: To enable TLS, add:
+* **TLS**: (Optional) To enable TLS, add:
     ```
     cert_path="<tls_cert_path>"
     key_path="<tls_private_key"
