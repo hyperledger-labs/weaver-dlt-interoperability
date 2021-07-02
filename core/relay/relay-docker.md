@@ -148,10 +148,10 @@ To run with Docker Compose please refer to the comments in the [docker-compose.y
 
 * Copy `.env.template` file to `.env` (depending upon whether relay is for fabric or corda), and make sure the values are accurate, update the paths accordingly.
 * Keep following Environment Variables in .env and delete/ignore rest:
- * RELAY_NAME: Keep it same as in relay config file.
- * RELAY_PORT: Port for grpc relay server.
- * PATH_TO_CONFIG: Path to the relay's config file. e.g. `./config/Fabric_Relay.toml`.
- * EXTERNAL_NETWORK: Docker bridge network name.
+    * RELAY_NAME: Keep it same as in relay config file.
+    * RELAY_PORT: Port for grpc relay server.
+    * PATH_TO_CONFIG: Path to the relay's config file. e.g. `./config/Fabric_Relay.toml`.
+    * EXTERNAL_NETWORK: Docker bridge network name.
 * Tip: If running all relays on same host, make sure to change service name before each relay deployment, to avoid conflict in names.
 * Create docker network named `relay`: `docker network create relay`.
 * To deploy relay, run: `docker-compose up relay-server -d` (Given relay-server is the service name in docker-compose).
@@ -161,15 +161,15 @@ To run with Docker Compose please refer to the comments in the [docker-compose.y
 
 * Copy `.env.template.2` file to `.env`, and make sure the values are accurate, update the paths accordingly.
 * Keep following Environment Variables in .env and delete/ignore rest:
- * RELAY_NAME: Name for the relay.
- * RELAY_PORT: Port for grpc relay server.
- * DRIVER_NAME: Driver host name.
- * DRIVER_PORT: Port for driver.
- * DRIVER_HOST: Hostname/IP for driver.
- * NETWORK_NAME: Name of network it will be attached to (should be same as used in relay requests arguments.)
- * NETWORK_TYPE: Type of network. e.g. `Fabric` or `Corda`.
- * PATH_TO_REMOTE_RELAYS_DEFINITIONS: Keep it `./docker/remote-relay-dns-config`.
- * EXTERNAL_NETWORK: Docker bridge network name.
+    * RELAY_NAME: Name for the relay.
+    * RELAY_PORT: Port for grpc relay server.
+    * DRIVER_NAME: Driver host name.
+    * DRIVER_PORT: Port for driver.
+    * DRIVER_HOST: Hostname/IP for driver.
+    * NETWORK_NAME: Name of network it will be attached to (should be same as used in relay requests arguments.)
+    * NETWORK_TYPE: Type of network. e.g. `Fabric` or `Corda`.
+    * PATH_TO_REMOTE_RELAYS_DEFINITIONS: Keep it `./docker/remote-relay-dns-config`.
+    * EXTERNAL_NETWORK: Docker bridge network name.
 * Modify `docker/remote-relay-dns-config/relays.toml` to add remote relays' dns information.
 * Uncomment line `66`, `67`, `68`, `74`, `75`, `84` and `105` and comment line `104`.
 * Tip: If running all relays on same host, make sure to change service name before each relay deployment, to avoid conflict in names.
