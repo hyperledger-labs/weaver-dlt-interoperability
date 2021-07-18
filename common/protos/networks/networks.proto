@@ -1,19 +1,19 @@
 syntax = "proto3";
 
-package networks.networks;
+package networks;
 
 import "common/ack.proto";
 import "common/state.proto";
 
-option go_package = "/networks";
+option go_package = "github.com/hyperledger-labs/weaver-dlt-interoperability/common/protos-go/networks";
 
 // This service is the interface for how the network communicates with
 // its relay.
 service Network {
   // endpoint for a network to request remote relay state via local relay
-  rpc RequestState(NetworkQuery) returns (common.ack.Ack) {}
+  rpc RequestState(NetworkQuery) returns (common.Ack) {}
   // This rpc endpooint is for polling the local relay for request state.
-  rpc GetState(GetStateMessage) returns(common.state.RequestState) {}
+  rpc GetState(GetStateMessage) returns(common.RequestState) {}
   // NOTE: This rpc is just for debugging.
   rpc RequestDatabase(DbName) returns (RelayDatabase) {}
 }

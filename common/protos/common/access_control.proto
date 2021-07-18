@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package common.access_control;
+package common;
 
-option go_package = "/common";
+option go_package = "github.com/hyperledger-labs/weaver-dlt-interoperability/common/protos-go/common";
 
 // AccessControlPolicy specifies a set of data that can be accessed by some
 // SecurityGroup
