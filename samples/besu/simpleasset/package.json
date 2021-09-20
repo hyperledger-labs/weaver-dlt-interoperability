@@ -15,13 +15,13 @@
   "scripts": {
     "ganache-start": "ganache-cli --networkId 4447 --port 7545",
     "lint": "solium -d contracts/",
-    "copy-interop-contracts": "cp ../../../core/network/besu-interop-contract/contracts/interop/manageAsset.sol contracts/",
+    "copy-interop-contracts": "cp ../../../core/network/besu/contracts/interop/manageAsset.sol contracts/",
     "update-truffle-config": "node get-network-details.js",
     "deploy-contract": "npm run copy-interop-contracts && npm install && npm run update-truffle-config && truffle compile && truffle migrate",
     "ethereum-htlc": "truffle compile",
     "test": "truffle test",
-    "clean-run": "rm package-lock.json && rm -rf build",
-    "clean": "rm -rf node_modules && rm package-lock.json && rm -rf build"
+    "clean-run": "rm -rf package-lock.json build",
+    "clean": "rm -rf node_modules package-lock.json build"
   },
   "keywords": [
     "ethereum",

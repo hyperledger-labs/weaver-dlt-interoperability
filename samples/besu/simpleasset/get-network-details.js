@@ -42,19 +42,19 @@ async function main() {
 		str = line;
 	
 		if(str.trim().startsWith("host:")) {
-			str = "\t host: \""+networkHost+"\","
+			str = "\thost: \""+networkHost+"\","
 		}
 
 		if(str.trim().startsWith("port:")) {
-			str = "\t port: "+networkPort+", // 7545 - default for Ganache"
+			str = "\tport: "+networkPort+", // 7545 - default for Ganache"
 		}
 
 		if(str.trim().startsWith("network_id:")) {
-			str = "\t network_id: \""+networkId+"\", // 4447 - default for Ganache"
+			str = "\tnetwork_id: \""+networkId+"\", // 4447 - default for Ganache"
 		}
 
 		if(str.trim().startsWith("from:")) {
-			str = "\t from: \""+accounts[0]+"\","
+			str = "\tfrom: \""+accounts[0]+"\","
 		}
 
 		truffleConfigFileString += str
