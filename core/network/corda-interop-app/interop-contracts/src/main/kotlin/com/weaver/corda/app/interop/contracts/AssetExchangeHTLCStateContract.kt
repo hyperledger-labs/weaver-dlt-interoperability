@@ -46,9 +46,8 @@ class AssetExchangeHTLCStateContract : Contract {
                 // Check if timeout is beyond current time
                 "Timeout after current time" using (htlcState.lockInfo.expiryTime > Instant.now())
                 
-                val assetPointer = StaticPointer(tx.inputs[0].ref, tx.inputs[0].state.data.javaClass)
-                //val assetState = htlcState.assetStatePointer.resolve(tx).state.data
                 // Check if asset consumed in input is same as in HTLC State
+                val assetPointer = StaticPointer(tx.inputs[0].ref, tx.inputs[0].state.data.javaClass)
                 "Asset State match with input state" using (assetPointer.equals(htlcState.assetStatePointer))
                 
                 // Check if both locker and recipient are signers
