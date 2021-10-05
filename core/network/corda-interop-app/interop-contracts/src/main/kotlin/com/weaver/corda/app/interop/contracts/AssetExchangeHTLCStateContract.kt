@@ -46,6 +46,10 @@ class AssetExchangeHTLCStateContract : Contract {
                 // Check if timeout is beyond current time
                 "Timeout after current time" using (htlcState.lockInfo.expiryTime > Instant.now())
                 
+                // Check if owner is locker
+                val inputState = tx.inputs[0].state.data
+                "Locker must be the owner of asset" using inputState.participants.containsAll(listOf(htlcState.locker))
+                
                 // Check if asset consumed in input is same as in HTLC State
                 val assetPointer = StaticPointer(tx.inputs[0].ref, tx.inputs[0].state.data.javaClass)
                 "Asset State match with input state" using (assetPointer.equals(htlcState.assetStatePointer))
@@ -74,6 +78,10 @@ class AssetExchangeHTLCStateContract : Contract {
                 val expectedHash = htlcState.lockInfo.hash.bytes
                 "Hash match with pre-image." using (Arrays.equals(computedHash, expectedHash))
                 
+                // Check if owner is recipient
+                val outputState = tx.outputs[0].data
+                "Recipient must be the owner of asset" using outputState.participants.containsAll(listOf(htlcState.recipient))
+                
                 // Verify if recipient is signer
                 val participantKeys = listOf(htlcState.recipient.owningKey)
                 "The required signers of the transaction must include recipient." using (command.signers.containsAll(participantKeys))
@@ -89,6 +97,10 @@ class AssetExchangeHTLCStateContract : Contract {
                 // Check if timeWindow > expiryTime
                 val fromTime = tx.timeWindow!!.fromTime!!
                 "TimeWindow for unlock should be after expiry time." using (fromTime.isAfter(htlcState.lockInfo.expiryTime) || fromTime.equals(htlcState.lockInfo.expiryTime))
+                
+                // Check if owner is locker
+                val outputState = tx.outputs[0].data
+                "Locker must be the owner of asset" using outputState.participants.containsAll(listOf(htlcState.locker))
                 
                 // Verify if locker is signer
                 val participantKeys = listOf(htlcState.locker.owningKey)
