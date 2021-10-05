@@ -51,7 +51,7 @@ class AssetStateContract : Contract {
             }
             is Commands.Delete -> requireThat {
                 "There should be one input AssetState" using (tx.inputsOfType<AssetState>().size == 1)
-                val input = tx.inputsOfType<AssetState>()[0] as AssetState
+                val input = tx.inputsOfType<AssetState>()[0]
                 "There should be no output AssetState" using (tx.outputsOfType<AssetState>().isEmpty())
                 "The owner must be the signer." using (command.signers.containsAll(listOf(input.owner.owningKey)))
             }
@@ -82,7 +82,7 @@ class CreateAsset(
         txBuilder.verify(serviceHub)
         val stx = serviceHub.signInitialTransaction(txBuilder)
         val sessions = listOf<FlowSession>()
-        val res = subFlow(FinalityFlow(stx, sessions)).tx.outputStates.first()
+        subFlow(FinalityFlow(stx, sessions)).tx.outputStates.first()
         
         val assetStateRef = serviceHub.vaultService.queryBy<AssetState>(
                     QueryCriteria.LinearStateQueryCriteria(linearId = listOf(asset.linearId))
