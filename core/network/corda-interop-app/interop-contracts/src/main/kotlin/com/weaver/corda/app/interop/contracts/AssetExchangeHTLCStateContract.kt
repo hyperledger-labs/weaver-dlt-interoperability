@@ -7,7 +7,7 @@
 package com.weaver.corda.app.interop.contracts
 
 import com.weaver.corda.app.interop.states.AssetExchangeHTLCState
-import com.weaver.corda.app.interop.states.AssetClaimHTLC
+import com.weaver.corda.app.interop.states.AssetClaimHTLCData
 import net.corda.core.contracts.CommandData
 import net.corda.core.contracts.Contract
 import net.corda.core.contracts.requireSingleCommand
@@ -119,6 +119,6 @@ class AssetExchangeHTLCStateContract : Contract {
     interface Commands : CommandData {
         class Lock : Commands
         class Unlock : Commands
-        class Claim(val assetClaimHTLC: AssetClaimHTLC) : Commands
+        class Claim(val assetClaimHTLC: AssetClaimHTLCData) : Commands
     }
 }

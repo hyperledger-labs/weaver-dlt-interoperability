@@ -33,7 +33,7 @@ import net.corda.core.contracts.StaticPointer
  */
 @BelongsToContract(AssetExchangeHTLCStateContract::class)
 data class AssetExchangeHTLCState(
-    val lockInfo: AssetLockHTLC,
+    val lockInfo: AssetLockHTLCData,
     //val assetState: ContractState,
     val assetStatePointer: StaticPointer<ContractState>,
     val locker: Party,
@@ -44,24 +44,12 @@ data class AssetExchangeHTLCState(
 }
 
 @CordaSerializable
-data class AssetLockHTLC(
+data class AssetLockHTLCData(
     val hash: OpaqueBytes,
     val expiryTime: Instant
 )
 
 @CordaSerializable
-data class AssetClaimHTLC(
+data class AssetClaimHTLCData(
     val hashPreimage: OpaqueBytes
 )
-
-@CordaSerializable
-data class AssetLock(
-    val lockMechanism: LockMechanism,
-    val lockInfo: AssetLockHTLC
-)
-
-@CordaSerializable
-enum class LockMechanism {
-  HTLC
-}
-

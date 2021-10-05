@@ -10,8 +10,8 @@ import arrow.core.*
 import co.paralleluniverse.fibers.Suspendable
 import com.weaver.corda.app.interop.contracts.AssetExchangeHTLCStateContract
 import com.weaver.corda.app.interop.states.AssetExchangeHTLCState
-import com.weaver.corda.app.interop.states.AssetLockHTLC
-import com.weaver.corda.app.interop.states.AssetClaimHTLC
+import com.weaver.corda.app.interop.states.AssetLockHTLCData
+import com.weaver.corda.app.interop.states.AssetClaimHTLCData
 
 import net.corda.core.contracts.ContractState
 import net.corda.core.contracts.CommandData
@@ -30,6 +30,11 @@ import net.corda.core.node.services.vault.QueryCriteria
 import net.corda.core.node.ServiceHub
 import net.corda.core.transactions.TransactionBuilder
 import net.corda.core.transactions.SignedTransaction
+import net.corda.core.utilities.OpaqueBytes
+import java.time.Instant
+import java.util.Base64
+
+import com.weaver.protos.common.asset_locks.AssetLocks
 
     
 /**
@@ -42,7 +47,7 @@ object LockAssetHTLC {
     @InitiatingFlow
     @StartableByRPC
     class Initiator(
-            val lockInfo: AssetLockHTLC,
+            val lockInfo: AssetLocks.AssetLockHTLC,
             val assetStateRef: StateAndRef<ContractState>,
             val assetStateDeleteCommand: CommandData,
             val recipient: Party
@@ -59,12 +64,24 @@ object LockAssetHTLC {
         @Suspendable
         override fun call(): Either<Error, UniqueIdentifier> = try {            
             // 1. Create the HTLC State
+            val expiryTime: Instant = when(lockInfo.timeSpec) {
+                AssetLocks.AssetLockHTLC.TimeSpec.EPOCH -> Instant.ofEpochSecond(lockInfo.expiryTimeSecs)
+                AssetLocks.AssetLockHTLC.TimeSpec.DURATION -> Instant.now().plusSeconds(lockInfo.expiryTimeSecs)
+                else -> Instant.now().minusSeconds(10)
+            }
+            if (expiryTime.isBefore(Instant.now())) {
+                Left(Error("Invalid Expiry Time or TimeSpec in lockInfo."))
+            }
+            val lockInfoData = AssetLockHTLCData(
+                hash = OpaqueBytes(Base64.getDecoder().decode(lockInfo.hashBase64.toByteArray())),
+                expiryTime = expiryTime
+            )
             val assetExchangeHTLCState = AssetExchangeHTLCState(
-                    lockInfo,
-                    StaticPointer(assetStateRef.ref, assetStateRef.state.data.javaClass), //Get the state pointer from StateAndRef
-                    ourIdentity,
-                    recipient
-                )
+                lockInfoData,
+                StaticPointer(assetStateRef.ref, assetStateRef.state.data.javaClass), //Get the state pointer from StateAndRef
+                ourIdentity,
+                recipient
+            )
         
             println("Creating Lock State ${assetExchangeHTLCState}")
             // 2. Build the transaction
@@ -194,14 +211,14 @@ class GetAssetExchangeHTLCStateById(
  * The ClaimAssetHTLC flow is used to claim a locked asset using HTLC.
  *
  * @property linearId The unique identifier for an AssetExchangeHTLCState.
- * @property assetClaim The [AssetClaimHTLC] containing hash preImage.
+ * @property assetClaim The [AssetLocks.AssetClaimHTLC] containing hash preImage.
  */
 object ClaimAssetHTLC {
     @InitiatingFlow
     @StartableByRPC
     class Initiator(
             val linearId: UniqueIdentifier,
-            val claimInfo: AssetClaimHTLC,
+            val claimInfo: AssetLocks.AssetClaimHTLC,
             val assetStateCreateCommand: CommandData,
             val assetStateContractId: String,
             val updateOwnerFlow: String
@@ -221,7 +238,10 @@ object ClaimAssetHTLC {
                 val assetExchangeHTLCState = inputState.state.data
                 println("Party: ${ourIdentity} ClaimAssetHTLC: ${assetExchangeHTLCState}")
                 val notary = inputState.state.notary
-                val claimCmd = Command(AssetExchangeHTLCStateContract.Commands.Claim(claimInfo),
+                val claimInfoData = AssetClaimHTLCData(
+                    hashPreimage = OpaqueBytes(Base64.getDecoder().decode(claimInfo.hashPreimageBase64.toByteArray()))
+                )
+                val claimCmd = Command(AssetExchangeHTLCStateContract.Commands.Claim(claimInfoData),
                     listOf(
                         assetExchangeHTLCState.recipient.owningKey
                     )

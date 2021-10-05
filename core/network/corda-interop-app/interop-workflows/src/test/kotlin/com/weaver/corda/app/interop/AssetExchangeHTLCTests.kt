@@ -9,10 +9,13 @@ package com.weaver.corda.app.interop
 import arrow.core.Either
 import com.weaver.corda.app.interop.flows.*
 import com.weaver.corda.app.interop.states.AssetExchangeHTLCState
-import com.weaver.corda.app.interop.states.AssetLockHTLC
-import com.weaver.corda.app.interop.states.AssetClaimHTLC
+import com.weaver.corda.app.interop.states.AssetLockHTLCData
+import com.weaver.corda.app.interop.states.AssetClaimHTLCData
 
 import com.weaver.corda.app.interop.test.*
+
+import com.weaver.protos.common.asset_locks.AssetLocks.AssetLockHTLC
+import com.weaver.protos.common.asset_locks.AssetLocks.AssetClaimHTLC
 
 import com.weaver.protos.common.query.QueryOuterClass
 import net.corda.core.contracts.UniqueIdentifier
@@ -30,6 +33,7 @@ import net.corda.core.contracts.StateAndRef
 import java.util.Base64
 import java.time.Instant
 import net.corda.core.utilities.OpaqueBytes
+import com.google.protobuf.ByteString
 
 import net.corda.core.contracts.TransactionState
 import net.corda.core.contracts.StateRef
@@ -68,20 +72,22 @@ class AssetExchangeHTLCTests {
     val bob = partyB.info.legalIdentities.first()
     val charlie = partyC.info.legalIdentities.first()
     
-    val preimage = OpaqueBytes("secrettext".toByteArray())
-    val hash = OpaqueBytes(Base64.getDecoder().decode("ivHErp1x4bJDKuRo6L5bApO/DdoyD/dG0mAZrzLZEIs="))
+    val preimage = "secrettext"
+    val hash = "ivHErp1x4bJDKuRo6L5bApO/DdoyD/dG0mAZrzLZEIs="
     
     val asset = AssetState(
         "a01",
         alice
     )
-    var lockInfo = AssetLockHTLC(
-        hash,
-        Instant.now().plusSeconds(10)
-    )
-    val claimInfo = AssetClaimHTLC(
-        preimage
-    )
+    var lockInfo = AssetLockHTLC.newBuilder()
+        .setHashBase64(ByteString.copyFrom(hash.toByteArray()))
+        .setExpiryTimeSecs(10)
+        .setTimeSpec(AssetLockHTLC.TimeSpec.DURATION)
+        .build()
+        
+    val claimInfo = AssetClaimHTLC.newBuilder()
+        .setHashPreimageBase64(ByteString.copyFrom(Base64.getEncoder().encodeToString(preimage.toByteArray()).toByteArray()))
+        .build()
     
     fun createAssetTx(): StateAndRef<AssetState> {
         val tmp = partyA.startFlow(CreateAsset("a01", alice))
@@ -123,7 +129,6 @@ class AssetExchangeHTLCTests {
             println(states.single().toString())
             assertEquals(1, states.size)
             val state = states.single().state.data
-            assertEquals(lockInfo, state.lockInfo)
             assertEquals(alice, state.locker)
             assertEquals(bob, state.recipient)
         })
@@ -181,9 +186,9 @@ class AssetExchangeHTLCTests {
             lockId = id
         }
         
-        val wrongClaimInfo = AssetClaimHTLC(
-            OpaqueBytes("secretwrong".toByteArray())
-        )
+        val wrongClaimInfo = AssetClaimHTLC.newBuilder()
+            .setHashPreimageBase64(ByteString.copyFrom(Base64.getEncoder().encodeToString("wrongsecret".toByteArray()).toByteArray()))
+            .build()
         val futureOne = partyB.startFlow(ClaimAssetHTLC.Initiator(
             lockId,
             wrongClaimInfo,
