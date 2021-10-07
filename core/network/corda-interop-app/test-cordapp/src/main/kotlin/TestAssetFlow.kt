@@ -103,3 +103,18 @@ class UpdateOwnerFlow(
         return asset.copy(owner=ourIdentity)
     }
 }
+
+@InitiatingFlow
+@StartableByRPC
+class GetAssetRef(
+    val type: String,
+    val id: String
+) : FlowLogic<StateAndRef<AssetState>>() {
+    @Suspendable
+    override fun call(): StateAndRef<AssetState> {
+        val assetStateRef = serviceHub.vaultService.queryBy<AssetState>().states
+                    .filter { it.state.data.id == id }
+        println(assetStateRef)
+        return assetStateRef.first()
+    }
+}

@@ -33,9 +33,6 @@ import net.corda.core.transactions.SignedTransaction
 import net.corda.core.utilities.OpaqueBytes
 import java.time.Instant
 import java.util.Base64
-
-import com.weaver.protos.common.asset_locks.AssetLocks
-
     
 /**
  * The LockAssetHTLCFlows flow is used to create a lock for an asset using HTLC.
@@ -47,7 +44,7 @@ object LockAssetHTLC {
     @InitiatingFlow
     @StartableByRPC
     class Initiator(
-            val lockInfo: AssetLocks.AssetLockHTLC,
+            val lockInfo: AssetLockHTLCData,
             val assetStateRef: StateAndRef<ContractState>,
             val assetStateDeleteCommand: CommandData,
             val recipient: Party
@@ -62,22 +59,9 @@ object LockAssetHTLC {
          * @return Returns the linearId of the newly created [AssetExchangeHTLCState].
          */
         @Suspendable
-        override fun call(): Either<Error, UniqueIdentifier> = try {            
-            // 1. Create the HTLC State
-            val expiryTime: Instant = when(lockInfo.timeSpec) {
-                AssetLocks.AssetLockHTLC.TimeSpec.EPOCH -> Instant.ofEpochSecond(lockInfo.expiryTimeSecs)
-                AssetLocks.AssetLockHTLC.TimeSpec.DURATION -> Instant.now().plusSeconds(lockInfo.expiryTimeSecs)
-                else -> Instant.now().minusSeconds(10)
-            }
-            if (expiryTime.isBefore(Instant.now())) {
-                Left(Error("Invalid Expiry Time or TimeSpec in lockInfo."))
-            }
-            val lockInfoData = AssetLockHTLCData(
-                hash = OpaqueBytes(Base64.getDecoder().decode(lockInfo.hashBase64.toByteArray())),
-                expiryTime = expiryTime
-            )
+        override fun call(): Either<Error, UniqueIdentifier> = try {
             val assetExchangeHTLCState = AssetExchangeHTLCState(
-                lockInfoData,
+                lockInfo,
                 StaticPointer(assetStateRef.ref, assetStateRef.state.data.javaClass), //Get the state pointer from StateAndRef
                 ourIdentity,
                 recipient
@@ -218,7 +202,7 @@ object ClaimAssetHTLC {
     @StartableByRPC
     class Initiator(
             val linearId: UniqueIdentifier,
-            val claimInfo: AssetLocks.AssetClaimHTLC,
+            val claimInfo: AssetClaimHTLCData,
             val assetStateCreateCommand: CommandData,
             val assetStateContractId: String,
             val updateOwnerFlow: String
@@ -236,12 +220,13 @@ object ClaimAssetHTLC {
             }, {
                 val inputState = it
                 val assetExchangeHTLCState = inputState.state.data
+                if (ourIdentity != assetExchangeHTLCState.recipient) {
+                    println("Error: Only recipient can call claim.")
+                    Left(Error("Error: Only recipient can call claim"))        
+                }
                 println("Party: ${ourIdentity} ClaimAssetHTLC: ${assetExchangeHTLCState}")
                 val notary = inputState.state.notary
-                val claimInfoData = AssetClaimHTLCData(
-                    hashPreimage = OpaqueBytes(Base64.getDecoder().decode(claimInfo.hashPreimageBase64.toByteArray()))
-                )
-                val claimCmd = Command(AssetExchangeHTLCStateContract.Commands.Claim(claimInfoData),
+                val claimCmd = Command(AssetExchangeHTLCStateContract.Commands.Claim(claimInfo),
                     listOf(
                         assetExchangeHTLCState.recipient.owningKey
                     )
@@ -318,6 +303,10 @@ object UnlockAssetHTLC {
                 Left(Error("AssetExchangeHTLCState for Id: ${linearId} not found."))            
             }, {
                 val assetExchangeHTLCState = it.state.data
+                if (ourIdentity != assetExchangeHTLCState.locker) {
+                    println("Error: Only locker can call unlock.")
+                    Left(Error("Error: Only locker can call unlock"))        
+                }
                 println("Party: ${ourIdentity} UnlockAssetHTLC: ${assetExchangeHTLCState}")
                 val notary = it.state.notary
                 val unlockCmd = Command(AssetExchangeHTLCStateContract.Commands.Unlock(),
