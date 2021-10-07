@@ -47,7 +47,7 @@ import com.weaver.protos.common.asset_locks.AssetLocks
 @StartableByRPC
 class LockAsset(
         val lockInfo: AssetLocks.AssetLock,
-        val assetExchangeAgreement: AssetLocks.AssetExchangeAgreement,
+        val agreement: AssetLocks.AssetExchangeAgreement,
         val getAssetFlowName: String,
         val assetStateDeleteCommand: CommandData
 ) : FlowLogic<Either<Error, UniqueIdentifier>>() {
@@ -82,7 +82,7 @@ class LockAsset(
             
             // Get AssetStateAndRef
             resolveStateAndRefFlow(getAssetFlowName,
-                listOf(assetExchangeAgreement.type, assetExchangeAgreement.id)
+                listOf(agreement.type, agreement.id)
             ).fold({
                 println("Error: Unable to resolve Get Asset StateAndRef Flow.")
                 Left(Error("Error: Unable to resolve Get Asset StateAndRef Flow"))
@@ -91,17 +91,101 @@ class LockAsset(
                 val assetRef = subFlow(it)
                 
                 if (assetRef == null) {
-                    println("Error: Unable to Get Asset StateAndRef for type: ${assetExchangeAgreement.type} and id: ${assetExchangeAgreement.id}.")
-                    Left(Error("Error: Unable to Get Asset StateAndRef for type: ${assetExchangeAgreement.type} and id: ${assetExchangeAgreement.id}."))
+                    println("Error: Unable to Get Asset StateAndRef for type: ${agreement.type} and id: ${agreement.id}.")
+                    Left(Error("Error: Unable to Get Asset StateAndRef for type: ${agreement.type} and id: ${agreement.id}."))
                 }
                 
                 // Resolve recipient name to party
-                val recipientName: CordaX500Name = CordaX500Name.parse(assetExchangeAgreement.recipient)
+                val recipientName: CordaX500Name = CordaX500Name.parse(agreement.recipient)
                 val recipient = serviceHub.networkMapCache.getPeerByLegalName(recipientName)
                 
                 if (recipient == null) {
-                    println("Error: Unable to find recipient party: ${assetExchangeAgreement.recipient}.")
-                    Left(Error("Error: Unable to find recipient party: ${assetExchangeAgreement.recipient}."))
+                    println("Error: Unable to find recipient party: ${agreement.recipient}.")
+                    Left(Error("Error: Unable to find recipient party: ${agreement.recipient}."))
+                }
+                
+                subFlow(LockAssetHTLC.Initiator(
+                    lockInfoData, 
+                    assetRef!!,
+                    assetStateDeleteCommand,
+                    recipient!!
+                ))
+            })
+            
+        } else {
+            println("Lock Mechanism not supported.")
+            Left(Error("Lock Mechanism not supported."))
+        }
+    } catch (e: Exception) {
+        println("Error locking asset: ${e.message}\n")
+        Left(Error("Failed to lock asset: ${e.message}"))
+    }
+}
+
+/**
+ * The LockAssetHTLCFlows flow is used to create a lock for an asset using HTLC.
+ *
+ * @property assetExchangeHTLCState The [AssetExchangeHTLCState] provided by the Corda client to create a lock.
+ */
+@InitiatingFlow
+@StartableByRPC
+class LockFungibleAsset(
+        val lockInfo: AssetLocks.AssetLock,
+        val agreement: AssetLocks.FungibleAssetExchangeAgreement,
+        val getAssetFlowName: String,
+        val assetStateDeleteCommand: CommandData
+) : FlowLogic<Either<Error, UniqueIdentifier>>() {
+    /**
+     * The call() method captures the logic to create a new [AssetExchangeHTLCState] state in the vault.
+     *
+     * It first creates a new AssetExchangeHTLCState. It then builds
+     * and verifies the transaction, collects the required signatures,
+     * and stores the state in the vault.
+     *
+     * @return Returns the linearId of the newly created [AssetExchangeHTLCState].
+     */
+    @Suspendable
+    override fun call(): Either<Error, UniqueIdentifier> = try {   
+        if (lockInfo.lockMechanism == AssetLocks.LockMechanism.HTLC) {
+            val lockInfoHTLC = AssetLocks.AssetLockHTLC.parseFrom(
+                Base64.getDecoder().decode(lockInfo.lockInfo.toByteArray())
+            )
+            // 1. Create the LockInfo
+            val expiryTime: Instant = when(lockInfoHTLC.timeSpec) {
+                AssetLocks.AssetLockHTLC.TimeSpec.EPOCH -> Instant.ofEpochSecond(lockInfoHTLC.expiryTimeSecs)
+                AssetLocks.AssetLockHTLC.TimeSpec.DURATION -> Instant.now().plusSeconds(lockInfoHTLC.expiryTimeSecs)
+                else -> Instant.now().minusSeconds(10)
+            }
+            if (expiryTime.isBefore(Instant.now())) {
+                Left(Error("Invalid Expiry Time or TimeSpec in lockInfo."))
+            }
+            val lockInfoData = AssetLockHTLCData(
+                hash = OpaqueBytes(Base64.getDecoder().decode(lockInfoHTLC.hashBase64.toByteArray())),
+                expiryTime = expiryTime
+            )
+            
+            // Get AssetStateAndRef
+            resolveStateAndRefFlow(getAssetFlowName,
+                listOf(agreement.type, agreement.numUnits)
+            ).fold({
+                println("Error: Unable to resolve Get Asset StateAndRef Flow.")
+                Left(Error("Error: Unable to resolve Get Asset StateAndRef Flow"))
+            }, {
+                println("Resolved Get Asset flow to ${it}")
+                val assetRef = subFlow(it)
+                
+                if (assetRef == null) {
+                    println("Error: Unable to Get Asset StateAndRef for type: ${agreement.type} and id: ${agreement.numUnits}.")
+                    Left(Error("Error: Unable to Get Asset StateAndRef for type: ${agreement.type} and id: ${agreement.numUnits}."))
+                }
+                
+                // Resolve recipient name to party
+                val recipientName: CordaX500Name = CordaX500Name.parse(agreement.recipient)
+                val recipient = serviceHub.networkMapCache.getPeerByLegalName(recipientName)
+                
+                if (recipient == null) {
+                    println("Error: Unable to find recipient party: ${agreement.recipient}.")
+                    Left(Error("Error: Unable to find recipient party: ${agreement.recipient}."))
                 }
                 
                 subFlow(LockAssetHTLC.Initiator(
