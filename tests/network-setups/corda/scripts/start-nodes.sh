@@ -2,7 +2,7 @@
 
 directory=$(dirname $0)
 simpleAppVersion="0.4"
-weaverVersion="1.2.4-alpha.1"
+weaverVersion="1.2.4-alpha.2"
 
 cp $directory/../shared/artifacts/contracts-kotlin-$simpleAppVersion.jar build/nodes/Notary/cordapps
 cp $directory/../shared/artifacts/contracts-kotlin-$simpleAppVersion.jar build/nodes/PartyA/cordapps

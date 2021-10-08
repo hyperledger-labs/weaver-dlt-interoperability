@@ -24,6 +24,7 @@ import java.util.Base64
 import net.corda.core.utilities.OpaqueBytes
 import net.corda.core.crypto.sha256
 import net.corda.core.contracts.UniqueIdentifier
+import java.time.Instant
 
 import com.weaver.corda.sdk.AssetManager
 import com.cordaSimpleApplication.state.AssetState
@@ -69,6 +70,7 @@ class LockAssetCommand : CliktCommand(
             } else {
                 nTimeout = timeout!!.toLong()
             }
+            nTimeout = Instant.now().plusSeconds(nTimeout).getEpochSecond()
             val rpc = NodeRPCConnection(
                     host = config["CORDA_HOST"]!!,
                     username = "clientUser1",
@@ -84,8 +86,8 @@ class LockAssetCommand : CliktCommand(
                         params[1].toLong(),      // Quantity
                         recipient!!, 
                         hashBase64!!, 
-                        nTimeout!!, 
-                        "com.cordaSimpleApplication.flows.AssetFlow.RetrieveStateAndRef", 
+                        nTimeout, 
+                        "com.cordaSimpleApplication.flow.RetrieveStateAndRef", 
                         AssetContract.Commands.Delete()
                     )
                 } else {
@@ -95,8 +97,8 @@ class LockAssetCommand : CliktCommand(
                         params[1],      // ID
                         recipient!!, 
                         hashBase64!!, 
-                        timeout, 
-                        "com.cordaSimpleApplication.flows.AssetFlow.RetrieveStateAndRef", 
+                        nTimeout, 
+                        "com.cordaSimpleApplication.flow.RetrieveStateAndRef", 
                         AssetContract.Commands.Delete()
                     )
                 }
@@ -133,7 +135,7 @@ class ClaimAssetCommand : CliktCommand(help = "Updates an Access Control Policy 
                     secret!!,
                     AssetContract.Commands.Issue(),
                     AssetContract.ID,
-                    "com.cordaSimpleApplication.flows.AssetFlow.IssueAssetStateFromStateRefHelper"
+                    "com.cordaSimpleApplication.flow.IssueAssetStateFromStateRefHelper"
                 )
                 println("Asset Claim Response: ${res}")
             } catch (e: Exception) {

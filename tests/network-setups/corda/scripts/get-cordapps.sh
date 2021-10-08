@@ -3,7 +3,7 @@
 directory=$(dirname $0)
 cordaSimpleAppPath=$directory/../../../../samples/corda/corda-simple-application
 simpleAppVersion="0.4"
-weaverVersion="1.2.4-alpha.1"
+weaverVersion="1.2.4-alpha.2"
 
 ########## Corda Simple App ##############
 
