@@ -69,7 +69,6 @@ class LockAssetCommand : CliktCommand(
             } else {
                 nTimeout = timeout!!.toLong()
             }
-            nTimeout = Instant.now().plusSeconds(nTimeout).getEpochSecond()
             val rpc = NodeRPCConnection(
                     host = config["CORDA_HOST"]!!,
                     username = "clientUser1",
@@ -81,11 +80,12 @@ class LockAssetCommand : CliktCommand(
                 if (fungible) {
                     id = AssetManager.createFungibleHTLC(
                         rpc.proxy, 
-                        params[0],      // Type
-                        params[1].toLong(),      // Quantity
+                        params[0],          // Type
+                        params[1].toLong(), // Quantity
                         recipient!!, 
                         hashBase64!!, 
                         nTimeout, 
+                        1,                  //Duration
                         "com.cordaSimpleApplication.flow.RetrieveStateAndRef", 
                         AssetContract.Commands.Delete()
                     )
@@ -96,7 +96,8 @@ class LockAssetCommand : CliktCommand(
                         params[1],      // ID
                         recipient!!, 
                         hashBase64!!, 
-                        nTimeout, 
+                        nTimeout,  
+                        1,              //Duration
                         "com.cordaSimpleApplication.flow.RetrieveStateAndRef", 
                         AssetContract.Commands.Delete()
                     )
