@@ -48,8 +48,8 @@ class GetHashCommand : CliktCommand(
 
 /**
  * TODO: Documentation
- * lock-asset --hash=hash --timeout=timeout --recipient="O=PartyB,L=London,C=GB" type:id ----> non-fungible
- * lock-asset --hash=hash --timeout=timeout --recipient="O=PartyB,L=London,C=GB" -f type:amount ----> fungible
+ * lock-asset --hash=hash --timeout=timeout --recipient="O=PartyB,L=London,C=GB" --param=type:id ----> non-fungible
+ * lock-asset --fungible --hash=hash --timeout=timeout --recipient="O=PartyB,L=London,C=GB" --param=type:amount ----> fungible
  */
 class LockAssetCommand : CliktCommand(
         help = "Locks an asset. lock-asset --hashBase64=hashbase64 --timeout=10 --recipient='PartyA' --fungible type:amount ") {
@@ -58,10 +58,10 @@ class LockAssetCommand : CliktCommand(
     val timeout: String? by option("-t", "--timeout", help="Timeout duration in seconds.")
     val recipient: String? by option("-r", "--recipient", help="Party Name for recipient")
     val fungible: Boolean by option("-f", "--fungible", help="Fungible Asset Lock: True/False").flag(default = false)
-    val param: String by argument()
+    val param: String? by option("-p", "--param", help="Parameter AssetType:AssetId for non-fungible, AssetType:Quantity for fungible.")
     override fun run() = runBlocking {
-        if (hashBase64 == null || recipient == null) {
-            println("One of HashBase64 or Recipient parameter is missing.")
+        if (hashBase64 == null || recipient == null || param == null) {
+            println("One of HashBase64, Recipient, or param argument is missing.")
         } else {
             var nTimeout: Long
             if (timeout == null) {
@@ -75,7 +75,7 @@ class LockAssetCommand : CliktCommand(
                     password = "test",
                     rpcPort = config["CORDA_PORT"]!!.toInt())
             try {
-                val params = param.split(":").toTypedArray()
+                val params = param!!.split(":").toTypedArray()
                 var id: Any
                 if (fungible) {
                     id = AssetManager.createFungibleHTLC(
