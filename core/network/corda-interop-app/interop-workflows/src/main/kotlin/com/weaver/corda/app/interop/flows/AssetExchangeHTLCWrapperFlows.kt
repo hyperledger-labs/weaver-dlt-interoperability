@@ -58,7 +58,7 @@ class LockAsset(
      * and verifies the transaction, collects the required signatures,
      * and stores the state in the vault.
      *
-     * @return Returns the linearId of the newly created [AssetExchangeHTLCState].
+     * @return Returns the contractId of the newly created [AssetExchangeHTLCState].
      */
     @Suspendable
     override fun call(): Either<Error, UniqueIdentifier> = try {   
@@ -142,7 +142,7 @@ class LockFungibleAsset(
      * and verifies the transaction, collects the required signatures,
      * and stores the state in the vault.
      *
-     * @return Returns the linearId of the newly created [AssetExchangeHTLCState].
+     * @return Returns the contractId of the newly created [AssetExchangeHTLCState].
      */
     @Suspendable
     override fun call(): Either<Error, UniqueIdentifier> = try {   
@@ -209,14 +209,14 @@ class LockFungibleAsset(
 /**
  * The ClaimAssetHTLC flow is used to claim a locked asset using HTLC.
  *
- * @property linearId The unique identifier for an AssetExchangeHTLCState.
+ * @property contractId The unique identifier for an AssetExchangeHTLCState.
  * @property assetClaim The [AssetLocks.AssetClaimHTLC] containing hash preImage.
  */
 
 @InitiatingFlow
 @StartableByRPC
 class ClaimAsset(
-        val linearId: UniqueIdentifier,
+        val contractId: String,
         val claimInfo: AssetLocks.AssetClaim,
         val assetStateCreateCommand: CommandData,
         val assetStateContractId: String,
@@ -237,7 +237,7 @@ class ClaimAsset(
                 hashPreimage = OpaqueBytes(Base64.getDecoder().decode(claimInfoHTLC.hashPreimageBase64.toByteArray()))
             )
             subFlow(ClaimAssetHTLC.Initiator(
-                linearId,
+                contractId,
                 claimInfoData,
                 assetStateCreateCommand,
                 assetStateContractId,
@@ -256,13 +256,13 @@ class ClaimAsset(
 /**
  * The UnlockAssetHTLC flow is used to unlock a locked asset using HTLC.
  *
- * @property linearId The unique identifier for an AssetExchangeHTLCState.
+ * @property contractId The unique identifier for an AssetExchangeHTLCState.
  */
 
 @InitiatingFlow
 @StartableByRPC
 class UnlockAsset(
-        val linearId: UniqueIdentifier,
+        val contractId: String,
         val assetStateCreateCommand: CommandData,
         val assetStateContractId: String
 ) : FlowLogic<Either<Error, SignedTransaction>>() {
@@ -274,7 +274,7 @@ class UnlockAsset(
     @Suspendable
     override fun call(): Either<Error, SignedTransaction> = try {
         subFlow(UnlockAssetHTLC.Initiator(
-            linearId,
+            contractId,
             assetStateCreateCommand,
             assetStateContractId
         ))

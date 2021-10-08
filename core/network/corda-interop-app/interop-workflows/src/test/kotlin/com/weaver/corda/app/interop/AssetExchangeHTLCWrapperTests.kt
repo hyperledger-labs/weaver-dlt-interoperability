@@ -182,11 +182,11 @@ class AssetExchangeHTLCWrapperTests {
     
     @Test
     fun `ClaimAssetHTLC tests`() {
-        var lockId = UniqueIdentifier()
+        var lockId: String = ""
         
         // Happy case.
         lockAsset().map{ id ->
-            lockId = id
+            lockId = id.toString()
         }
         val future = partyB.startFlow(ClaimAsset(
             lockId,
@@ -213,11 +213,11 @@ class AssetExchangeHTLCWrapperTests {
     
     @Test
     fun `ClaimAssetHTLC Fail tests`() {
-        var lockId = UniqueIdentifier()
+        var lockId: String = ""
         
         // Unhappy case: Claim after timeout
         lockAsset().map{ id ->
-            lockId = id
+            lockId = id.toString()
         }
         
         val wrongClaimInfoHTLC = AssetLocks.AssetClaimHTLC.newBuilder()
@@ -276,10 +276,10 @@ class AssetExchangeHTLCWrapperTests {
     
     @Test
     fun `UnlockAssetHTLC tests`() {
-        var lockId = UniqueIdentifier()
+        var lockId: String = ""
         
         lockAsset().map{ id ->
-            lockId = id
+            lockId = id.toString()
         }
         
         // Unhappy case: Unlock before Timeout

@@ -136,7 +136,7 @@ object LockAssetHTLC {
  */
 @StartableByRPC
 class IsAssetLockedHTLC(
-        val linearId: UniqueIdentifier
+        val contractId: String
 ) : FlowLogic<Boolean>() {
     /**
      * The call() method captures the logic to check if asset is locked.
@@ -145,6 +145,7 @@ class IsAssetLockedHTLC(
      */
     @Suspendable
     override fun call(): Boolean {
+        val linearId = getLinearIdFromString(contractId)
         println("Getting AssetExchangeHTLCState for linearId $linearId.")
         val states = serviceHub.vaultService.queryBy<AssetExchangeHTLCState>(
             QueryCriteria.LinearStateQueryCriteria(linearId = listOf(linearId))
@@ -166,7 +167,7 @@ class IsAssetLockedHTLC(
  */
 @StartableByRPC
 class GetAssetExchangeHTLCStateById(
-        val linearId: UniqueIdentifier
+        val contractId: String
 ) : FlowLogic<Either<Error, StateAndRef<AssetExchangeHTLCState>>>() {
     /**
      * The call() method captures the logic to fetch the AssetExchangeHTLCState.
@@ -175,6 +176,7 @@ class GetAssetExchangeHTLCStateById(
      */
     @Suspendable
     override fun call(): Either<Error, StateAndRef<AssetExchangeHTLCState>> = try {
+        val linearId = getLinearIdFromString(contractId)
         println("Getting AssetExchangeHTLCState for contractId $linearId.")
         val states = serviceHub.vaultService.queryBy<AssetExchangeHTLCState>(
             QueryCriteria.LinearStateQueryCriteria(linearId = listOf(linearId))
@@ -201,7 +203,7 @@ object ClaimAssetHTLC {
     @InitiatingFlow
     @StartableByRPC
     class Initiator(
-            val linearId: UniqueIdentifier,
+            val contractId: String,
             val claimInfo: AssetClaimHTLCData,
             val assetStateCreateCommand: CommandData,
             val assetStateContractId: String,
@@ -214,7 +216,8 @@ object ClaimAssetHTLC {
          */
         @Suspendable
         override fun call(): Either<Error, SignedTransaction> = try {
-            subFlow(GetAssetExchangeHTLCStateById(linearId)).fold({
+            val linearId = getLinearIdFromString(contractId)
+            subFlow(GetAssetExchangeHTLCStateById(contractId)).fold({
                 println("AssetExchangeHTLCState for Id: ${linearId} not found.")
                 Left(Error("AssetExchangeHTLCState for Id: ${linearId} not found."))            
             }, {
@@ -287,7 +290,7 @@ object UnlockAssetHTLC {
     @InitiatingFlow
     @StartableByRPC
     class Initiator(
-            val linearId: UniqueIdentifier,
+            val contractId: String,
             val assetStateCreateCommand: CommandData,
             val assetStateContractId: String
     ) : FlowLogic<Either<Error, SignedTransaction>>() {
@@ -298,7 +301,8 @@ object UnlockAssetHTLC {
          */
         @Suspendable
         override fun call(): Either<Error, SignedTransaction> = try {
-            subFlow(GetAssetExchangeHTLCStateById(linearId)).fold({
+            val linearId = getLinearIdFromString(contractId)
+            subFlow(GetAssetExchangeHTLCStateById(contractId)).fold({
                 println("AssetExchangeHTLCState for Id: ${linearId} not found.")
                 Left(Error("AssetExchangeHTLCState for Id: ${linearId} not found."))            
             }, {
@@ -379,4 +383,9 @@ fun resolveUpdateOwnerFlow(flowName: String, flowArgs: List<Any>): Either<Error,
 } catch (e: Exception) {
     println("Flow Resolution Error: ${e.message} \n")
     Left(Error("Flow Resolution Error: ${e.message}"))
+}
+
+fun getLinearIdFromString(linearId: String): UniqueIdentifier {
+    val id = linearId.split("_").toTypedArray()
+    return UniqueIdentifier(externalId=id[0], id = UniqueIdentifier.fromString(id[1]).id)
 }
