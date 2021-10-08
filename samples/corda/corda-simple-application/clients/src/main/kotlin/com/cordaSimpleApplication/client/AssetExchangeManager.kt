@@ -23,17 +23,12 @@ import com.google.protobuf.util.JsonFormat
 import java.util.Base64
 import net.corda.core.utilities.OpaqueBytes
 import net.corda.core.crypto.sha256
-import net.corda.core.contracts.UniqueIdentifier
 import java.time.Instant
 
 import com.weaver.corda.sdk.AssetManager
 import com.cordaSimpleApplication.state.AssetState
 import com.cordaSimpleApplication.contract.AssetContract
 
-fun getLinearIdFromString(val linearId: String): UniqueIdentifier {
-    val id = linearId.split("_").toTypedArray()
-    return UniqueIdentifier(externalId=id[0], id = UniqueIdentifier.fromString(id[1]).id)
-}
 /**
  * TODO: Documentation
  */
@@ -135,7 +130,7 @@ class ClaimAssetCommand : CliktCommand(help = "Updates an Access Control Policy 
             try {
                 val res = AssetManager.claimAssetInHTLC(
                     rpc.proxy, 
-                    getLinearIdFromString(contractId!!), 
+                    contractId!!, 
                     secret!!,
                     AssetContract.Commands.Issue(),
                     AssetContract.ID,
@@ -169,7 +164,7 @@ class UnlockAssetCommand : CliktCommand(help = "Deletes an Access Control Policy
             try {
                 val res = AssetManager.reclaimAssetInHTLC(
                     rpc.proxy, 
-                    getLinearIdFromString(contractId!!),
+                    contractId!!,
                     AssetContract.Commands.Issue(),
                     AssetContract.ID
                 )
@@ -201,7 +196,7 @@ class IsAssetLockedCommand : CliktCommand(help = "Deletes an Access Control Poli
             try {
                 val res = AssetManager.isAssetLockedInHTLC(
                     rpc.proxy, 
-                    getLinearIdFromString(contractId!!)
+                    contractId!!
                 )
                 println("Is Asset Locked Response: ${res}")
             } catch (e: Exception) {
@@ -230,7 +225,7 @@ class GetLockStateCommand : CliktCommand(help = "Deletes an Access Control Polic
             try {
                 val res = AssetManager.readHTLCStateByContractId(
                     rpc.proxy, 
-                    getLinearIdFromString(contractId!!)
+                    contractId!!
                 )
                 println("Response: ${res}")
             } catch (e: Exception) {
