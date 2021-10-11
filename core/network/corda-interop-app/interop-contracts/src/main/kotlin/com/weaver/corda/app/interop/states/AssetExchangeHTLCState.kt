@@ -34,7 +34,6 @@ import net.corda.core.contracts.StaticPointer
 @BelongsToContract(AssetExchangeHTLCStateContract::class)
 data class AssetExchangeHTLCState(
     val lockInfo: AssetLockHTLCData,
-    //val assetState: ContractState,
     val assetStatePointer: StaticPointer<ContractState>,
     val locker: Party,
     val recipient: Party,

@@ -154,7 +154,11 @@ class IsAssetLockedHTLC(
             println("No states found")
             return false
         } else {
-            println("Got AssetExchangeHTLCState: ${states.first().state.data}")
+            val htlcState = states.first().state.data as AssetExchangeHTLCState
+            println("Got AssetExchangeHTLCState: ${htlcState}")
+            if (Instant.now().isAfter(htlcState.lockInfo.expiryTime)) {
+                return false
+            }
             return true
         }
     }
