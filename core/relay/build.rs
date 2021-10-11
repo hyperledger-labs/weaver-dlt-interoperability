@@ -8,11 +8,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .type_attribute(".", "#[derive(serde::Serialize, serde::Deserialize)]")
         .compile(
             &[
-                "protos/relay/datatransfer.proto",
-                "protos/networks/networks.proto",
-                "protos/driver/driver.proto",
+                "../../common/protos/relay/datatransfer.proto",
+                "../../common/protos/networks/networks.proto",
+                "../../common/protos/driver/driver.proto",
             ],
-            &["protos"],
+            &["../../common/protos"],
         )?;
     Ok(())
 }
