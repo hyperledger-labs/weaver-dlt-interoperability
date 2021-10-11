@@ -232,7 +232,11 @@ jobs:
             
         # CORDA NETWORK
         - name: Start Corda Network
-          run: make start
+          run: |
+            make start
+            sleep 60
+            docker logs corda_partya_1
+            docker logs corda_partyb_1
           working-directory: tests/network-setups/corda
           
         # FABRIC CLI
@@ -329,7 +333,11 @@ jobs:
             
         # CORDA NETWORK
         - name: Start Corda Network
-          run: make start-local
+          run: |
+            make start-local
+            sleep 60
+            docker logs corda_partya_1
+            docker logs corda_partyb_1
           working-directory: tests/network-setups/corda
           
         # FABRIC CLI
