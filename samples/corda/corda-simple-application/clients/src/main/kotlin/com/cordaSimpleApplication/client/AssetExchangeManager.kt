@@ -30,10 +30,12 @@ import com.cordaSimpleApplication.state.AssetState
 import com.cordaSimpleApplication.contract.AssetContract
 
 /**
- * TODO: Documentation
+ * Generates Hash to be used for HTLC for a given secret:
+ * get-hash -s <secret>
+ * get-hash --secret=<secret>
  */
 class GetHashCommand : CliktCommand(
-        help = "Creates an Access Control Policy for an external network. ") {
+        help = "Generates Hash to be used for HTLC for a given secret. Usage: get-hash --secret=<secret>") {
     val secret by option("-s", "--secret", help="String to be hashed")
     override fun run() = runBlocking {
         if (secret == null) {
@@ -47,12 +49,12 @@ class GetHashCommand : CliktCommand(
 }
 
 /**
- * TODO: Documentation
+ * Command to lock an asset.
  * lock-asset --hash=hash --timeout=timeout --recipient="O=PartyB,L=London,C=GB" --param=type:id ----> non-fungible
  * lock-asset --fungible --hash=hash --timeout=timeout --recipient="O=PartyB,L=London,C=GB" --param=type:amount ----> fungible
  */
 class LockAssetCommand : CliktCommand(
-        help = "Locks an asset. lock-asset --hashBase64=hashbase64 --timeout=10 --recipient='PartyA' --fungible type:amount ") {
+        help = "Locks an asset. lock-asset --fungible --hashBase64=hashbase64 --timeout=10 --recipient='PartyA' --param=type:amount ") {
     val config by requireObject<Map<String, String>>()
     val hashBase64: String? by option("-h64", "--hashBase64", help="Hash in base64 for HTLC")
     val timeout: String? by option("-t", "--timeout", help="Timeout duration in seconds.")
@@ -113,9 +115,9 @@ class LockAssetCommand : CliktCommand(
 }
 
 /**
- * TODO: Documentation
+ * Command to claim a locked asset.
  */
-class ClaimAssetCommand : CliktCommand(help = "Updates an Access Control Policy for an external network. ") {
+class ClaimAssetCommand : CliktCommand(help = "Claim a locked asset. Only Recipient's call will work.") {
     val config by requireObject<Map<String, String>>()
     val contractId: String? by option("-cid", "--contract-id", help="Contract/Linear Id for HTLC State")
     val secret: String? by option("-s", "--secret", help="Hash Pre-Image for the HTLC Claim")
@@ -135,7 +137,7 @@ class ClaimAssetCommand : CliktCommand(help = "Updates an Access Control Policy 
                     secret!!,
                     AssetContract.Commands.Issue(),
                     AssetContract.ID,
-                    "com.cordaSimpleApplication.flow.IssueAssetStateFromStateRefHelper"
+                    "com.cordaSimpleApplication.flow.UpdateAssetOwnerFromPointer"
                 )
                 println("Asset Claim Response: ${res}")
             } catch (e: Exception) {
@@ -148,9 +150,9 @@ class ClaimAssetCommand : CliktCommand(help = "Updates an Access Control Policy 
 }
 
 /**
- * TODO: Documentation
+ * Command to unlock a locked asset after timeout as per HTLC.
  */
-class UnlockAssetCommand : CliktCommand(help = "Deletes an Access Control Policy for an external network. Requires the securityDomain. ") {
+class UnlockAssetCommand : CliktCommand(help = "Unlocks a locked asset after timeout. Only lockers's call will work.") {
     val config by requireObject<Map<String, String>>()
     val contractId: String? by option("-cid", "--contract-id", help="Contract/Linear Id for HTLC State")
     override fun run() = runBlocking {
@@ -180,9 +182,9 @@ class UnlockAssetCommand : CliktCommand(help = "Deletes an Access Control Policy
 }
 
 /**
- * TODO: Documentation
+ * Query lock status of an asset.
  */
-class IsAssetLockedCommand : CliktCommand(help = "Deletes an Access Control Policy for an external network. Requires the securityDomain. ") {
+class IsAssetLockedCommand : CliktCommand(help = "Query lock status of an asset, given contractId.") {
     val config by requireObject<Map<String, String>>()
     val contractId: String? by option("-cid", "--contract-id", help="Contract/Linear Id for HTLC State")
     override fun run() = runBlocking {
@@ -209,9 +211,9 @@ class IsAssetLockedCommand : CliktCommand(help = "Deletes an Access Control Poli
     }
 }
 /**
- * TODO: Documentation
+ * Fetch HTLC State associated with contractId.
  */
-class GetLockStateCommand : CliktCommand(help = "Deletes an Access Control Policy for an external network. Requires the securityDomain. ") {
+class GetLockStateCommand : CliktCommand(help = "Fetch HTLC State associated with contractId.") {
     val config by requireObject<Map<String, String>>()
     val contractId: String? by option("-cid", "--contract-id", help="Contract/Linear Id for HTLC State")
     override fun run() = runBlocking {

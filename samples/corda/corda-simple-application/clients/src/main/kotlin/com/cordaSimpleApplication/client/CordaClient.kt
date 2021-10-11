@@ -72,5 +72,21 @@ fun main(args: Array<String>) = App()
                 ConfigureNetworkCommand(),
                 ConfigureAllCommand(),
                 ConfigureCreateAllCommand(),
-                GetExternalStateCommand())
+                GetExternalStateCommand(),
+                IssueAssetStateCommand(),
+                GetAssetStateByLinearIdCommand(),
+                DeleteAssetStateCommand(),
+                GetAssetStatesByTypeCommand(),
+                IssueAssetStateFromStateRefCommand(),
+                MergeAssetStatesCommand(),
+                RetrieveAssetStateAndRefCommand(),
+                SplitAssetStateCommand(),
+                TransferAssetStateCommand(),
+                GetHashCommand(),
+                LockAssetCommand(),
+                ClaimAssetCommand(),
+                UnlockAssetCommand(),
+                IsAssetLockedCommand(),
+                GetLockStateCommand()
+                )
         .main(args)
