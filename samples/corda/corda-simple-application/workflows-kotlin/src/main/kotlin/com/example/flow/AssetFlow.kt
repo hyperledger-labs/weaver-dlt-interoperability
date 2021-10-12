@@ -111,6 +111,9 @@ class UpdateAssetOwnerFromPointer(
      */
     override fun call(): AssetState {
         val inputState = inputStatePointer.resolve(serviceHub).state.data
+        // below creates an asset state with a different linearId
+        // return AssetState(inputState.quantity, inputState.tokenType, serviceHub.myInfo.legalIdentities.first())
+        // below creates an asset state with the same linearId
         return inputState.copy(owner=ourIdentity)
     }
 }
