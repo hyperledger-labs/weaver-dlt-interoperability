@@ -46,7 +46,7 @@ import com.weaver.protos.common.asset_locks.AssetLocks
 @InitiatingFlow
 @StartableByRPC
 class LockAsset(
-        val lockInfo: AssetLocks.AssetLock,
+        val assetLock: AssetLocks.AssetLock,
         val agreement: AssetLocks.AssetExchangeAgreement,
         val getAssetFlowName: String,
         val assetStateDeleteCommand: CommandData
@@ -62,9 +62,9 @@ class LockAsset(
      */
     @Suspendable
     override fun call(): Either<Error, UniqueIdentifier> = try {   
-        if (lockInfo.lockMechanism == AssetLocks.LockMechanism.HTLC) {
+        if (assetLock.lockMechanism == AssetLocks.LockMechanism.HTLC) {
             val lockInfoHTLC = AssetLocks.AssetLockHTLC.parseFrom(
-                Base64.getDecoder().decode(lockInfo.lockInfo.toByteArray())
+                Base64.getDecoder().decode(assetLock.lockInfo.toByteArray())
             )
             // 1. Create the LockInfo
             val expiryTime: Instant = when(lockInfoHTLC.timeSpec) {
@@ -130,7 +130,7 @@ class LockAsset(
 @InitiatingFlow
 @StartableByRPC
 class LockFungibleAsset(
-        val lockInfo: AssetLocks.AssetLock,
+        val assetLock: AssetLocks.AssetLock,
         val agreement: AssetLocks.FungibleAssetExchangeAgreement,
         val getAssetFlowName: String,
         val assetStateDeleteCommand: CommandData
@@ -146,9 +146,9 @@ class LockFungibleAsset(
      */
     @Suspendable
     override fun call(): Either<Error, UniqueIdentifier> = try {   
-        if (lockInfo.lockMechanism == AssetLocks.LockMechanism.HTLC) {
+        if (assetLock.lockMechanism == AssetLocks.LockMechanism.HTLC) {
             val lockInfoHTLC = AssetLocks.AssetLockHTLC.parseFrom(
-                Base64.getDecoder().decode(lockInfo.lockInfo.toByteArray())
+                Base64.getDecoder().decode(assetLock.lockInfo.toByteArray())
             )
             // 1. Create the LockInfo
             val expiryTime: Instant = when(lockInfoHTLC.timeSpec) {
@@ -217,7 +217,7 @@ class LockFungibleAsset(
 @StartableByRPC
 class ClaimAsset(
         val contractId: String,
-        val claimInfo: AssetLocks.AssetClaim,
+        val assetClaim: AssetLocks.AssetClaim,
         val assetStateCreateCommand: CommandData,
         val assetStateContractId: String,
         val updateOwnerFlow: String
@@ -229,9 +229,9 @@ class ClaimAsset(
      */
     @Suspendable
     override fun call(): Either<Error, SignedTransaction> = try {
-        if (claimInfo.lockMechanism == AssetLocks.LockMechanism.HTLC) {
+        if (assetClaim.lockMechanism == AssetLocks.LockMechanism.HTLC) {
             val claimInfoHTLC = AssetLocks.AssetClaimHTLC.parseFrom(
-                Base64.getDecoder().decode(claimInfo.claimInfo.toByteArray())
+                Base64.getDecoder().decode(assetClaim.claimInfo.toByteArray())
             )
             val claimInfoData = AssetClaimHTLCData(
                 hashPreimage = OpaqueBytes(Base64.getDecoder().decode(claimInfoHTLC.hashPreimageBase64.toByteArray()))

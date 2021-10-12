@@ -87,7 +87,7 @@ class LockAssetCommand : CliktCommand(
                         recipient!!, 
                         hashBase64!!, 
                         nTimeout, 
-                        1,                  //Duration
+                        1,                  // nTimeout represents Duration
                         "com.cordaSimpleApplication.flow.RetrieveStateAndRef", 
                         AssetContract.Commands.Delete()
                     )
@@ -99,7 +99,7 @@ class LockAssetCommand : CliktCommand(
                         recipient!!, 
                         hashBase64!!, 
                         nTimeout,  
-                        1,              //Duration
+                        1,              // nTimeout represents Duration
                         "com.cordaSimpleApplication.flow.RetrieveStateAndRef", 
                         AssetContract.Commands.Delete()
                     )

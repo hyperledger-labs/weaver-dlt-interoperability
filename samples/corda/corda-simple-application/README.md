@@ -154,7 +154,7 @@ To make a request from a Corda network to a Fabric network, run:
 ./scripts/getAssetStatus.sh 
 ```
 
-* Lock 50 tokens of type t1 in corda by PartyA:
+* Lock 50 tokens of type t1 in corda by PartyA for PartyB:
 ```
 CORDA_PORT=10009 ./clients/build/install/clients/bin/clients lock-asset --fungible --hashBase64=<hash-in-base64> --timeout=1800 --recipient="O=PartyA,L=London,C=GB" --param=<token-type>:<token-amount>
 ```
