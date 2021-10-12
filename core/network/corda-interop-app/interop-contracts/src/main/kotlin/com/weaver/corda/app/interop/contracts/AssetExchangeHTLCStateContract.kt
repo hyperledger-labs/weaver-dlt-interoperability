@@ -96,7 +96,7 @@ class AssetExchangeHTLCStateContract : Contract {
                 
                 // Check if timeWindow > expiryTime
                 val fromTime = tx.timeWindow!!.fromTime!!
-                "TimeWindow for unlock should be after expiry time." using (fromTime.isAfter(htlcState.lockInfo.expiryTime) || fromTime.equals(htlcState.lockInfo.expiryTime))
+                "TimeWindow for unlock should be after expiry time." using (fromTime.isAfter(htlcState.lockInfo.expiryTime))
                 
                 // Check if owner is locker
                 val outputState = tx.outputs[0].data

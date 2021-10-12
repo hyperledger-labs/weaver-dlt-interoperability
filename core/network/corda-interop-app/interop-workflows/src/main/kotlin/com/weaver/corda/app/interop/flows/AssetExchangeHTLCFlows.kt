@@ -335,8 +335,8 @@ object UnlockAssetHTLC {
                         .addOutputState(reclaimAssetState, assetStateContractId)
                         .addCommand(unlockCmd)
                         .addCommand(assetCreateCmd)
-                        .setTimeWindow(TimeWindow.fromOnly(assetExchangeHTLCState.lockInfo.expiryTime))
-                
+                        .setTimeWindow(TimeWindow.fromOnly(assetExchangeHTLCState.lockInfo.expiryTime.plusNanos(1)))
+                        
                 // Verify and collect signatures on the transaction        
                 txBuilder.verify(serviceHub)
                 val sTx = serviceHub.signInitialTransaction(txBuilder)
