@@ -24,38 +24,26 @@ import java.util.Base64
 import net.corda.core.utilities.OpaqueBytes
 import net.corda.core.crypto.sha256
 import java.time.Instant
-import net.corda.core.identity.CordaX500Name
 
 import com.weaver.corda.sdk.AssetManager
 import com.cordaSimpleApplication.state.AssetState
 import com.cordaSimpleApplication.contract.AssetContract
 
-/**
- * Generates Hash to be used for HTLC for a given secret:
- * get-hash -s <secret>
- * get-hash --secret=<secret>
- */
-class GetHashCommand : CliktCommand(
-        help = "Generates Hash to be used for HTLC for a given secret. Usage: get-hash --secret=<secret>") {
-    val secret by option("-s", "--secret", help="String to be hashed")
-    override fun run() = runBlocking {
-        if (secret == null) {
-            println("Parameter --secret or -s not given.")
-        } else {
-            val secret = OpaqueBytes(secret!!.toByteArray())
-            val hashBase64 = Base64.getEncoder().encodeToString(secret.sha256().bytes)
-            println("Hash in Base64: ${hashBase64}")
-        }
-    }
-}
+import com.r3.corda.lib.tokens.contracts.commands.RedeemTokenCommand
+import com.r3.corda.lib.tokens.contracts.commands.IssueTokenCommand
+import net.corda.samples.tokenizedhouse.flows.RetrieveStateAndRef
+import net.corda.samples.tokenizedhouse.flows.GetIssuedTokenType
+import com.r3.corda.lib.tokens.contracts.FungibleTokenContract
+import net.corda.core.identity.CordaX500Name
+
 
 /**
  * Command to lock an asset.
- * lock-asset --hash=hash --timeout=timeout --recipient="O=PartyB,L=London,C=GB" --param=type:id ----> non-fungible
- * lock-asset --fungible --hash=hash --timeout=timeout --recipient="O=PartyB,L=London,C=GB" --param=type:amount ----> fungible
+ * lock --hash=hash --timeout=timeout --recipient="O=PartyB,L=London,C=GB" --param=type:id ----> non-fungible
+ * lock --fungible --hash=hash --timeout=timeout --recipient="O=PartyB,L=London,C=GB" --param=type:amount ----> fungible
  */
-class LockAssetCommand : CliktCommand(
-        help = "Locks an asset. lock-asset --fungible --hashBase64=hashbase64 --timeout=10 --recipient='PartyA' --param=type:amount ") {
+class LockHouseTokenCommand : CliktCommand(name="lock",
+        help = "Locks an asset. lock --fungible --hashBase64=hashbase64 --timeout=10 --recipient='PartyA' --param=type:amount ") {
     val config by requireObject<Map<String, String>>()
     val hashBase64: String? by option("-h64", "--hashBase64", help="Hash in base64 for HTLC")
     val timeout: String? by option("-t", "--timeout", help="Timeout duration in seconds.")
@@ -81,6 +69,8 @@ class LockAssetCommand : CliktCommand(
                 val params = param!!.split(":").toTypedArray()
                 var id: Any
                 val issuer = rpc.proxy.wellKnownPartyFromX500Name(CordaX500Name.parse("O=PartyA,L=London,C=GB"))!!
+                val issuedTokenType = rpc.proxy.startFlow(::GetIssuedTokenType, "house").returnValue.get()
+                println("TokenType: $issuedTokenType")
                 if (fungible) {
                     id = AssetManager.createFungibleHTLC(
                         rpc.proxy, 
@@ -89,9 +79,9 @@ class LockAssetCommand : CliktCommand(
                         recipient!!, 
                         hashBase64!!, 
                         nTimeout, 
-                        1,                  // nTimeout represents Duration
-                        "com.cordaSimpleApplication.flow.RetrieveStateAndRef", 
-                        AssetContract.Commands.Delete(),
+                        1,                  //Duration
+                        "net.corda.samples.tokenizedhouse.flows.RetrieveStateAndRef", 
+                        RedeemTokenCommand(issuedTokenType, listOf(0), listOf()),
                         issuer
                     )
                 } else {
@@ -102,7 +92,7 @@ class LockAssetCommand : CliktCommand(
                         recipient!!, 
                         hashBase64!!, 
                         nTimeout,  
-                        1,              // nTimeout represents Duration
+                        1,              //Duration
                         "com.cordaSimpleApplication.flow.RetrieveStateAndRef", 
                         AssetContract.Commands.Delete(),
                         issuer
@@ -121,7 +111,7 @@ class LockAssetCommand : CliktCommand(
 /**
  * Command to claim a locked asset.
  */
-class ClaimAssetCommand : CliktCommand(help = "Claim a locked asset. Only Recipient's call will work.") {
+class ClaimHouseTokenCommand : CliktCommand(name="claim", help = "Claim a locked asset. Only Recipient's call will work.") {
     val config by requireObject<Map<String, String>>()
     val contractId: String? by option("-cid", "--contract-id", help="Contract/Linear Id for HTLC State")
     val secret: String? by option("-s", "--secret", help="Hash Pre-Image for the HTLC Claim")
@@ -135,14 +125,15 @@ class ClaimAssetCommand : CliktCommand(help = "Claim a locked asset. Only Recipi
                     password = "test",
                     rpcPort = config["CORDA_PORT"]!!.toInt())
             try {
+                val issuedTokenType = rpc.proxy.startFlow(::GetIssuedTokenType, "house").returnValue.get()
                 val issuer = rpc.proxy.wellKnownPartyFromX500Name(CordaX500Name.parse("O=PartyA,L=London,C=GB"))!!
                 val res = AssetManager.claimAssetInHTLC(
                     rpc.proxy, 
                     contractId!!, 
                     secret!!,
-                    AssetContract.Commands.Issue(),
-                    AssetContract.ID,
-                    "com.cordaSimpleApplication.flow.UpdateAssetOwnerFromPointer",
+                    IssueTokenCommand(issuedTokenType, listOf(0)),
+                    FungibleTokenContract.contractId,
+                    "net.corda.samples.tokenizedhouse.flows.UpdateOwnerFromPointer",
                     issuer
                 )
                 println("Asset Claim Response: ${res}")
@@ -158,7 +149,7 @@ class ClaimAssetCommand : CliktCommand(help = "Claim a locked asset. Only Recipi
 /**
  * Command to unlock a locked asset after timeout as per HTLC.
  */
-class UnlockAssetCommand : CliktCommand(help = "Unlocks a locked asset after timeout. Only lockers's call will work.") {
+class UnlockHouseTokenCommand : CliktCommand(name="unlock", help = "Unlocks a locked asset after timeout.") {
     val config by requireObject<Map<String, String>>()
     val contractId: String? by option("-cid", "--contract-id", help="Contract/Linear Id for HTLC State")
     override fun run() = runBlocking {
@@ -172,11 +163,13 @@ class UnlockAssetCommand : CliktCommand(help = "Unlocks a locked asset after tim
                     rpcPort = config["CORDA_PORT"]!!.toInt())
             try {
                 val issuer = rpc.proxy.wellKnownPartyFromX500Name(CordaX500Name.parse("O=PartyA,L=London,C=GB"))!!
+                val issuedTokenType = rpc.proxy.startFlow(::GetIssuedTokenType, "house").returnValue.get()
+                println("TokenType: $issuedTokenType")
                 val res = AssetManager.reclaimAssetInHTLC(
                     rpc.proxy, 
                     contractId!!,
-                    AssetContract.Commands.Issue(),
-                    AssetContract.ID,
+                    IssueTokenCommand(issuedTokenType, listOf(0)),
+                    FungibleTokenContract.contractId,
                     issuer
                 )
                 println("Asset Unlock Response: ${res}")
@@ -192,7 +185,7 @@ class UnlockAssetCommand : CliktCommand(help = "Unlocks a locked asset after tim
 /**
  * Query lock status of an asset.
  */
-class IsAssetLockedCommand : CliktCommand(help = "Query lock status of an asset, given contractId.") {
+class IsHouseTokenLockedCommand : CliktCommand(name="is-locked", help = "Query lock status of an asset, given contractId.") {
     val config by requireObject<Map<String, String>>()
     val contractId: String? by option("-cid", "--contract-id", help="Contract/Linear Id for HTLC State")
     override fun run() = runBlocking {
@@ -221,7 +214,7 @@ class IsAssetLockedCommand : CliktCommand(help = "Query lock status of an asset,
 /**
  * Fetch HTLC State associated with contractId.
  */
-class GetLockStateCommand : CliktCommand(help = "Fetch HTLC State associated with contractId.") {
+class GetHouseTokenLockStateCommand : CliktCommand(name="get-lock-state", help = "Fetch HTLC State associated with contractId.") {
     val config by requireObject<Map<String, String>>()
     val contractId: String? by option("-cid", "--contract-id", help="Contract/Linear Id for HTLC State")
     override fun run() = runBlocking {

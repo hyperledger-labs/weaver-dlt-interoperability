@@ -49,7 +49,8 @@ class LockAsset(
         val assetLock: AssetLocks.AssetLock,
         val agreement: AssetLocks.AssetExchangeAgreement,
         val getAssetFlowName: String,
-        val assetStateDeleteCommand: CommandData
+        val assetStateDeleteCommand: CommandData,
+        val issuer: Party
 ) : FlowLogic<Either<Error, UniqueIdentifier>>() {
     /**
      * The call() method captures the logic to create a new [AssetExchangeHTLCState] state in the vault.
@@ -108,7 +109,8 @@ class LockAsset(
                     lockInfoData, 
                     assetRef!!,
                     assetStateDeleteCommand,
-                    recipient!!
+                    recipient!!,
+                    issuer
                 ))
             })
             
@@ -133,7 +135,8 @@ class LockFungibleAsset(
         val assetLock: AssetLocks.AssetLock,
         val agreement: AssetLocks.FungibleAssetExchangeAgreement,
         val getAssetFlowName: String,
-        val assetStateDeleteCommand: CommandData
+        val assetStateDeleteCommand: CommandData,
+        val issuer: Party
 ) : FlowLogic<Either<Error, UniqueIdentifier>>() {
     /**
      * The call() method captures the logic to create a new [AssetExchangeHTLCState] state in the vault.
@@ -192,7 +195,8 @@ class LockFungibleAsset(
                     lockInfoData, 
                     assetRef!!,
                     assetStateDeleteCommand,
-                    recipient!!
+                    recipient!!,
+                    issuer
                 ))
             })
             
@@ -220,7 +224,8 @@ class ClaimAsset(
         val assetClaim: AssetLocks.AssetClaim,
         val assetStateCreateCommand: CommandData,
         val assetStateContractId: String,
-        val updateOwnerFlow: String
+        val updateOwnerFlow: String,
+        val issuerParty: Party
 ) : FlowLogic<Either<Error, SignedTransaction>>() {
     /**
      * The call() method captures the logic to claim the asset by revealing preimage.
@@ -241,7 +246,8 @@ class ClaimAsset(
                 claimInfoData,
                 assetStateCreateCommand,
                 assetStateContractId,
-                updateOwnerFlow
+                updateOwnerFlow,
+                issuerParty
             ))
         } else {
             println("Lock Mechanism not supported.")
@@ -264,7 +270,8 @@ class ClaimAsset(
 class UnlockAsset(
         val contractId: String,
         val assetStateCreateCommand: CommandData,
-        val assetStateContractId: String
+        val assetStateContractId: String,
+        val issuer: Party
 ) : FlowLogic<Either<Error, SignedTransaction>>() {
     /**
      * The call() method captures the logic to unlock an asset.
@@ -276,7 +283,8 @@ class UnlockAsset(
         subFlow(UnlockAssetHTLC.Initiator(
             contractId,
             assetStateCreateCommand,
-            assetStateContractId
+            assetStateContractId,
+            issuer
         ))
     } catch (e: Exception) {
         println("Error unlocking: ${e.message}\n")

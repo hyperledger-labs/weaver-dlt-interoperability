@@ -4,6 +4,20 @@ start: github.properties
 	./scripts/get-cordapps.sh
 	./scripts/start-nodes.sh
 
+.PHONY: start-house
+start-house:
+	./gradlew clean prepareDockerNodes
+	./scripts/get-house-cordapps.sh
+	./scripts/get-cordapps.sh
+	./scripts/start-house-nodes.sh
+
+.PHONY: start-house-local
+start-house-local:
+	./gradlew clean prepareDockerNodes
+	./scripts/get-house-cordapps.sh local
+	./scripts/get-cordapps.sh local
+	./scripts/start-house-nodes.sh
+
 .PHONY: start-local
 start-local:
 	./scripts/generate.sh
