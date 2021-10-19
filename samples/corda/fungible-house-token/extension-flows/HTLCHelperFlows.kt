@@ -19,6 +19,10 @@ import net.corda.core.identity.CordaX500Name
 import com.r3.corda.lib.tokens.contracts.types.IssuedTokenType
 import com.r3.corda.lib.tokens.contracts.utilities.issuedBy
 import net.corda.core.contracts.StaticPointer
+import net.corda.core.transactions.TransactionBuilder
+import com.r3.corda.lib.tokens.contracts.commands.MoveTokenCommand
+import com.r3.corda.lib.tokens.contracts.FungibleTokenContract
+import net.corda.core.contracts.Command
 
 
 
@@ -87,6 +91,8 @@ class RetrieveStateAndRef(
         val queryCriteria = baseCriteria
         val fungibleStates = selector.selectTokens(amount, TokenQueryBy(issuer = issuer, queryCriteria = queryCriteria))
 
+        //TODO: Check all fungibleStates have same notary, skipping for demo Testnet as we have only one notary
+
         println("After Token Selection: $fungibleStates")
         val notary = fungibleStates.first().state.notary
         val (exitStates, change) = selector.generateExit(
@@ -94,11 +100,38 @@ class RetrieveStateAndRef(
                 amount = amount,
                 changeHolder = ourIdentity
         )
-        if (change != null) {
-            throw IllegalStateException("HTLC requires exact amount of token to be present. Please split before attempting to lock asset.")
+        if (exitStates.isEmpty()) {
+            throw IllegalStateException("Tokens with specified quantity not found")
         }
-        println("Return ${exitStates}")
-        return exitStates.first()
+        val issuedTokenType = exitStates[0].state.data.amount.token
+        val holder = exitStates[0].state.data.holder
+        val lockToken = FungibleToken(Amount(quantity, issuedTokenType), holder)
+        
+        var txBuilder = TransactionBuilder(notary)
+               .addOutputState(lockToken, FungibleTokenContract.contractId)
+        var outIndices = listOf(0)
+        if (change != null) {
+            txBuilder = txBuilder.addOutputState(change, FungibleTokenContract.contractId)
+            outIndices += 1
+        }
+        for (exitState in exitStates) {
+            txBuilder = txBuilder.addInputState(exitState)   //Add all from list
+        }
+        val cmd = Command(MoveTokenCommand(issuedTokenType, listOf(0..exitStates.size-1).flatten(), outIndices), 
+                setOf(
+                    holder.owningKey
+                ).toList()
+            )
+        txBuilder = txBuilder.addCommand(cmd)
+        txBuilder.verify(serviceHub)
+        val sTx = serviceHub.signInitialTransaction(txBuilder)
+        val storedLockToken = subFlow(FinalityFlow(sTx, listOf<FlowSession>())).tx.outputStates[0] as FungibleToken
+        println("Stored: ${storedLockToken}")
+
+        val lockTokenRef = serviceHub.vaultService.queryBy<FungibleToken>()
+                .states.filter { it.state.data.amount.equals(storedLockToken.amount) }[0]
+        println("Return ${lockTokenRef}")
+        return lockTokenRef
     }
 }
 
