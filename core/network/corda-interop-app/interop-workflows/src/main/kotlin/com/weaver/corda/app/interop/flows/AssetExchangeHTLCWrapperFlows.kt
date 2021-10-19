@@ -45,12 +45,15 @@ import com.weaver.protos.common.asset_locks.AssetLocks
  */
 @InitiatingFlow
 @StartableByRPC
-class LockAsset(
+class LockAsset
+@JvmOverloads
+constructor(
         val assetLock: AssetLocks.AssetLock,
         val agreement: AssetLocks.AssetExchangeAgreement,
         val getAssetFlowName: String,
         val assetStateDeleteCommand: CommandData,
-        val issuer: Party
+        val issuer: Party,
+        val observers: List<Party> = listOf<Party>()
 ) : FlowLogic<Either<Error, UniqueIdentifier>>() {
     /**
      * The call() method captures the logic to create a new [AssetExchangeHTLCState] state in the vault.
@@ -110,7 +113,8 @@ class LockAsset(
                     assetRef!!,
                     assetStateDeleteCommand,
                     recipient!!,
-                    issuer
+                    issuer,
+                    observers
                 ))
             })
             
@@ -131,12 +135,15 @@ class LockAsset(
  */
 @InitiatingFlow
 @StartableByRPC
-class LockFungibleAsset(
+class LockFungibleAsset
+@JvmOverloads
+constructor(
         val assetLock: AssetLocks.AssetLock,
         val agreement: AssetLocks.FungibleAssetExchangeAgreement,
         val getAssetFlowName: String,
         val assetStateDeleteCommand: CommandData,
-        val issuer: Party
+        val issuer: Party,
+        val observers: List<Party> = listOf<Party>()
 ) : FlowLogic<Either<Error, UniqueIdentifier>>() {
     /**
      * The call() method captures the logic to create a new [AssetExchangeHTLCState] state in the vault.
@@ -196,7 +203,8 @@ class LockFungibleAsset(
                     assetRef!!,
                     assetStateDeleteCommand,
                     recipient!!,
-                    issuer
+                    issuer,
+                    observers
                 ))
             })
             
@@ -219,13 +227,16 @@ class LockFungibleAsset(
 
 @InitiatingFlow
 @StartableByRPC
-class ClaimAsset(
+class ClaimAsset
+@JvmOverloads
+constructor(
         val contractId: String,
         val assetClaim: AssetLocks.AssetClaim,
         val assetStateCreateCommand: CommandData,
         val assetStateContractId: String,
         val updateOwnerFlow: String,
-        val issuerParty: Party
+        val issuerParty: Party,
+        val observers: List<Party> = listOf<Party>()
 ) : FlowLogic<Either<Error, SignedTransaction>>() {
     /**
      * The call() method captures the logic to claim the asset by revealing preimage.
@@ -247,7 +258,8 @@ class ClaimAsset(
                 assetStateCreateCommand,
                 assetStateContractId,
                 updateOwnerFlow,
-                issuerParty
+                issuerParty,
+                observers
             ))
         } else {
             println("Lock Mechanism not supported.")
@@ -267,11 +279,14 @@ class ClaimAsset(
 
 @InitiatingFlow
 @StartableByRPC
-class UnlockAsset(
+class UnlockAsset
+@JvmOverloads
+constructor(
         val contractId: String,
         val assetStateCreateCommand: CommandData,
         val assetStateContractId: String,
-        val issuer: Party
+        val issuer: Party,
+        val observers: List<Party> = listOf<Party>()
 ) : FlowLogic<Either<Error, SignedTransaction>>() {
     /**
      * The call() method captures the logic to unlock an asset.
@@ -284,7 +299,8 @@ class UnlockAsset(
             contractId,
             assetStateCreateCommand,
             assetStateContractId,
-            issuer
+            issuer,
+            observers
         ))
     } catch (e: Exception) {
         println("Error unlocking: ${e.message}\n")

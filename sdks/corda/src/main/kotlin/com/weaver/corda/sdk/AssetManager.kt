@@ -29,7 +29,7 @@ class AssetManager {
         private val logger = LoggerFactory.getLogger(AssetManager::class.java)
 
         @JvmStatic
-        fun createHTLC(
+        @JvmOverloads fun createHTLC(
             proxy: CordaRPCOps,
             assetType: String,
             assetId: String,
@@ -39,7 +39,8 @@ class AssetManager {
             timeSpec: Int,
             getAssetStateAndRefFlow: String,
             deleteAssetStateCommand: CommandData,
-            issuer: Party
+            issuer: Party,
+            observers: List<Party> = listOf<Party()
         ): Either<Error, String> {
             return try {
                 AssetManager.logger.debug("Sending asset-lock request to Corda as part of asset-exchange.\n")
@@ -48,7 +49,7 @@ class AssetManager {
                     val assetAgreement = createAssetExchangeAgreement(assetType, assetId, recipientParty, "")
                     val lockInfo = createAssetLockInfo(hashBase64, timeSpec, expiryTimeSecs)
 
-                    proxy.startFlow(::LockAsset, lockInfo, assetAgreement, getAssetStateAndRefFlow, deleteAssetStateCommand, issuer)
+                    proxy.startFlow(::LockAsset, lockInfo, assetAgreement, getAssetStateAndRefFlow, deleteAssetStateCommand, issuer, observers)
                         .returnValue.get()
                 }.fold({
                     it.map { linearId ->
@@ -66,7 +67,7 @@ class AssetManager {
         }
 
         @JvmStatic
-        fun createFungibleHTLC(
+        @JvmOverloads fun createFungibleHTLC(
             proxy: CordaRPCOps,
             tokenType: String,
             numUnits: Long,
@@ -76,7 +77,8 @@ class AssetManager {
             timeSpec: Int,
             getAssetStateAndRefFlow: String,
             deleteAssetStateCommand: CommandData,
-            issuer: Party
+            issuer: Party,
+            observers: List<Party> = listOf<Party()
         ): Either<Error, String> {
             return try {
                 AssetManager.logger.debug("Sending fungible asset-lock request to Corda as part of asset-exchange.\n")
@@ -85,7 +87,7 @@ class AssetManager {
                     val assetAgreement = createFungibleAssetExchangeAgreement(tokenType, numUnits, recipientParty, "")
                     val lockInfo = createAssetLockInfo(hashBase64, timeSpec, expiryTimeSecs)
 
-                    proxy.startFlow(::LockFungibleAsset, lockInfo, assetAgreement, getAssetStateAndRefFlow, deleteAssetStateCommand, issuer)
+                    proxy.startFlow(::LockFungibleAsset, lockInfo, assetAgreement, getAssetStateAndRefFlow, deleteAssetStateCommand, issuer, observers)
                         .returnValue.get()
                 }.fold({
                     it.map { linearId ->
@@ -103,14 +105,15 @@ class AssetManager {
         }
 
         @JvmStatic
-        fun claimAssetInHTLC(
+        @JvmOverloads fun claimAssetInHTLC(
             proxy: CordaRPCOps,
             contractId: String,
             hashPreimage: String,
             createAssetStateCommand: CommandData,
             assetStateContractId: String,
             updateAssetStateOwnerFlow: String,
-            issuer: Party
+            issuer: Party,
+            observers: List<Party> = listOf<Party()
         ): Either<Error, SignedTransaction> {
             return try {
                 AssetManager.logger.debug("Sending asset-claim request to Corda as part of asset-exchange.\n")
@@ -118,7 +121,7 @@ class AssetManager {
                     
                     val claimInfo: AssetLocks.AssetClaim = createAssetClaimInfo(hashPreimage)
 
-                    proxy.startFlow(::ClaimAsset, contractId, claimInfo, createAssetStateCommand, assetStateContractId, updateAssetStateOwnerFlow, issuer)
+                    proxy.startFlow(::ClaimAsset, contractId, claimInfo, createAssetStateCommand, assetStateContractId, updateAssetStateOwnerFlow, issuer, observers)
                         .returnValue.get()
                 }.fold({
                     it.map { retSignedTx ->
@@ -141,13 +144,14 @@ class AssetManager {
             contractId: String,
             createAssetStateCommand: CommandData,
             assetStateContractId: String,
-            issuer: Party
+            issuer: Party,
+            observers: List<Party> = listOf<Party()
         ): Either<Error, SignedTransaction> {
             return try {
                 AssetManager.logger.debug("Sending asset-unlock request to Corda as part of asset-exchange.\n")
                 val signedTx = runCatching {
                     
-                    proxy.startFlow(::UnlockAsset, contractId, createAssetStateCommand, assetStateContractId, issuer)
+                    proxy.startFlow(::UnlockAsset, contractId, createAssetStateCommand, assetStateContractId, issuer, observers)
                         .returnValue.get()
                 }.fold({
                     it.map { retSignedTx ->
