@@ -233,10 +233,9 @@ constructor(
         val contractId: String,
         val assetClaim: AssetLocks.AssetClaim,
         val assetStateCreateCommand: CommandData,
-        val assetStateContractId: String,
         val updateOwnerFlow: String,
         val issuer: Party,
-        val observers: List<Party> = emptyList() 
+        val observers: List<Party> = listOf<Party>()
 ) : FlowLogic<Either<Error, SignedTransaction>>() {
     /**
      * The call() method captures the logic to claim the asset by revealing preimage.
@@ -256,7 +255,6 @@ constructor(
                 contractId,
                 claimInfoData,
                 assetStateCreateCommand,
-                assetStateContractId,
                 updateOwnerFlow,
                 issuer,
                 observers
@@ -284,7 +282,6 @@ class UnlockAsset
 constructor(
         val contractId: String,
         val assetStateCreateCommand: CommandData,
-        val assetStateContractId: String,
         val issuer: Party,
         val observers: List<Party> = listOf<Party>()
 ) : FlowLogic<Either<Error, SignedTransaction>>() {
@@ -298,7 +295,6 @@ constructor(
         subFlow(UnlockAssetHTLC.Initiator(
             contractId,
             assetStateCreateCommand,
-            assetStateContractId,
             issuer,
             observers
         ))

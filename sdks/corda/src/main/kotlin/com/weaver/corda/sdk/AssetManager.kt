@@ -110,7 +110,6 @@ class AssetManager {
             contractId: String,
             hashPreimage: String,
             createAssetStateCommand: CommandData,
-            assetStateContractId: String,
             updateAssetStateOwnerFlow: String,
             issuer: Party,
             observers: List<Party> = listOf<Party>()
@@ -121,7 +120,7 @@ class AssetManager {
                     
                     val claimInfo: AssetLocks.AssetClaim = createAssetClaimInfo(hashPreimage)
 
-                    proxy.startFlow(::ClaimAsset, contractId, claimInfo, createAssetStateCommand, assetStateContractId, updateAssetStateOwnerFlow, issuer, observers)
+                    proxy.startFlow(::ClaimAsset, contractId, claimInfo, createAssetStateCommand, updateAssetStateOwnerFlow, issuer, observers)
                         .returnValue.get()
                     //proxy.startFlow(::UnlockAsset, contractId, createAssetStateCommand, assetStateContractId, issuer, observers)
                     //    .returnValue.get()
@@ -145,7 +144,6 @@ class AssetManager {
             proxy: CordaRPCOps,
             contractId: String,
             createAssetStateCommand: CommandData,
-            assetStateContractId: String,
             issuer: Party,
             observers: List<Party> = listOf<Party>()
         ): Either<Error, SignedTransaction> {
@@ -153,7 +151,7 @@ class AssetManager {
                 AssetManager.logger.debug("Sending asset-unlock request to Corda as part of asset-exchange.\n")
                 val signedTx = runCatching {
                     
-                    proxy.startFlow(::UnlockAsset, contractId, createAssetStateCommand, assetStateContractId, issuer, observers)
+                    proxy.startFlow(::UnlockAsset, contractId, createAssetStateCommand, issuer, observers)
                         .returnValue.get()
                 }.fold({
                     it.map { retSignedTx ->

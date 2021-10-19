@@ -241,7 +241,6 @@ object ClaimAssetHTLC {
             val contractId: String,
             val claimInfo: AssetClaimHTLCData,
             val assetStateCreateCommand: CommandData,
-            val assetStateContractId: String,
             val updateOwnerFlow: String,
             val issuer: Party,
             val observers: List<Party> = listOf<Party>()
@@ -277,6 +276,8 @@ object ClaimAssetHTLC {
                             issuer.owningKey
                         ).toList()
                     )
+                    
+                    val assetStateContractId = assetExchangeHTLCState.assetStatePointer.resolve(serviceHub).state.contract
                     
                     resolveUpdateOwnerFlow(updateOwnerFlow, 
                         listOf(assetExchangeHTLCState.assetStatePointer)
@@ -366,7 +367,6 @@ object UnlockAssetHTLC {
     constructor(
             val contractId: String,
             val assetStateCreateCommand: CommandData,
-            val assetStateContractId: String,
             val issuer: Party,
             val observers: List<Party> = listOf<Party>()
     ) : FlowLogic<Either<Error, SignedTransaction>>() {
@@ -397,7 +397,9 @@ object UnlockAssetHTLC {
                     ).toList()
                 )
                 
-                val reclaimAssetState = assetExchangeHTLCState.assetStatePointer.resolve(serviceHub).state.data
+                val reclaimAssetStateAndRef = assetExchangeHTLCState.assetStatePointer.resolve(serviceHub)
+                val reclaimAssetState = reclaimAssetStateAndRef.state.data
+                val assetStateContractId = reclaimAssetStateAndRef.state.contract
                 
                 val txBuilder = TransactionBuilder(notary)
                         .addInputState(it)
