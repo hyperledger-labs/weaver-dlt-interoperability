@@ -235,8 +235,8 @@ constructor(
         val assetStateCreateCommand: CommandData,
         val assetStateContractId: String,
         val updateOwnerFlow: String,
-        val issuerParty: Party,
-        val observers: List<Party> = listOf<Party>()
+        val issuer: Party,
+        val observers: List<Party> = emptyList() 
 ) : FlowLogic<Either<Error, SignedTransaction>>() {
     /**
      * The call() method captures the logic to claim the asset by revealing preimage.
@@ -258,7 +258,7 @@ constructor(
                 assetStateCreateCommand,
                 assetStateContractId,
                 updateOwnerFlow,
-                issuerParty,
+                issuer,
                 observers
             ))
         } else {

@@ -40,7 +40,7 @@ class AssetManager {
             getAssetStateAndRefFlow: String,
             deleteAssetStateCommand: CommandData,
             issuer: Party,
-            observers: List<Party> = listOf<Party()
+            observers: List<Party> = listOf<Party>()
         ): Either<Error, String> {
             return try {
                 AssetManager.logger.debug("Sending asset-lock request to Corda as part of asset-exchange.\n")
@@ -78,7 +78,7 @@ class AssetManager {
             getAssetStateAndRefFlow: String,
             deleteAssetStateCommand: CommandData,
             issuer: Party,
-            observers: List<Party> = listOf<Party()
+            observers: List<Party> = listOf<Party>()
         ): Either<Error, String> {
             return try {
                 AssetManager.logger.debug("Sending fungible asset-lock request to Corda as part of asset-exchange.\n")
@@ -113,7 +113,7 @@ class AssetManager {
             assetStateContractId: String,
             updateAssetStateOwnerFlow: String,
             issuer: Party,
-            observers: List<Party> = listOf<Party()
+            observers: List<Party> = listOf<Party>()
         ): Either<Error, SignedTransaction> {
             return try {
                 AssetManager.logger.debug("Sending asset-claim request to Corda as part of asset-exchange.\n")
@@ -123,6 +123,8 @@ class AssetManager {
 
                     proxy.startFlow(::ClaimAsset, contractId, claimInfo, createAssetStateCommand, assetStateContractId, updateAssetStateOwnerFlow, issuer, observers)
                         .returnValue.get()
+                    //proxy.startFlow(::UnlockAsset, contractId, createAssetStateCommand, assetStateContractId, issuer, observers)
+                    //    .returnValue.get()
                 }.fold({
                     it.map { retSignedTx ->
                         AssetManager.logger.debug("Claim asset was successful.\n")
@@ -145,7 +147,7 @@ class AssetManager {
             createAssetStateCommand: CommandData,
             assetStateContractId: String,
             issuer: Party,
-            observers: List<Party> = listOf<Party()
+            observers: List<Party> = listOf<Party>()
         ): Either<Error, SignedTransaction> {
             return try {
                 AssetManager.logger.debug("Sending asset-unlock request to Corda as part of asset-exchange.\n")
