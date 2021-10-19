@@ -103,6 +103,12 @@ class RetrieveStateAndRef(
         if (exitStates.isEmpty()) {
             throw IllegalStateException("Tokens with specified quantity not found")
         }
+        if (exitStates.size == 1 && change == null) {
+            println("Return ${exitStates}")
+            return exitStates.first()
+        }
+
+        // Else Merge and Manage change tokens
         val issuedTokenType = exitStates[0].state.data.amount.token
         val holder = exitStates[0].state.data.holder
         val lockToken = FungibleToken(Amount(quantity, issuedTokenType), holder)
