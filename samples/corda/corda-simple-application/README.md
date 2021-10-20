@@ -180,7 +180,26 @@ CORDA_PORT=10006 ./clients/build/install/clients/bin/clients get-lock-state --co
 
 **Note:** You can also use `CORDA_PORT=10009` i.e. using PartyB to run above query commands.
 
+## House Token Flows:
 
+```
+Usage: clients house-token COMMAND
+
+Commands:                                                                    
+  init            Creates Fungible House Token Type in network
+  issue           Issues tokens to a party
+  get-balance     Get balance of house tokens
+  redeem          Redeem house tokens
+  move            Move house tokens
+  lock            Locks an asset. lock --fungible --hashBase64=hashbase64
+                  --timeout=10 --recipient='PartyA' --param=type:amount
+  claim           Claim a locked asset. Only Recipient's call will work.
+  unlock          Unlocks a locked asset after timeout.
+  is-locked       Query lock status of an asset, given contractId.
+  get-lock-state  Fetch HTLC State associated with contractId.    
+```
+
+Above HTLC commands have same arguments as previous section's commands.
 
 ## Development tips
 
