@@ -6,7 +6,7 @@ weaverVersion="1.2.4-alpha.4"
 
 parties="Notary PartyA PartyB PartyC"
 
-for party in parties; do
+for party in ${parties}; do
   cp $directory/../shared/artifacts/contracts-kotlin-$simpleAppVersion.jar build/nodes/${party}/cordapps
   cp $directory/../shared/artifacts/workflows-kotlin-$simpleAppVersion.jar build/nodes/${party}/cordapps
   

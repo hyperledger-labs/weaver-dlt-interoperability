@@ -152,7 +152,9 @@ object LockAssetHTLC {
                     return subFlow(ReceiveFinalityFlow(session))
                 }
             } else {
-                return subFlow(ReceiveFinalityFlow(session))
+                val sTx = subFlow(ReceiveFinalityFlow(session))
+                println("Received Tx: ${sTx}")
+                return sTx
             }
         }
     }
@@ -349,7 +351,9 @@ object ClaimAssetHTLC {
                     return subFlow(ReceiveFinalityFlow(session))
                 }
             } else {
-                return subFlow(ReceiveFinalityFlow(session))
+                val sTx = subFlow(ReceiveFinalityFlow(session))
+                println("Received Tx: ${sTx}")
+                return sTx
             }
         }
     }
@@ -466,7 +470,9 @@ object UnlockAssetHTLC {
                     return subFlow(ReceiveFinalityFlow(session))
                 }
             } else {
-                return subFlow(ReceiveFinalityFlow(session))
+                val sTx = subFlow(ReceiveFinalityFlow(session))
+                println("Received Tx: ${sTx}")
+                return sTx
             }
         }
     }

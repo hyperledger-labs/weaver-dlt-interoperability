@@ -7,7 +7,7 @@ tokenVersion="1.2"
 
 parties="Notary PartyA PartyB PartyC"
 
-for party in parties; do
+for party in ${parties}; do
   cp $directory/../shared/artifacts/contracts-$houseTokenAppversion.jar build/nodes/${party}/cordapps
   cp $directory/../shared/artifacts/workflows-$houseTokenAppversion.jar build/nodes/${party}/cordapps
   
