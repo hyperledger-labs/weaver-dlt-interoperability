@@ -2,33 +2,25 @@
 
 directory=$(dirname $0)
 houseTokenAppversion="1.0"
-weaverVersion="1.2.4-alpha.3"
+weaverVersion="1.2.4-alpha.4"
 tokenVersion="1.2"
 
-cp $directory/../shared/artifacts/contracts-$houseTokenAppversion.jar build/nodes/Notary/cordapps
-cp $directory/../shared/artifacts/contracts-$houseTokenAppversion.jar build/nodes/PartyA/cordapps
-cp $directory/../shared/artifacts/contracts-$houseTokenAppversion.jar build/nodes/PartyB/cordapps
-cp $directory/../shared/artifacts/workflows-$houseTokenAppversion.jar build/nodes/Notary/cordapps
-cp $directory/../shared/artifacts/workflows-$houseTokenAppversion.jar build/nodes/PartyA/cordapps
-cp $directory/../shared/artifacts/workflows-$houseTokenAppversion.jar build/nodes/PartyB/cordapps
+parties="Notary PartyA PartyB PartyC"
 
-cp $directory/../shared/artifacts/tokens-contracts-$tokenVersion.jar build/nodes/Notary/cordapps
-cp $directory/../shared/artifacts/tokens-contracts-$tokenVersion.jar build/nodes/PartyA/cordapps
-cp $directory/../shared/artifacts/tokens-contracts-$tokenVersion.jar build/nodes/PartyB/cordapps
-cp $directory/../shared/artifacts/tokens-workflows-$tokenVersion.jar build/nodes/Notary/cordapps
-cp $directory/../shared/artifacts/tokens-workflows-$tokenVersion.jar build/nodes/PartyA/cordapps
-cp $directory/../shared/artifacts/tokens-workflows-$tokenVersion.jar build/nodes/PartyB/cordapps
+for party in parties; do
+  cp $directory/../shared/artifacts/contracts-$houseTokenAppversion.jar build/nodes/${party}/cordapps
+  cp $directory/../shared/artifacts/workflows-$houseTokenAppversion.jar build/nodes/${party}/cordapps
+  
+  cp $directory/../shared/artifacts/tokens-contracts-$tokenVersion.jar build/nodes/${party}/cordapps
+  cp $directory/../shared/artifacts/tokens-workflows-$tokenVersion.jar build/nodes/${party}/cordapps
+  cp $directory/../shared/artifacts/ci-workflows-1.0.jar build/nodes/${party}/cordapps
+  
+  cp $directory/../shared/artifacts/interop-contracts-$weaverVersion.jar build/nodes/${party}/cordapps
+  cp $directory/../shared/artifacts/interop-workflows-$weaverVersion.jar build/nodes/${party}/cordapps
+  
+  cp $directory/../shared/artifacts/protos-java-kt-$weaverVersion.jar build/nodes/${party}/cordapps
+done;
 
-cp $directory/../shared/artifacts/interop-contracts-$weaverVersion.jar build/nodes/Notary/cordapps
-cp $directory/../shared/artifacts/interop-contracts-$weaverVersion.jar build/nodes/PartyA/cordapps
-cp $directory/../shared/artifacts/interop-contracts-$weaverVersion.jar build/nodes/PartyB/cordapps
-cp $directory/../shared/artifacts/interop-workflows-$weaverVersion.jar build/nodes/Notary/cordapps
-cp $directory/../shared/artifacts/interop-workflows-$weaverVersion.jar build/nodes/PartyA/cordapps
-cp $directory/../shared/artifacts/interop-workflows-$weaverVersion.jar build/nodes/PartyB/cordapps
-
-cp $directory/../shared/artifacts/protos-java-kt-$weaverVersion.jar build/nodes/Notary/cordapps
-cp $directory/../shared/artifacts/protos-java-kt-$weaverVersion.jar build/nodes/PartyA/cordapps
-cp $directory/../shared/artifacts/protos-java-kt-$weaverVersion.jar build/nodes/PartyB/cordapps
 
 docker-compose up -d
 docker ps -a
