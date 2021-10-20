@@ -67,9 +67,7 @@ make build
 
 To use the CLI client and interact with the CorDapp running on the nodes, you
 will need to have the Corda network running. Instructions for doing so can be
-found in the
-[network-setups](../../../tests/network-setups)
-repo.
+found [here](../../../tests/network-setups/corda/README.md).
 
 Use the command line client to manage state in the network:
 
@@ -182,6 +180,10 @@ CORDA_PORT=10006 ./clients/build/install/clients/bin/clients get-lock-state --co
 
 ## House Token Flows:
 
+To use the CLI client and interact with the CorDapp running on the nodes, you
+will need to have the Corda network running. Instructions for doing so can be
+found [here](../../../tests/network-setups/corda/README.md#running-fungible-house-token-with-make).
+
 ```
 Usage: clients house-token COMMAND
 
@@ -199,7 +201,41 @@ Commands:
   get-lock-state  Fetch HTLC State associated with contractId.    
 ```
 
-Above HTLC commands have same arguments as previous section's commands.
+* Initialise house tokens:
+```
+./scripts/initAsset.sh
+```
+
+* Get token status in corda:
+```
+./scripts/getAssetStatus.sh 
+```
+
+* Lock 10 tokens of type house in corda by PartyB for PartyA:
+```
+CORDA_PORT=10009 ./clients/build/install/clients/bin/clients house-token lock --fungible --hashBase64=<hash-in-base64> --timeout=1800 --recipient="O=PartyA,L=London,C=GB" --param=house:10
+```
+
+* Claim of 10 house tokens in corda by PartyA:
+```
+CORDA_PORT=10006 ./clients/build/install/clients/bin/clients house-token claim --contract-id=<contract-id> --secret=<hash-preimage>
+```
+
+* Unlock after timeout in Corda by PartyB:
+```
+CORDA_PORT=10009 ./clients/build/install/clients/bin/clients house-token unlock --contract-id=<contract-id>
+```
+
+* Query in Corda using PartyA:
+```
+CORDA_PORT=10006 ./clients/build/install/clients/bin/clients house-token is-locked --contract-id=<contract-id>
+```
+
+```
+CORDA_PORT=10006 ./clients/build/install/clients/bin/clients house-token get-lock-state --contract-id=<contract-id>
+```
+
+**Note:** You can also use `CORDA_PORT=10009` i.e. PartyB, to run above query commands.
 
 ## Development tips
 
