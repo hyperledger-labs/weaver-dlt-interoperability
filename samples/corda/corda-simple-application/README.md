@@ -203,12 +203,12 @@ Commands:
 
 * Initialise house tokens:
 ```
-./scripts/initAsset.sh
+./scripts/initHouseToken.sh
 ```
 
 * Get token status in corda:
 ```
-./scripts/getAssetStatus.sh 
+./scripts/getHouseTokenStatus.sh 
 ```
 
 * Lock 10 tokens of type house in corda by PartyB for PartyA:
