@@ -64,7 +64,7 @@ jobs:
       - name: Start Corda Network
         run: |
           make start
-          sleep 60
+          sleep 100
           docker logs corda_partya_1
           docker logs corda_partyb_1
         working-directory: tests/network-setups/corda
@@ -165,7 +165,7 @@ jobs:
       - name: Start Corda Network
         run: |
           make start-local
-          sleep 60
+          sleep 100
           docker logs corda_partya_1
           docker logs corda_partyb_1
         working-directory: tests/network-setups/corda
@@ -271,7 +271,7 @@ jobs:
       - name: Start Corda Network
         run: |
           make start-house
-          sleep 60
+          sleep 100
           docker logs corda_partya_1
           docker logs corda_partyb_1
           docker logs corda_partyc_1
