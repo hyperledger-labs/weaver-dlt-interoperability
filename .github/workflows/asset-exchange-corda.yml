@@ -288,7 +288,7 @@ jobs:
           TOTAL=5
 
           # Lock 50 tokens
-          CORDA_PORT=10009 ./clients/build/install/clients/bin/clients house-token lock -f -h64 ivHErp1x4bJDKuRo6L5bApO/DdoyD/dG0mAZrzLZEIs= -t 180 -r "O=PartyA,L=London,C=GB" -o "O=PartyC,L=London,C=GB" -p t1:10 &> tmp.out
+          CORDA_PORT=10009 ./clients/build/install/clients/bin/clients house-token lock -f -h64 ivHErp1x4bJDKuRo6L5bApO/DdoyD/dG0mAZrzLZEIs= -t 180 -r "O=PartyA,L=London,C=GB" -o "O=PartyC,L=London,C=GB" -p house:10 &> tmp.out
           tail -n 2 tmp.out | grep "HTLC Lock State created with contract ID Right" && COUNT=$(( COUNT + 1 )) && echo "PASS"
           cat tmp.out
           
@@ -305,7 +305,7 @@ jobs:
           cat tmp.out
           
           # Timeout
-          CORDA_PORT=10006 ./clients/build/install/clients/bin/clients house-token lock -f -h64 ivHErp1x4bJDKuRo6L5bApO/DdoyD/dG0mAZrzLZEIs= -t 5 -r "O=PartyB,L=London,C=GB" -p t1:20 &> tmp.out
+          CORDA_PORT=10006 ./clients/build/install/clients/bin/clients house-token lock -f -h64 ivHErp1x4bJDKuRo6L5bApO/DdoyD/dG0mAZrzLZEIs= -t 5 -r "O=PartyB,L=London,C=GB" -p house:20 &> tmp.out
           CID=$(tail -n 2 tmp.out | grep "HTLC Lock State created with contract ID Right" | sed -e 's/.*Right(b=\(.*\))\./\1/')
           sleep 5
           cat tmp.out
