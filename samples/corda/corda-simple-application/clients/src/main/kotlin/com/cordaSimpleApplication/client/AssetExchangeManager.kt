@@ -141,7 +141,6 @@ class ClaimAssetCommand : CliktCommand(help = "Claim a locked asset. Only Recipi
                     contractId!!, 
                     secret!!,
                     AssetContract.Commands.Issue(),
-                    AssetContract.ID,
                     "com.cordaSimpleApplication.flow.UpdateAssetOwnerFromPointer",
                     issuer
                 )
@@ -176,7 +175,6 @@ class UnlockAssetCommand : CliktCommand(help = "Unlocks a locked asset after tim
                     rpc.proxy, 
                     contractId!!,
                     AssetContract.Commands.Issue(),
-                    AssetContract.ID,
                     issuer
                 )
                 println("Asset Unlock Response: ${res}")

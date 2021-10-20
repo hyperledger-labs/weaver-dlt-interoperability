@@ -35,6 +35,7 @@ import net.corda.samples.tokenizedhouse.flows.RetrieveStateAndRef
 import net.corda.samples.tokenizedhouse.flows.GetIssuedTokenType
 import com.r3.corda.lib.tokens.contracts.FungibleTokenContract
 import net.corda.core.identity.CordaX500Name
+import net.corda.core.identity.Party
 
 
 /**
@@ -50,6 +51,7 @@ class LockHouseTokenCommand : CliktCommand(name="lock",
     val recipient: String? by option("-r", "--recipient", help="Party Name for recipient")
     val fungible: Boolean by option("-f", "--fungible", help="Fungible Asset Lock: True/False").flag(default = false)
     val param: String? by option("-p", "--param", help="Parameter AssetType:AssetId for non-fungible, AssetType:Quantity for fungible.")
+    val observer: String? by option("-o", "--observer", help="Party Name for Observer")
     override fun run() = runBlocking {
         if (hashBase64 == null || recipient == null || param == null) {
             println("One of HashBase64, Recipient, or param argument is missing.")
@@ -71,6 +73,10 @@ class LockHouseTokenCommand : CliktCommand(name="lock",
                 val issuer = rpc.proxy.wellKnownPartyFromX500Name(CordaX500Name.parse("O=PartyA,L=London,C=GB"))!!
                 val issuedTokenType = rpc.proxy.startFlow(::GetIssuedTokenType, "house").returnValue.get()
                 println("TokenType: $issuedTokenType")
+                var obs = listOf<Party>() 
+                if (observer != null)   {
+                   obs += rpc.proxy.wellKnownPartyFromX500Name(CordaX500Name.parse(observer!!))!!
+                }
                 if (fungible) {
                     id = AssetManager.createFungibleHTLC(
                         rpc.proxy, 
@@ -82,7 +88,8 @@ class LockHouseTokenCommand : CliktCommand(name="lock",
                         1,                  //Duration
                         "net.corda.samples.tokenizedhouse.flows.RetrieveStateAndRef", 
                         RedeemTokenCommand(issuedTokenType, listOf(0), listOf()),
-                        issuer
+                        issuer,
+                        obs
                     )
                 } else {
                     id = AssetManager.createHTLC(
@@ -95,7 +102,8 @@ class LockHouseTokenCommand : CliktCommand(name="lock",
                         1,              //Duration
                         "com.cordaSimpleApplication.flow.RetrieveStateAndRef", 
                         AssetContract.Commands.Delete(),
-                        issuer
+                        issuer,
+                        obs
                     )
                 }
                 println("HTLC Lock State created with contract ID ${id}.")
@@ -115,6 +123,7 @@ class ClaimHouseTokenCommand : CliktCommand(name="claim", help = "Claim a locked
     val config by requireObject<Map<String, String>>()
     val contractId: String? by option("-cid", "--contract-id", help="Contract/Linear Id for HTLC State")
     val secret: String? by option("-s", "--secret", help="Hash Pre-Image for the HTLC Claim")
+    val observer: String? by option("-o", "--observer", help="Party Name for Observer")
     override fun run() = runBlocking {
         if (contractId == null || secret == null) {
             println("Arguments required: --contract-id and --secret.")
@@ -127,14 +136,18 @@ class ClaimHouseTokenCommand : CliktCommand(name="claim", help = "Claim a locked
             try {
                 val issuedTokenType = rpc.proxy.startFlow(::GetIssuedTokenType, "house").returnValue.get()
                 val issuer = rpc.proxy.wellKnownPartyFromX500Name(CordaX500Name.parse("O=PartyA,L=London,C=GB"))!!
+                var obs = listOf<Party>() 
+                if (observer != null)   {
+                   obs += rpc.proxy.wellKnownPartyFromX500Name(CordaX500Name.parse(observer!!))!!
+                }
                 val res = AssetManager.claimAssetInHTLC(
                     rpc.proxy, 
                     contractId!!, 
                     secret!!,
                     IssueTokenCommand(issuedTokenType, listOf(0)),
-                    FungibleTokenContract.contractId,
                     "net.corda.samples.tokenizedhouse.flows.UpdateOwnerFromPointer",
-                    issuer
+                    issuer,
+                    obs
                 )
                 println("Asset Claim Response: ${res}")
             } catch (e: Exception) {
@@ -152,6 +165,7 @@ class ClaimHouseTokenCommand : CliktCommand(name="claim", help = "Claim a locked
 class UnlockHouseTokenCommand : CliktCommand(name="unlock", help = "Unlocks a locked asset after timeout.") {
     val config by requireObject<Map<String, String>>()
     val contractId: String? by option("-cid", "--contract-id", help="Contract/Linear Id for HTLC State")
+    val observer: String? by option("-o", "--observer", help="Party Name for Observer")
     override fun run() = runBlocking {
         if (contractId == null) {
             println("Arguments required: --contract-id.")
@@ -165,12 +179,16 @@ class UnlockHouseTokenCommand : CliktCommand(name="unlock", help = "Unlocks a lo
                 val issuer = rpc.proxy.wellKnownPartyFromX500Name(CordaX500Name.parse("O=PartyA,L=London,C=GB"))!!
                 val issuedTokenType = rpc.proxy.startFlow(::GetIssuedTokenType, "house").returnValue.get()
                 println("TokenType: $issuedTokenType")
+                var obs = listOf<Party>() 
+                if (observer != null)   {
+                   obs += rpc.proxy.wellKnownPartyFromX500Name(CordaX500Name.parse(observer!!))!!
+                }
                 val res = AssetManager.reclaimAssetInHTLC(
                     rpc.proxy, 
                     contractId!!,
                     IssueTokenCommand(issuedTokenType, listOf(0)),
-                    FungibleTokenContract.contractId,
-                    issuer
+                    issuer,
+                    obs
                 )
                 println("Asset Unlock Response: ${res}")
             } catch (e: Exception) {

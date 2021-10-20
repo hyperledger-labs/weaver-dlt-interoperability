@@ -100,6 +100,7 @@ object LockAssetHTLC {
             
             var sessions = listOf<FlowSession>()
             val recipientSession = initiateFlow(recipient)
+            recipientSession.send(true)
             sessions += recipientSession
 
             /// Add issuer session if recipient or locker (i.e. me) is not issuer
