@@ -11,6 +11,7 @@ import net.corda.core.identity.Party
 import net.corda.core.node.services.queryBy
 import net.corda.core.utilities.ProgressTracker
 import net.corda.samples.tokenizedhouse.states.FungibleHouseTokenState
+import net.corda.core.identity.CordaX500Name
 
 // *********
 // * Flows *
@@ -35,8 +36,10 @@ class RedeemTokenFlow(val symbol: String,
 
         //specify how much amount to issue to holder
         val amount:Amount<TokenType> = Amount(quantity,tokenPointer)
-
-        val stx = subFlow(RedeemFungibleTokens(amount,ourIdentity))
+        val issuerName: CordaX500Name = CordaX500Name.parse("O=PartyA,L=London,C=GB")
+        val issuer = serviceHub.networkMapCache.getPeerByLegalName(issuerName)!!
+        
+        val stx = subFlow(RedeemFungibleTokens(amount,issuer))
 
         return "Redeemed $quantity $symbol token(s) to ${ourIdentity.name.organisation}"+
                 "\ntxId: ${stx.id}"
