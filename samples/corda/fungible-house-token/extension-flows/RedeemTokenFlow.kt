@@ -41,7 +41,7 @@ class RedeemTokenFlow(val symbol: String,
         
         val stx = subFlow(RedeemFungibleTokens(amount,issuer))
 
-        return "Redeemed $quantity $symbol token(s) to ${ourIdentity.name.organisation}"+
+        return "Redeemed $quantity $symbol token(s) of ${ourIdentity.name.organisation}"+
                 "\ntxId: ${stx.id}"
     }
 }
