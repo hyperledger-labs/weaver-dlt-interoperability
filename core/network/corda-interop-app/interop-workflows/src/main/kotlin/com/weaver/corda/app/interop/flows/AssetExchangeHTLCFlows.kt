@@ -100,6 +100,7 @@ object LockAssetHTLC {
             
             var sessions = listOf<FlowSession>()
             val recipientSession = initiateFlow(recipient)
+            recipientSession.send(true)
             sessions += recipientSession
 
             /// Add issuer session if recipient or locker (i.e. me) is not issuer
@@ -151,7 +152,9 @@ object LockAssetHTLC {
                     return subFlow(ReceiveFinalityFlow(session))
                 }
             } else {
-                return subFlow(ReceiveFinalityFlow(session))
+                val sTx = subFlow(ReceiveFinalityFlow(session))
+                println("Received Tx: ${sTx}")
+                return sTx
             }
         }
     }
@@ -348,7 +351,9 @@ object ClaimAssetHTLC {
                     return subFlow(ReceiveFinalityFlow(session))
                 }
             } else {
-                return subFlow(ReceiveFinalityFlow(session))
+                val sTx = subFlow(ReceiveFinalityFlow(session))
+                println("Received Tx: ${sTx}")
+                return sTx
             }
         }
     }
@@ -465,7 +470,9 @@ object UnlockAssetHTLC {
                     return subFlow(ReceiveFinalityFlow(session))
                 }
             } else {
-                return subFlow(ReceiveFinalityFlow(session))
+                val sTx = subFlow(ReceiveFinalityFlow(session))
+                println("Received Tx: ${sTx}")
+                return sTx
             }
         }
     }
