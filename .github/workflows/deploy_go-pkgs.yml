@@ -14,6 +14,7 @@ on:
 
 jobs:
   publish-protos:
+    if: github.repository_owner == 'hyperledger-labs'
     runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -51,7 +52,7 @@ jobs:
         run: sleep 300
           
   publish-lib-utils:
-    if: always()
+    if: ${{ always() && github.repository_owner == 'hyperledger-labs' }}
     needs: publish-protos
     runs-on: ubuntu-latest
     steps:
@@ -99,7 +100,7 @@ jobs:
         run: sleep 300
 
   publish-lib-asset-exchange:
-    if: always()
+    if: ${{ always() && github.repository_owner == 'hyperledger-labs' }}
     needs: publish-protos
     runs-on: ubuntu-latest
     steps:
@@ -147,7 +148,7 @@ jobs:
         run: sleep 300
       
   publish-interface-asset-mgmt:
-    if: always()
+    if: ${{ always() && github.repository_owner == 'hyperledger-labs' }}
     needs: [publish-protos]
     runs-on: ubuntu-latest
     steps:
@@ -195,7 +196,7 @@ jobs:
         run: sleep 300
 
   publish-interop-cc:
-    if: always()
+    if: ${{ always() && github.repository_owner == 'hyperledger-labs' }}
     needs: [publish-protos, publish-lib-utils, publish-lib-asset-exchange]
     runs-on: ubuntu-latest
     steps:
@@ -243,7 +244,7 @@ jobs:
         run: sleep 300
 
   publish-go-sdk:
-    if: always()
+    if: ${{ always() && github.repository_owner == 'hyperledger-labs' }}
     needs: [publish-protos]
     runs-on: ubuntu-latest
     steps:
