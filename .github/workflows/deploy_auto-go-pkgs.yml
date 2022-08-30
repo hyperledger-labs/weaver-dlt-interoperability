@@ -1,0 +1,28 @@
+name: Deploy Go Modules
+
+on:
+  test:
+    branches:
+      - main
+    paths:
+      - 'common/protos-go/VERSION'
+
+jobs:
+  protos-go:
+    runs-on: ubuntu-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+          
+      - name: Set current date as env
+        run: echo "RELEASE_DATE=$(date +%b\ %d,\ %Y)" >> $GITHUB_ENV
+        
+      - name: Set version
+        run: echo "VERSION=$(cat VERSION)" >> $GITHUB_ENV
+        working-directory: common/protos-go
+        
+      - name: Deploy protos-go
+        uses: .github/workflows/deploy_go-pkgs.yml@main
+        with:
+            module: protos-go
+            version: ${{ env.VERSION }}
