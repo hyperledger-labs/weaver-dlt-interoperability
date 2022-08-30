@@ -1,9 +1,9 @@
 name: Deploy Go Modules
 
 on:
-  test:
+  push:
     branches:
-      - main
+      - test
     paths:
       - 'common/protos-go/VERSION'
 
