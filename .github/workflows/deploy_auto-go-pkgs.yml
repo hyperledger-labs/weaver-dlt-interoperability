@@ -16,13 +16,29 @@ jobs:
           
       - name: Set current date as env
         run: echo "RELEASE_DATE=$(date +%b\ %d,\ %Y)" >> $GITHUB_ENV
-        
-      - name: Set version
-        run: echo "VERSION=$(cat VERSION)" >> $GITHUB_ENV
+                
+      - name: Set module tag and description
+        run: |
+          echo "MODULE_TAG=common/protos-go" >> $GITHUB_ENV
+          echo "MODULE_DESC=GO Weaver Protos" >> $GITHUB_ENV
         working-directory: common/protos-go
         
-      - name: Deploy protos-go
-        uses: .github/workflows/deploy_go-pkgs.yml@main
+      - name: Set module version
+        run: echo "VERSION=$(cat VERSION)" >> $GITHUB_ENV
+        working-directory: common/protos-go
+            
+      - name: Create protos-go Release
+        id: protos-go-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-            module: protos-go
-            version: ${{ env.VERSION }}
+          tag_name: ${{ env.MODULE_TAG }}/${{ env.VERSION }}
+          release_name: ${{ env.VERSION }} - ${{ env.MODULE_DESC }} - ${{ env.RELEASE_DATE }}
+          body: |
+            - Go Module: `github.com/${{ github.repository_owner }}/weaver-dlt-interoperability/${{ env.MODULE_TAG }}`
+            - Release: ${{ env.VERSION }}
+            - Readme: [Here](https://github.com/${{ github.repository_owner }}/weaver-dlt-interoperability/blob/${{ env.MODULE_TAG }}/${{ env.VERSION }}/${{ env.MODULE_TAG }}/README.md).
+            - Source: [Here](https://github.com/${{ github.repository_owner }}/weaver-dlt-interoperability/blob/${{ env.MODULE_TAG }}/${{ env.VERSION }}/${{ env.MODULE_TAG }})
+          draft: false
+          prerelease: false
