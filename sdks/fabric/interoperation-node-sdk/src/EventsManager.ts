@@ -51,8 +51,7 @@ function createEventPublicationSpec ({
     chaincodeId,
     ccFunc,
     ccArgs,
-    replaceArgIndex,
-    members
+    replaceArgIndex
 }: {
     appUrl?: string,
     driverId?: string,
@@ -61,7 +60,6 @@ function createEventPublicationSpec ({
     ccFunc?: string,
     ccArgs?: string[],
     replaceArgIndex?: number,
-    members?: string[]
 }): eventsPb.EventPublication {
     const eventPublicationSpec = new eventsPb.EventPublication()
     if (appUrl) {
@@ -81,9 +79,6 @@ function createEventPublicationSpec ({
         ctx.setFunc(ccFunc)
         ctx.setArgsList(ccArgsBytes)
         ctx.setReplaceArgIndex(replaceArgIndex)
-        if (members) {
-            ctx.setMembersList(members)
-        }
         eventPublicationSpec.setCtx(ctx)
     }
     return eventPublicationSpec
@@ -143,7 +138,7 @@ const subscribeRemoteEvent = async (
             policyCriteria,
             networkID,
             keyCert.cert,
-            Sign ? signMessage(computedAddress + uuidValue, keyCert.key.toBytes()) : "",
+            Sign ? signMessage(computedAddress + uuidValue, keyCert.key.toBytes()).toString("base64") : "",
             uuidValue,
             // Org is empty as the name is in the certs for
             org,
@@ -216,7 +211,7 @@ const unsubscribeRemoteEvent = async (
             policyCriteria,
             networkID,
             keyCert.cert,
-            Sign ? signMessage(computedAddress + uuidValue, keyCert.key.toBytes()) : "",
+            Sign ? signMessage(computedAddress + uuidValue, keyCert.key.toBytes()).toString("base64") : "",
             uuidValue,
             // Org is empty as the name is in the certs for
             org,
