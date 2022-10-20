@@ -13,7 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 
 
 // Generates attestations on a foreign security domain unit's state
-export const requestAttestation = async (counterAttestedMembership: iin_agent_pb.CounterAttestedMembership, localSecurityDomain: string, localMemberID: number, refreshTime: number) => {
+export const requestAttestation = async (counterAttestedMembership: iin_agent_pb.CounterAttestedMembership, localSecurityDomain: string, localMemberId: number, refreshTime: number) => {
 
   // create local security domain
   const localSecurityDomainUnit = new iin_agent_pb.SecurityDomainMemberIdentity();
@@ -23,7 +23,7 @@ export const requestAttestation = async (counterAttestedMembership: iin_agent_pb
   // get counterattestations from requester
   const counterAttestations = counterAttestedMembership.getAttestationsList();
   const nonce = counterAttestations[0].getNonce();
-  const attestedMembershipSet = counterAttestedMembership.getAttestedMembershipSet();
+  const attestedMembershipSet = utils.deserializeAttestedMembershipSet64(counterAttestedMembership.getAttestedMembershipSet());
   const membership = attestedMembershipSet.getMembership();
   const attestations = attestedMembershipSet.getAttestationsList();
 
@@ -43,10 +43,10 @@ export const requestAttestation = async (counterAttestedMembership: iin_agent_pb
     const remoteSecurityDomainUnit = attestation.getUnitIdentity();
     const remoteSecurityDomain = remoteSecurityDomainUnit.getSecurityDomain();
     const remoteMemberID = remoteSecurityDomainUnit.getmemberID();
-    const remoteSecurityDomainDNS = getSecurityDomain(remoteSecurityDomain);
+    const remoteSecurityDomainDNS = utils.getSecurityDomain(remoteSecurityDomain);
 
     // fetch cached membership info of foreign IIN agent from local cache
-    key = getSecurityDomainMapKey(remoteSecurityDomain, remoteMemberID);
+    const key = getSecurityDomainMapKey(remoteSecurityDomain, remoteMemberID);
     const attestedMembershipOrError = securityDomainMap.get(key);
     // if membership info is not in cache
     if (typeof attestedMembershipOrError === "string"){
@@ -64,7 +64,7 @@ export const requestAttestation = async (counterAttestedMembership: iin_agent_pb
     else{
       // get timestamp corresponding to cached membership info
       const attestationCached = attestedMembershipOrError.getAttestation();
-      const timeStampCached = attestationCached.getUnitIdentity()!.getTimeStamp();
+      const timeStampCached = attestationCached.getTimeStamp();
       const timeStampCurrent = Date.now();
       // if cached timestamp is outdated
       if (Math.floor((timeStampCurrent - timeStampCached)/1000) > refreshTime){
@@ -89,7 +89,7 @@ export const requestAttestation = async (counterAttestedMembership: iin_agent_pb
         }
       }
     }
-    const requesterMemberID = counterAttestations.getUnitIdentity()!.getMemberId();
+    const requesterMemberID = counterAttestations[0].getUnitIdentity()!.getMemberId();
     if(counter > 0){
       foreignAgentResponseCount.set(nonce, { current:0, total: counter});
       key = getSecurityDomainMapKey('LOCAL_COUNTER_ATTESTATION_REQUEST', '', nonce);
@@ -98,10 +98,10 @@ export const requestAttestation = async (counterAttestedMembership: iin_agent_pb
       return;
     }
     // get iinagentclient for the requester
-    const requesterSecurityDomain = counterAttestations.getUnitIdentity()!.getSecurityDomain();
+    const requesterSecurityDomain = counterAttestations[0].getUnitIdentity()!.getSecurityDomain();
     const requesterSecurityDomainDNS = utils.getSecurityDomainDNS(requesterSecurityDomain);
     const requesterIINAgentClient = utils.getIINAgentClient(requesterSecurityDomain, requesterMemberID, requesterSecurityDomainDNS);
-    if(flag == false){
+    if(flag === false){
       // send the error back to the requester
       const errorCounterAttestedMembership = utils.generateErrorCounterAttestation(errorMsg, localSecurityDomain, localMemberId, nonce);
       requesterIINAgentClient.sendAttestation(errorCounterAttestedMembership, utils.defaultCallback);
@@ -109,9 +109,9 @@ export const requestAttestation = async (counterAttestedMembership: iin_agent_pb
     else{
       // create new attestations on foreign security domain's state info sent by requester
       const localLedgerBase = utils.getLedgerBase(localSecurityDomain, localMemberID);
-      const localCounterAttestedMembership = localLedgerBase.counterAttestMembership(attestedMembershipSet, localSecurityDomain, nonce);
+      const localCounterAttestedMembership = localLedgerBase.counterAttestMembership(counterAttestedMembership.getAttestedMembershipSet(), localSecurityDomain, nonce);
       // send attestation back to requester
-      requesterIINAgentClient.sendAttestation(localCounterAttestMembership, utils.defaultCallback);
+      requesterIINAgentClient.sendAttestation(localCounterAttestedMembership, utils.defaultCallback);
     }
   }
 };
