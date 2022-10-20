@@ -40,7 +40,7 @@ export const requestAttestation = async (counterAttestedMembership: iin_agent_pb
     // get membership info of foreign IIN agent
     const remoteSecurityDomainUnit = attestation.getUnitIdentity();
     const remoteSecurityDomain = remoteSecurityDomainUnit.getSecurityDomain();
-    const remoteMemberID = remoteSecurityDomainUnit.getmemberId();
+    const remoteMemberID = remoteSecurityDomainUnit.getMemberId();
     const remoteSecurityDomainDNS = utils.getSecurityDomainDNS(remoteSecurityDomain);
 
     // fetch cached membership info of foreign IIN agent from local cache
