@@ -529,6 +529,8 @@ jobs:
           ./bin/fabric-cli configure membership --local-network=network1 --target-network=network2 --iin-agent-endpoint=localhost:9500
           ./bin/fabric-cli configure membership --local-network=network2 --target-network=network1 --iin-agent-endpoint=localhost:9501
           sleep 20
+          docker logs iin-agent-Org1MSP-network1
+          docker logs iin-agent-Org1MSP-network2
         working-directory: samples/fabric/fabric-cli
 
       # CORDA CLIENT
