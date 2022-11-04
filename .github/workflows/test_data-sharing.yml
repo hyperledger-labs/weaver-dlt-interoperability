@@ -182,7 +182,7 @@ jobs:
         working-directory: samples/fabric/fabric-cli
 
       - name: Fabric CLI Configure ALL
-        run: ./bin/fabric-cli configure all network1 network2 --num-orgs=2
+        run: ./bin/fabric-cli configure all network1 network2
         working-directory: samples/fabric/fabric-cli
 
       - name: Fabric Sync Membership using IIN Agent
@@ -521,7 +521,7 @@ jobs:
         working-directory: samples/fabric/fabric-cli
 
       - name: Fabric CLI Configure ALL
-        run: ./bin/fabric-cli configure all network1 network2 --num-orgs=2
+        run: ./bin/fabric-cli configure all network1 network2
         working-directory: samples/fabric/fabric-cli
 
       - name: Fabric Sync Membership using IIN Agent

@@ -202,8 +202,8 @@ jobs:
         run: |
           ./bin/fabric-cli configure create all --local-network=network1
           ./bin/fabric-cli configure create all --local-network=network2
-          ./bin/fabric-cli configure network --local-network=network1 --num-orgs=2
-          ./bin/fabric-cli configure network --local-network=network2 --num-orgs=2
+          ./bin/fabric-cli configure network --local-network=network1
+          ./bin/fabric-cli configure network --local-network=network2
           ./scripts/initAssetsForTransfer.sh
         working-directory: samples/fabric/fabric-cli
 
