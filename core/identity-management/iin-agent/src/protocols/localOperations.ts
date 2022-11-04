@@ -47,13 +47,12 @@ export const requestAttestation = async (counterAttestedMembership: iin_agent_pb
     let key = getSecurityDomainMapKey(remoteSecurityDomain, remoteMemberID);
     const attestedMembershipOrError = securityDomainMap.get(key);
     // if membership info is not in cache
-    if (!attestedMembershipOrError || typeof attestedMembershipOrError === "string"){
+    if (typeof attestedMembershipOrError === "string"){
       // fetch fresh membership info (move to a separate function)
       // create a request
       const request = new iin_agent_pb.SecurityDomainMemberIdentityRequest();
       request.setSourceNetwork(remoteSecurityDomainUnit);
       request.setRequestingNetwork(localSecurityDomainUnit);
-      request.setNonce(nonce);
       // get remote iinagentclient
       const remoteIINAgentClient = utils.getIINAgentClient(remoteSecurityDomain, remoteMemberID, remoteSecurityDomainDNS);
       // request identity configuration from remote iinagentclient
@@ -87,30 +86,30 @@ export const requestAttestation = async (counterAttestedMembership: iin_agent_pb
         }
       }
     }
-  }
-  const requesterMemberID = counterAttestations[0].getUnitIdentity()!.getMemberId();
-  if(counter > 0){
-    foreignAgentResponseCount.set(nonce, { current:0, total: counter});
-    const key = getSecurityDomainMapKey('LOCAL_COUNTER_ATTESTATION_REQUEST', '', nonce);
-    counterAttestationsMap.set(key, counterAttestedMembership);
-    console.log("Requested fresh membership from foreign agent");
-    return;
-  }
-  // get iinagentclient for the requester
-  const requesterSecurityDomain = counterAttestations[0].getUnitIdentity()!.getSecurityDomain();
-  const requesterSecurityDomainDNS = utils.getSecurityDomainDNS(requesterSecurityDomain);
-  const requesterIINAgentClient = utils.getIINAgentClient(requesterSecurityDomain, requesterMemberID, requesterSecurityDomainDNS);
-  if(errorMsg != ""){
-    // send the error back to the requester
-    const errorCounterAttestedMembership = utils.generateErrorCounterAttestation(errorMsg, localSecurityDomain, localMemberId, nonce);
-    requesterIINAgentClient.sendAttestation(errorCounterAttestedMembership, utils.defaultCallback);
-  }
-  else{
-    // create new attestations on foreign security domain's state info sent by requester
-    const localLedgerBase = utils.getLedgerBase(localSecurityDomain, localMemberId);
-    const localCounterAttestedMembership = await localLedgerBase.counterAttestMembership(counterAttestedMembership.getAttestedMembershipSet(), localSecurityDomain, nonce);
-    // send attestation back to requester
-    requesterIINAgentClient.sendAttestation(localCounterAttestedMembership, utils.defaultCallback);
+    const requesterMemberID = counterAttestations[0].getUnitIdentity()!.getMemberId();
+    if(counter > 0){
+      foreignAgentResponseCount.set(nonce, { current:0, total: counter});
+      key = getSecurityDomainMapKey('LOCAL_COUNTER_ATTESTATION_REQUEST', '', nonce);
+      counterAttestationsMap.set(key, counterAttestedMembership);
+      console.log("Requested fresh membership from foreign agent");
+      return;
+    }
+    // get iinagentclient for the requester
+    const requesterSecurityDomain = counterAttestations[0].getUnitIdentity()!.getSecurityDomain();
+    const requesterSecurityDomainDNS = utils.getSecurityDomainDNS(requesterSecurityDomain);
+    const requesterIINAgentClient = utils.getIINAgentClient(requesterSecurityDomain, requesterMemberID, requesterSecurityDomainDNS);
+    if(errorMsg != ""){
+      // send the error back to the requester
+      const errorCounterAttestedMembership = utils.generateErrorCounterAttestation(errorMsg, localSecurityDomain, localMemberId, nonce);
+      requesterIINAgentClient.sendAttestation(errorCounterAttestedMembership, utils.defaultCallback);
+    }
+    else{
+      // create new attestations on foreign security domain's state info sent by requester
+      const localLedgerBase = utils.getLedgerBase(localSecurityDomain, localMemberId);
+      const localCounterAttestedMembership = await localLedgerBase.counterAttestMembership(counterAttestedMembership.getAttestedMembershipSet(), localSecurityDomain, nonce);
+      // send attestation back to requester
+      requesterIINAgentClient.sendAttestation(localCounterAttestedMembership, utils.defaultCallback);
+    }
   }
 };
 
