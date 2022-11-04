@@ -1,0 +1,27 @@
+{
+    "network1": {
+        "Org1MSP": {
+            "endpoint": "localhost:9500",
+            "tls": false,
+            "tlsCACertPath": ""
+        },
+        "Org2MSP": {
+            "endpoint": "localhost:9510",
+            "tls": false,
+            "tlsCACertPath": ""
+        }
+    },
+    "network2": {
+        "Org1MSP": {
+            "endpoint": "localhost:9501",
+            "tls": false,
+            "tlsCACertPath": ""
+        },
+        "Org2MSP": {
+            "endpoint": "localhost:9511",
+            "tls": false,
+            "tlsCACertPath": ""
+        }
+    }
+
+}
