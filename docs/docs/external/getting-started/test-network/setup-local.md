@@ -29,7 +29,7 @@ Before starting, make sure you have the following software installed on your hos
 - Docker-Compose: [sample instructions](https://docs.docker.com/compose/install/) (Version 1.28.2 or higher, but lower than version V2)
 - Golang: [sample instructions](https://golang.org/dl/) (Version 1.16 or higher)
 - Java (JDK and JRE): [sample instructions](https://openjdk.java.net/install/) (Version 8)
-- Node.js and NPM: [sample instructions](https://nodejs.org/en/download/package-manager/) (Version 11 to Version 14 Supported)
+- Node.js and NPM: [sample instructions](https://nodejs.org/en/download/package-manager/) (Version 16 Supported)
 - Yarn: [sample instructions](https://classic.yarnpkg.com/en/docs/install/)
 - Rust: [sample instructions](https://www.rust-lang.org/tools/install)
 - Protoc (Protobuf compiler): _Golang should already be installed and configured._
