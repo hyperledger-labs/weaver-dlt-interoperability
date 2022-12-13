@@ -262,6 +262,7 @@ const command: GluegunCommand = {
       .createHTLC(
         interopContract,
         tokenContract,
+        options.asset_type,
         options.token_id,
         Web3.utils.utf8ToHex(options.data),
         amount,

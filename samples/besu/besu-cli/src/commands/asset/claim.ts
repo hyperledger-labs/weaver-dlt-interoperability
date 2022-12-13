@@ -2,6 +2,8 @@ import { GluegunCommand } from 'gluegun'
 import { getNetworkConfig, commandHelp } from '../../helper/helper'
 import { getContractInstance } from '../../helper/besu-functions'
 import * as assetManager from '@hyperledger-labs/weaver-besu-interop-sdk/src/AssetManager'
+import { SHA256 } from "@hyperledger-labs/weaver-besu-interop-sdk/src/HashFunctions";
+
 const Web3 = require('web3')
 
 async function getBalances(tokenContract, address, token_id = 0) {
@@ -147,12 +149,14 @@ const command: GluegunCommand = {
       } before claiming: ${recipientBalance.toString()}`
     )
 
+    const hash = new SHA256()
+    hash.setPreimage(options.preimage)
     await assetManager
       .claimAssetInHTLC(
         lockContractId,
         interopContract,
         recipient,
-        options.preimage
+        hash,
       )
       .catch(error => {
         console.log('claimAsset threw an error:', error)
