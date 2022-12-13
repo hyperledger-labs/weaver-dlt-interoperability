@@ -6,8 +6,8 @@
 **/
 /** End file docs */
 import * as assetLocksPb from "@hyperledger-labs/weaver-protos-js/common/asset_locks_pb";
-import  * as Web3 from 'web3-utils';
-import { Hash, SHA256 } from "./HashFunctions";
+import * as Web3 from 'web3-utils';
+import { Hash } from "./HashFunctions";
 
 // Create an asset exchange agreement structure
 function createAssetExchangeAgreementSerialized(assetType: string, assetID: string, recipientECert: string, lockerECert: string) {
@@ -19,12 +19,31 @@ function createAssetExchangeAgreementSerialized(assetType: string, assetID: stri
     return Buffer.from(assetExchangeAgreement.serializeBinary())
 }
 
+function createFungibleAssetExchangeAgreementSerialized(assetType: string, assetID: string, numUnits: number, locker: string, recipient: string) {
+    const assetExchangeAgreement = new assetLocksPb.FungibleAssetExchangeAgreement();
+    assetExchangeAgreement.setAssettype(assetType);
+    assetExchangeAgreement.setNumunits(numUnits);
+    assetExchangeAgreement.setRecipient(recipient);
+    assetExchangeAgreement.setLocker(locker);
+    return Buffer.from(assetExchangeAgreement.serializeBinary())
+}
+
+
+function createHybridAssetExchangeAgreementSerialized(assetType: string, assetID: string, assetData: string, numUnits: number, recipient: string) {
+    const assetExchangeAgreement = new assetLocksPb.HybridAssetExchangeAgreement();
+    assetExchangeAgreement.setAssettype(assetType);
+    assetExchangeAgreement.setId(assetID);
+    assetExchangeAgreement.setRecipient(recipient);
+    assetExchangeAgreement.setAssetdata(Buffer.from(assetData, "hex"));
+    assetExchangeAgreement.setNumunits(numUnits);
+    return Buffer.from(assetExchangeAgreement.serializeBinary())
+}
+
 // Create an asset lock structure
-function createAssetLockInfoSerialized(hash: Hash, expiryTimeSecs: number)
-{
+function createAssetLockInfoSerialized(hash: Hash, expiryTimeSecs: number) {
     const lockInfoHTLC = new assetLocksPb.AssetLockHTLC();
     lockInfoHTLC.setHashmechanism(hash.HASH_MECHANISM);
-    lockInfoHTLC.setHashbase64(Buffer.from(hash.getSerializedPreimageBase64()));
+    lockInfoHTLC.setHashbase64(Buffer.from(hash.getSerializedHashBase64()));
     lockInfoHTLC.setExpirytimesecs(expiryTimeSecs);
     lockInfoHTLC.setTimespec(assetLocksPb.TimeSpec.EPOCH)
     return Buffer.from(lockInfoHTLC.serializeBinary())
@@ -34,7 +53,7 @@ function createAssetLockInfoSerialized(hash: Hash, expiryTimeSecs: number)
 function createAssetClaimInfoSerialized(hash: Hash) {
     const claimInfoHTLC = new assetLocksPb.AssetClaimHTLC();
     claimInfoHTLC.setHashmechanism(hash.HASH_MECHANISM);
-    claimInfoHTLC.setHashpreimagebase64(Buffer.from(hash.getSerializedPreimageBase64()));
+    claimInfoHTLC.setHashpreimagebase64(Buffer.from(hash.getSerializedHashBase64()));
     const claimInfoHTLCSerialized = claimInfoHTLC.serializeBinary();
     const claimInfo = new assetLocksPb.AssetClaim();
     claimInfo.setLockmechanism(assetLocksPb.LockMechanism.HTLC);
@@ -45,6 +64,7 @@ function createAssetClaimInfoSerialized(hash: Hash) {
 const createHTLC = async (
     assetManagerContract: any,
     tokenContract: any,
+    assetType: string,
     assetID: string,
     assetData: string,
     assetAmount: number,
@@ -52,40 +72,78 @@ const createHTLC = async (
     recipientAddress: string,
     expiryTimeSecs: number,
     hash: Hash
-): Promise< {result: any} > => {
+): Promise<{ result: any }> => {
 
     if (!assetManagerContract) {
         console.log("Contract handle not supplied");
-        return {result: false};
+        return { result: false };
     }
     if (!recipientAddress) {
         console.log(`Recipient address not supplied ${recipientAddress}`);
-        return {result: false};
+        return { result: false };
     }
     const currTimeSecs = Math.floor(Date.now() / 1000);   // Convert epoch milliseconds to seconds
     if (expiryTimeSecs <= currTimeSecs) {
         console.log("Supplied expiry time invalid or in the past: %s; current time: %s", new Date(expiryTimeSecs).toISOString(), new Date(currTimeSecs).toISOString());
-        return {result: false};
-    }    
-
-    const protobufParams = createAssetExchangeAgreementSerialized("", String(assetID), recipientAddress.slice(2), Web3.utf8ToHex(String(assetData)));
+        return { result: false };
+    }
+    var protobufParams;
+    if (assetType == "ERC721") {
+        protobufParams = createAssetExchangeAgreementSerialized("", String(assetID), recipientAddress.slice(2), Web3.utf8ToHex((assetData)));
+    } else if (assetType == "ERC20") {
+        protobufParams = createFungibleAssetExchangeAgreementSerialized("", String(assetID), assetAmount, "", recipientAddress.slice(2));
+    } else if (assetType == "ERC1155") {
+        protobufParams = createHybridAssetExchangeAgreementSerialized("", String(assetID), Web3.utf8ToHex(String(assetData)), assetAmount, recipientAddress.slice(2));
+    }
+    if (!protobufParams) {
+        console.log("Error creating protobuf params");
+        return { result: false };
+    }
     const lockInfoParams = createAssetLockInfoSerialized(hash, expiryTimeSecs);
     // Normal invoke function
-    var lockStatus = await assetManagerContract.lockAsset(
-        protobufParams,
-        tokenContract.address,
-        assetAmount,
-        lockInfoParams,
-        Web3.utf8ToHex(assetData),
-        {
-            from: senderAddress,
-        }
-    ).catch(function (e:any) {
-        console.log(e);
-        console.log("lockAsset threw an error");
-        lockStatus = {result: false}
-    })
-    return {result: lockStatus};
+    var lockStatus;
+    if (assetType == "ERC1155") {
+        var lockStatus = await assetManagerContract.lockAsset(
+            tokenContract.address,
+            protobufParams,
+            lockInfoParams,
+            {
+                from: senderAddress,
+            }
+        ).catch(function (e: any) {
+            console.log(e);
+            console.log("lockAsset threw an error");
+            lockStatus = { result: false }
+        })
+    }
+    else if (assetType == "ERC721") {
+        var lockStatus = await assetManagerContract.lockNonFungibleAsset(
+            tokenContract.address,
+            protobufParams,
+            lockInfoParams,
+            {
+                from: senderAddress,
+            }
+        ).catch(function (e: any) {
+            console.log(e);
+            console.log("lockAsset threw an error");
+            lockStatus = { result: false }
+        })
+    } else if (assetType == "ERC20") {
+        var lockStatus = await assetManagerContract.lockFungibleAsset(
+            tokenContract.address,
+            protobufParams,
+            lockInfoParams,
+            {
+                from: senderAddress,
+            }
+        ).catch(function (e: any) {
+            console.log(e);
+            console.log("lockAsset threw an error");
+            lockStatus = { result: false }
+        })
+    }
+    return { result: lockStatus };
 };
 
 /**
@@ -96,19 +154,19 @@ const claimAssetInHTLC = async (
     lockContractId: string,
     assetManagerContract: any,
     senderAddress: string,
-    preimage: Buffer, // pass hash
+    hash: Hash,
 ): Promise<any> => {
 
     if (!assetManagerContract) {
         console.log("Contract Address not supplied");
         return false;
     }
-    
-    const hash = new SHA256()
-    hash.setPreimage(preimage)
+
+    // const hash = new SHA256()
+    // hash.setPreimage(preimage)
     const claimInfoStr = createAssetClaimInfoSerialized(hash);
     // Normal invoke function
-    var claimStatus = await assetManagerContract.claimAsset(lockContractId, claimInfoStr, {from: senderAddress}).catch(function (e: any) {
+    var claimStatus = await assetManagerContract.claimAsset(lockContractId, claimInfoStr, { from: senderAddress }).catch(function (e: any) {
         console.log(e)
         console.log("claimAsset threw an error");
         claimStatus = false
@@ -126,7 +184,7 @@ const isAssetLockedInHTLC = async (
         console.log("Contract not supplied");
         return false;
     }
-    
+
     // Normal invoke function
     var lockStatus = await assetManagerContract.isAssetLocked(lockContractId).catch(function (e: any) {
         console.log(e)
@@ -144,14 +202,14 @@ const reclaimAssetInHTLC = async (
     sender: string,
 ): Promise<void> => {
     var unlockStatus = await interopContract.unlockAsset(lockContractId, {
-		from: sender
-	}).catch(function (e: any) {
+        from: sender
+    }).catch(function (e: any) {
         console.log(e)
-		console.log("unlockAsset threw an error");
-		unlockStatus = false
-	})
+        console.log("unlockAsset threw an error");
+        unlockStatus = false
+    })
 
-	return unlockStatus
+    return unlockStatus
 }
 
 export {

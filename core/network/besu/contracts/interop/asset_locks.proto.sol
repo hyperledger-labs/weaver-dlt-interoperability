@@ -906,6 +906,293 @@ library AssetExchangeAgreementCodec {
 
 }
 
+struct HybridAssetExchangeAgreement {
+    string assetType;
+    string id;
+    bytes assetData;
+    uint64 numUnits;
+    string locker;
+    string recipient;
+}
+
+library HybridAssetExchangeAgreementCodec {
+    function decode(uint64 initial_pos, bytes memory buf, uint64 len) internal pure returns (bool, uint64, HybridAssetExchangeAgreement memory) {
+        // Message instance
+        HybridAssetExchangeAgreement memory instance;
+        // Previous field number
+        uint64 previous_field_number = 0;
+        // Current position in the buffer
+        uint64 pos = initial_pos;
+
+        // Sanity checks
+        if (pos + len < pos) {
+            return (false, pos, instance);
+        }
+
+        while (pos - initial_pos < len) {
+            // Decode the key (field number and wire type)
+            bool success;
+            uint64 field_number;
+            ProtobufLib.WireType wire_type;
+            (success, pos, field_number, wire_type) = ProtobufLib.decode_key(pos, buf);
+            if (!success) {
+                return (false, pos, instance);
+            }
+
+            // Check that the field number is within bounds
+            if (field_number > 6) {
+                return (false, pos, instance);
+            }
+
+            // Check that the field number of monotonically increasing
+            if (field_number <= previous_field_number) {
+                return (false, pos, instance);
+            }
+
+            // Check that the wire type is correct
+            success = check_key(field_number, wire_type);
+            if (!success) {
+                return (false, pos, instance);
+            }
+
+            // Actually decode the field
+            (success, pos) = decode_field(pos, buf, len, field_number, instance);
+            if (!success) {
+                return (false, pos, instance);
+            }
+
+            previous_field_number = field_number;
+        }
+
+        // Decoding must have consumed len bytes
+        if (pos != initial_pos + len) {
+            return (false, pos, instance);
+        }
+
+        return (true, pos, instance);
+    }
+
+    function check_key(uint64 field_number, ProtobufLib.WireType wire_type) internal pure returns (bool) {
+        if (field_number == 1) {
+            return wire_type == ProtobufLib.WireType.LengthDelimited;
+        }
+
+        if (field_number == 2) {
+            return wire_type == ProtobufLib.WireType.LengthDelimited;
+        }
+
+        if (field_number == 3) {
+            return wire_type == ProtobufLib.WireType.LengthDelimited;
+        }
+
+        if (field_number == 4) {
+            return wire_type == ProtobufLib.WireType.Varint;
+        }
+
+        if (field_number == 5) {
+            return wire_type == ProtobufLib.WireType.LengthDelimited;
+        }
+
+        if (field_number == 6) {
+            return wire_type == ProtobufLib.WireType.LengthDelimited;
+        }
+
+        return false;
+    }
+
+    function decode_field(uint64 initial_pos, bytes memory buf, uint64 len, uint64 field_number, HybridAssetExchangeAgreement memory instance) internal pure returns (bool, uint64) {
+        uint64 pos = initial_pos;
+
+        if (field_number == 1) {
+            bool success;
+            (success, pos) = decode_1(pos, buf, instance);
+            if (!success) {
+                return (false, pos);
+            }
+
+            return (true, pos);
+        }
+
+        if (field_number == 2) {
+            bool success;
+            (success, pos) = decode_2(pos, buf, instance);
+            if (!success) {
+                return (false, pos);
+            }
+
+            return (true, pos);
+        }
+
+        if (field_number == 3) {
+            bool success;
+            (success, pos) = decode_3(pos, buf, instance);
+            if (!success) {
+                return (false, pos);
+            }
+
+            return (true, pos);
+        }
+
+        if (field_number == 4) {
+            bool success;
+            (success, pos) = decode_4(pos, buf, instance);
+            if (!success) {
+                return (false, pos);
+            }
+
+            return (true, pos);
+        }
+
+        if (field_number == 5) {
+            bool success;
+            (success, pos) = decode_5(pos, buf, instance);
+            if (!success) {
+                return (false, pos);
+            }
+
+            return (true, pos);
+        }
+
+        if (field_number == 6) {
+            bool success;
+            (success, pos) = decode_6(pos, buf, instance);
+            if (!success) {
+                return (false, pos);
+            }
+
+            return (true, pos);
+        }
+
+        return (false, pos);
+    }
+
+    // HybridAssetExchangeAgreement.assetType
+    function decode_1(uint64 pos, bytes memory buf, HybridAssetExchangeAgreement memory instance) internal pure returns (bool, uint64) {
+        bool success;
+
+        string memory v;
+        (success, pos, v) = ProtobufLib.decode_string(pos, buf);
+        if (!success) {
+            return (false, pos);
+        }
+
+        // Default value must be omitted
+        if (bytes(v).length == 0) {
+            return (false, pos);
+        }
+
+        instance.assetType = v;
+
+        return (true, pos);
+    }
+
+    // HybridAssetExchangeAgreement.id
+    function decode_2(uint64 pos, bytes memory buf, HybridAssetExchangeAgreement memory instance) internal pure returns (bool, uint64) {
+        bool success;
+
+        string memory v;
+        (success, pos, v) = ProtobufLib.decode_string(pos, buf);
+        if (!success) {
+            return (false, pos);
+        }
+
+        // Default value must be omitted
+        if (bytes(v).length == 0) {
+            return (false, pos);
+        }
+
+        instance.id = v;
+
+        return (true, pos);
+    }
+
+    // HybridAssetExchangeAgreement.assetData
+    function decode_3(uint64 pos, bytes memory buf, HybridAssetExchangeAgreement memory instance) internal pure returns (bool, uint64) {
+        bool success;
+
+        uint64 len;
+        (success, pos, len) = ProtobufLib.decode_bytes(pos, buf);
+        if (!success) {
+            return (false, pos);
+        }
+
+        // Default value must be omitted
+        if (len == 0) {
+            return (false, pos);
+        }
+
+        instance.assetData = new bytes(len);
+        for (uint64 i = 0; i < len; i++) {
+            instance.assetData[i] = buf[pos + i];
+        }
+
+        pos = pos + len;
+
+        return (true, pos);
+    }
+
+    // HybridAssetExchangeAgreement.numUnits
+    function decode_4(uint64 pos, bytes memory buf, HybridAssetExchangeAgreement memory instance) internal pure returns (bool, uint64) {
+        bool success;
+
+        uint64 v;
+        (success, pos, v) = ProtobufLib.decode_uint64(pos, buf);
+        if (!success) {
+            return (false, pos);
+        }
+
+        // Default value must be omitted
+        if (v == 0) {
+            return (false, pos);
+        }
+
+        instance.numUnits = v;
+
+        return (true, pos);
+    }
+
+    // HybridAssetExchangeAgreement.locker
+    function decode_5(uint64 pos, bytes memory buf, HybridAssetExchangeAgreement memory instance) internal pure returns (bool, uint64) {
+        bool success;
+
+        string memory v;
+        (success, pos, v) = ProtobufLib.decode_string(pos, buf);
+        if (!success) {
+            return (false, pos);
+        }
+
+        // Default value must be omitted
+        if (bytes(v).length == 0) {
+            return (false, pos);
+        }
+
+        instance.locker = v;
+
+        return (true, pos);
+    }
+
+    // HybridAssetExchangeAgreement.recipient
+    function decode_6(uint64 pos, bytes memory buf, HybridAssetExchangeAgreement memory instance) internal pure returns (bool, uint64) {
+        bool success;
+
+        string memory v;
+        (success, pos, v) = ProtobufLib.decode_string(pos, buf);
+        if (!success) {
+            return (false, pos);
+        }
+
+        // Default value must be omitted
+        if (bytes(v).length == 0) {
+            return (false, pos);
+        }
+
+        instance.recipient = v;
+
+        return (true, pos);
+    }
+
+}
+
 struct FungibleAssetExchangeAgreement {
     string assetType;
     uint64 numUnits;
