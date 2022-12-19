@@ -49,7 +49,8 @@ contract AssetExchangeContract is ERC1155Holder {
         address indexed receiver,
         bytes32 indexed lockContractId,
         bytes32 hashLock,
-        bytes32 preimage
+        bytes32 preimage,
+        HashMechanism hashMechanism
     );
 
     event Unlock(
@@ -89,36 +90,18 @@ contract AssetExchangeContract is ERC1155Holder {
             }
         }
     }
-
-    function lockFungibleAsset(
+    
+    // The sender locks a  asset with a hash lock and an expiry time
+    function lockAsset(
         address assetContract,
-        bytes memory assetExchangeAgreement,
-        bytes memory lockinfo
+        address receiver,
+        bytes32 hashLock,
+        uint256 expirationTime,
+        uint256 tokenId,
+        uint256 amount,
+        bytes memory data
     ) external returns (bytes32 lockContractId) {
-        FungibleAssetExchangeAgreement memory agreementDecoded;
-        (, , agreementDecoded) = FungibleAssetExchangeAgreementCodec.decode(
-            0,
-            assetExchangeAgreement,
-            uint64(assetExchangeAgreement.length)
-        );
-
-        AssetLockHTLC memory assetInfo;
-        (, , assetInfo) = AssetLockHTLCCodec.decode(
-            0,
-            lockinfo,
-            uint64(lockinfo.length)
-        );
-        HashMechanism hashMechanism = assetInfo.hashMechanism;
-        bytes32 hashLock = bytesTobytes32(assetInfo.hashBase64);
-        // if (hashMechanism == HashMechanism.SHA256) {
-        // hashLock = sha256(abi.encodePacked(hashLock));
-        // }
-        uint256 expirationTime = assetInfo.expiryTimeSecs;
         address sender = msg.sender;
-
-        uint256 tokenId = 0;
-        bytes memory data = "";
-        uint256 amount = agreementDecoded.numUnits;
 
         // Checking the validity of the input parameters
         require(amount > 0, "Amount should be greater than zero");
@@ -138,9 +121,8 @@ contract AssetExchangeContract is ERC1155Holder {
             expirationTime > block.timestamp,
             "Expiration time should be in the future"
         );
-        address receiver = bytesToAddress(fromHex(agreementDecoded.recipient));
-        // The identity of the lock contract is a hash of all the relevant parameters that will uniquely identify the contract
 
+        // The identity of the lock contract is a hash of all the relevant parameters that will uniquely identify the contract
         lockContractId = sha256(
             abi.encodePacked(
                 sender,
@@ -162,10 +144,10 @@ contract AssetExchangeContract is ERC1155Holder {
         bool transferStatus = transferInterface(assetContract).transferInterop(
             transInfo
         );
-        // bool transferStatus = ERC20(assetContract).transferFrom(sender, address(this), amount);
+        
         require(
             transferStatus == true,
-            "ERC20 transferFrom failed from the sender to the lockContract"
+            "Asset transferFrom failed from the sender to the lockContract"
         );
 
         lockContracts[lockContractId] = LockContract(
@@ -188,6 +170,36 @@ contract AssetExchangeContract is ERC1155Holder {
             hashLock,
             expirationTime,
             lockContractId
+        );
+    }
+
+    function lockFungibleAsset(
+        address assetContract,
+        bytes memory fungibleAssetExchangeAgreement,
+        bytes memory lockinfo
+    ) external returns (bytes32 lockContractId) {
+        FungibleAssetExchangeAgreement memory agreementDecoded;
+        (, , agreementDecoded) = FungibleAssetExchangeAgreementCodec.decode(
+            0,
+            fungibleAssetExchangeAgreement,
+            uint64(fungibleAssetExchangeAgreement.length)
+        );
+
+        AssetLockHTLC memory assetInfo;
+        (, , assetInfo) = AssetLockHTLCCodec.decode(
+            0,
+            lockinfo,
+            uint64(lockinfo.length)
+        );
+        
+        lockContractId = lockAsset(
+            assetContract,
+            bytesToAddress(fromHex(agreementDecoded.recipient)),
+            bytesTobytes32(assetInfo.hashBase64),
+            assetInfo.expiryTimeSecs,
+            0,
+            agreementDecoded.numUnits,
+            ""
         );
     }
 
@@ -208,99 +220,28 @@ contract AssetExchangeContract is ERC1155Holder {
             lockinfo,
             uint64(lockinfo.length)
         );
-        HashMechanism hashMechanism = assetInfo.hashMechanism;
-        bytes32 hashLock = bytesTobytes32(assetInfo.hashBase64);
-        // if (hashMechanism == HashMechanism.SHA256) {
-        hashLock = sha256(abi.encodePacked(hashLock));
-        // }
-        uint256 expirationTime = assetInfo.expiryTimeSecs;
-        address sender = msg.sender;
 
-        uint256 tokenId = stringToUint(agreementDecoded.id);
-        bytes memory data = "";
-        uint256 amount = 1;
-
-        // Checking the validity of the input parameters
-        require(amount > 0, "Amount should be greater than zero");
-        transferStruct.Info memory transInfo = transferStruct.Info({
-            sender: sender,
-            receiver: address(this),
-            amount: amount,
-            tokenId: tokenId,
-            data: data
-        });
-        require(
-            transferInterface(assetContract).allowanceInterop(transInfo) ==
-                true,
-            "Allowance of assets from the sender for the lock contract must be greater than the amount to be locked"
-        );
-        require(
-            expirationTime > block.timestamp,
-            "Expiration time should be in the future"
-        );
-        address receiver = bytesToAddress(fromHex(agreementDecoded.recipient));
-        // The identity of the lock contract is a hash of all the relevant parameters that will uniquely identify the contract
-
-        lockContractId = sha256(
-            abi.encodePacked(
-                sender,
-                receiver,
-                assetContract,
-                amount,
-                hashLock,
-                expirationTime
-            )
-        );
-
-        require(
-            lockContracts[lockContractId].status == UNUSED,
-            "An active lock contract already exists with the same parameters"
-        );
-
-        // Locking amount by transfering them to the lockContract
-
-        bool transferStatus = transferInterface(assetContract).transferInterop(
-            transInfo
-        );
-        // bool transferStatus = ERC20(assetContract).transferFrom(sender, address(this), amount);
-        require(
-            transferStatus == true,
-            "ERC20 transferFrom failed from the sender to the lockContract"
-        );
-
-        lockContracts[lockContractId] = LockContract(
-            sender,
-            receiver,
+        lockContractId = lockAsset(
             assetContract,
-            amount,
-            hashLock,
-            expirationTime,
-            LOCKED,
-            tokenId,
-            data
-        );
-
-        emit Lock(
-            sender,
-            receiver,
-            assetContract,
-            amount,
-            hashLock,
-            expirationTime,
-            lockContractId
+            bytesToAddress(fromHex(agreementDecoded.recipient)),
+            bytesTobytes32(assetInfo.hashBase64),
+            assetInfo.expiryTimeSecs,
+            stringToUint(agreementDecoded.id),
+            1,
+            ""
         );
     }
 
-    function lockAsset(
+    function lockHybridAsset(
         address assetContract,
-        bytes memory assetExchangeAgreement,
+        bytes memory hybridAssetExchangeAgreement,
         bytes memory lockinfo
     ) external returns (bytes32 lockContractId) {
         HybridAssetExchangeAgreement memory agreementDecoded;
         (, , agreementDecoded) = HybridAssetExchangeAgreementCodec.decode(
             0,
-            assetExchangeAgreement,
-            uint64(assetExchangeAgreement.length)
+            hybridAssetExchangeAgreement,
+            uint64(hybridAssetExchangeAgreement.length)
         );
         AssetLockHTLC memory assetInfo;
         (, , assetInfo) = AssetLockHTLCCodec.decode(
@@ -308,86 +249,15 @@ contract AssetExchangeContract is ERC1155Holder {
             lockinfo,
             uint64(lockinfo.length)
         );
-        HashMechanism hashMechanism = assetInfo.hashMechanism;
-        bytes32 hashLock = bytesTobytes32(assetInfo.hashBase64);
-        // if (hashMechanism == HashMechanism.SHA256) {
-        // hashLock = sha256(abi.encodePacked(hashLock));
-        // }
-        uint256 expirationTime = assetInfo.expiryTimeSecs;
-        address sender = msg.sender;
-
-        uint256 tokenId = stringToUint(agreementDecoded.id);
-        bytes memory data = agreementDecoded.assetData;
-        uint256 amount = agreementDecoded.numUnits;
-
-        // Checking the validity of the input parameters
-        require(amount > 0, "Amount should be greater than zero");
-        transferStruct.Info memory transInfo = transferStruct.Info({
-            sender: sender,
-            receiver: address(this),
-            amount: amount,
-            tokenId: tokenId,
-            data: data
-        });
-        require(
-            transferInterface(assetContract).allowanceInterop(transInfo) ==
-                true,
-            "Allowance of assets from the sender for the lock contract must be greater than the amount to be locked"
-        );
-        require(
-            expirationTime > block.timestamp,
-            "Expiration time should be in the future"
-        );
-        address receiver = bytesToAddress(fromHex(agreementDecoded.recipient));
-        // The identity of the lock contract is a hash of all the relevant parameters that will uniquely identify the contract
-
-        lockContractId = sha256(
-            abi.encodePacked(
-                sender,
-                receiver,
-                assetContract,
-                amount,
-                hashLock,
-                expirationTime
-            )
-        );
-
-        require(
-            lockContracts[lockContractId].status == UNUSED,
-            "An active lock contract already exists with the same parameters"
-        );
-
-        // Locking amount by transfering them to the lockContract
-
-        bool transferStatus = transferInterface(assetContract).transferInterop(
-            transInfo
-        );
-        // bool transferStatus = ERC20(assetContract).transferFrom(sender, address(this), amount);
-        require(
-            transferStatus == true,
-            "ERC20 transferFrom failed from the sender to the lockContract"
-        );
-
-        lockContracts[lockContractId] = LockContract(
-            sender,
-            receiver,
+        
+        lockContractId = lockAsset(
             assetContract,
-            amount,
-            hashLock,
-            expirationTime,
-            LOCKED,
-            tokenId,
-            data
-        );
-
-        emit Lock(
-            sender,
-            receiver,
-            assetContract,
-            amount,
-            hashLock,
-            expirationTime,
-            lockContractId
+            bytesToAddress(fromHex(agreementDecoded.recipient)),
+            bytesTobytes32(assetInfo.hashBase64),
+            assetInfo.expiryTimeSecs,
+            stringToUint(agreementDecoded.id),
+            agreementDecoded.numUnits,
+            agreementDecoded.assetData
         );
     }
 
@@ -409,10 +279,14 @@ contract AssetExchangeContract is ERC1155Holder {
         // Check the validity of the claim
         require(c.status == LOCKED, "lockContract is not active");
         require(block.timestamp < c.expirationTime, "lockContract has expired");
-        require(
-            c.hashLock == preimage,
-            "Invalid preimage, its hash does not equal the hashLock"
-        );
+        if (params.hashMechanism == HashMechanism.SHA256) {
+            require(
+                c.hashLock == sha256(abi.encodePacked(preimage)),
+                "Invalid SHA256 preimage, its hash does not equal the hashLock"
+            );
+        } else {
+            require(false, "HashMechanism not supported")
+        }
         transferStruct.Info memory transInfo = transferStruct.Info({
             sender: address(this),
             receiver: c.receiver,
@@ -440,9 +314,9 @@ contract AssetExchangeContract is ERC1155Holder {
             .transferInterop(transInfo);
         require(
             transferStatus == true,
-            "ERC20 transfer failed from the lockContract to the receiver"
+            "Asset transfer failed from the lockContract to the receiver"
         );
-        emit Claim(c.sender, c.receiver, lockContractId, c.hashLock, preimage);
+        emit Claim(c.sender, c.receiver, lockContractId, c.hashLock, preimage, params.hashMechanism);
 
         return true;
     }

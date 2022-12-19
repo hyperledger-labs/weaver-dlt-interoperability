@@ -209,6 +209,9 @@ const command: GluegunCommand = {
     console.log('Timeout', timeLock)
     console.log('Hash (base64): ', hash_base64)
     console.log('Preimage: ', preimage)
+    
+    const hash = new SHA256();
+    hash.setSerializedHashBase64(hash_base64)
 
     // Balances of sender and receiver before locking
     console.log(`Account balances before locking`)
@@ -233,48 +236,84 @@ const command: GluegunCommand = {
       }: ${recipientBalance.toString()}`
     )
 
+    let lockTx;
     // Locking the asset (works only for ERC20 at this point)
     if (options.asset_type == 'ERC721') {
-      await tokenContract
-        .approve(tokenContract.address, options.token_id, { from: sender })
-        .catch(function () {
-          console.log('ERC 721 Token approval failed!!!')
-          return false
-        })
+        await tokenContract
+            .approve(tokenContract.address, options.token_id, { from: sender })
+            .catch(function () {
+                console.log('ERC 721 Token approval failed!!!')
+                return;
+            })
+        try {
+            lockTx = await assetManager.createHTLC(
+                interopContract,
+                tokenContract,
+                options.asset_type,
+                options.token_id,
+                sender,
+                recipient,
+                timeLock,
+                hash
+            ) 
+        } catch(e) {
+            console.log(e)
+            console.log('createHTLC threw an error', e)
+            return
+        }
     } else if (options.asset_type == 'ERC1155') {
-      await tokenContract
-        .setApprovalForAll(tokenContract.address, true, { from: sender })
-        .catch(function () {
-          console.log('Token approval failed!!!')
-        })
+        await tokenContract
+            .setApprovalForAll(tokenContract.address, true, { from: sender })
+            .catch(function () {
+                console.log('Token approval failed!!!')
+                return;
+            })
+        try {
+            lockTx = await assetManager.createHybridHTLC(
+                interopContract,
+                tokenContract,
+                options.asset_type,
+                options.token_id,
+                Web3.utils.utf8ToHex(options.data),
+                amount,
+                sender,
+                recipient,
+                timeLock,
+                hash
+            ) 
+        } catch(e) {
+            console.log(e)
+            console.log('createHybridHTLC threw an error', e)
+            return
+        }
     } else {
-      await tokenContract
-        .approve(tokenContract.address, amount, { from: sender })
-        .catch(function () {
-          console.log('Token approval failed!!!')
-        })
+        await tokenContract
+            .approve(tokenContract.address, amount, { from: sender })
+            .catch(function () {
+                console.log('Token approval failed!!!')
+                return;
+            })
+        try {
+            lockTx = await assetManager.createFungibleHTLC(
+                interopContract,
+                tokenContract,
+                options.asset_type,
+                amount,
+                sender,
+                recipient,
+                timeLock,
+                hash
+            ) 
+        } catch(e) {
+            console.log(e)
+            console.log('createFungibleHTLC threw an error', e)
+            return
+        }
     }
 
     // const newHash = crypto.createHash('sha256').update(preimage).digest()
-    const finalHash = new SHA256();
-    finalHash.setPreimage(preimage)
-    const lockTx = await assetManager
-      .createHTLC(
-        interopContract,
-        tokenContract,
-        options.asset_type,
-        options.token_id,
-        Web3.utils.utf8ToHex(options.data),
-        amount,
-        sender,
-        recipient,
-        timeLock,
-        finalHash
-      )
-      .catch(function (e) {
-        console.log(e)
-        console.log('lockAsset threw an error')
-      })
+    
+      
     if (lockTx && lockTx.result) {
       const lockContractId = lockTx.result.logs[0].args.lockContractId
       console.log(`Lock contract ID: ${lockContractId.toString().substring(2)}`)

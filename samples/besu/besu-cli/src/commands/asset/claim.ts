@@ -153,8 +153,8 @@ const command: GluegunCommand = {
     hash.setPreimage(options.preimage)
     await assetManager
       .claimAssetInHTLC(
-        lockContractId,
         interopContract,
+        lockContractId,
         recipient,
         hash,
       )
