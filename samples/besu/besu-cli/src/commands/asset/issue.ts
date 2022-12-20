@@ -120,7 +120,7 @@ const command: GluegunCommand = {
 
     if (!options.amount) {
       print.error('Amount not provided')
-      return
+      options.amount = 1
     }
 
     if (!options.asset_type) {

@@ -148,7 +148,7 @@ const command: GluegunCommand = {
     // Receving the input parameters
     if (!options.amount) {
       print.error('Amount not provided.')
-      return
+      options.amount = 1
     }
     const amount = options.amount
     var sender
