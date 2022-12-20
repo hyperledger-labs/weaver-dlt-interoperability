@@ -13,8 +13,6 @@ contract AliceERC721 is ERC721, transferInterface {
     using Counters for Counters.Counter;
     Counters.Counter public _tokenIds;
     address owner;
-    
-    event Minted(uint256 id);
 
     constructor() ERC721("Alice NFT", "AliceNFT") {
         owner = msg.sender;
@@ -26,7 +24,6 @@ contract AliceERC721 is ERC721, transferInterface {
         uint256 newItemId = _tokenIds.current();
         _safeMint(to, newItemId);
         _tokenIds.increment();
-        emit Minted(newItemId);
     }
 
     function transferInterop(transferStruct.Info memory info)
