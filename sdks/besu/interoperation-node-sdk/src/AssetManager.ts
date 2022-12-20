@@ -43,7 +43,7 @@ function createHybridAssetExchangeAgreementSerialized(assetType: string, assetID
 function createAssetLockInfoSerialized(hash: Hash, expiryTimeSecs: number) {
     const lockInfoHTLC = new assetLocksPb.AssetLockHTLC();
     lockInfoHTLC.setHashmechanism(hash.HASH_MECHANISM);
-    lockInfoHTLC.setHashbase64(Buffer.from(hash.getSerializedHashBase64()));
+    lockInfoHTLC.setHashbase64(Buffer.from(hash.getSerializedHashBase64(), 'base64'));
     lockInfoHTLC.setExpirytimesecs(expiryTimeSecs);
     lockInfoHTLC.setTimespec(assetLocksPb.TimeSpec.EPOCH)
     return Buffer.from(lockInfoHTLC.serializeBinary())
@@ -93,7 +93,7 @@ const createHTLC = async (
     }
     const lockInfo = createAssetLockInfoSerialized(hash, expiryTimeSecs);
     // Normal invoke function
-    const lockStatus = await assetManagerContract.lockNonFungibleAsset(
+    let lockStatus = await assetManagerContract.lockNonFungibleAsset(
         tokenContract.address,
         agreement,
         lockInfo,
@@ -140,7 +140,7 @@ const createFungibleHTLC = async (
     }
     const lockInfo = createAssetLockInfoSerialized(hash, expiryTimeSecs);
     // Normal invoke function
-    const lockStatus = await assetManagerContract.lockFungibleAsset(
+    let lockStatus = await assetManagerContract.lockFungibleAsset(
         tokenContract.address,
         agreement,
         lockInfo,
@@ -188,7 +188,7 @@ const createHybridHTLC = async (
     }
     const lockInfo = createAssetLockInfoSerialized(hash, expiryTimeSecs);
     // Normal invoke function
-    const lockStatus = await assetManagerContract.lockHybridAsset(
+    let lockStatus = await assetManagerContract.lockHybridAsset(
         tokenContract.address,
         agreement,
         lockInfo,
@@ -274,6 +274,8 @@ export {
     createAssetExchangeAgreementSerialized,
     createAssetClaimInfoSerialized,
     createHTLC,
+    createFungibleHTLC,
+    createHybridHTLC,
     claimAssetInHTLC,
     reclaimAssetInHTLC,
     isAssetLockedInHTLC

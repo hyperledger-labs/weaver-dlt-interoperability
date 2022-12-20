@@ -139,8 +139,8 @@ const command: GluegunCommand = {
     console.log('Lock Contract ID', lockContractId)
     console.log('Preimage', options.preimage)
 
-    const preimage_bytes32 = web3N.utils.utf8ToHex(options.preimage)
-    console.log('Preimage bytes32:', preimage_bytes32)
+    const preimage_bytes = web3N.utils.utf8ToHex(options.preimage)
+    console.log('Preimage bytes:', preimage_bytes)
 
     // Balance of the recipient before claiming
     var recipientBalance = await getBalances(tokenContract, recipient)

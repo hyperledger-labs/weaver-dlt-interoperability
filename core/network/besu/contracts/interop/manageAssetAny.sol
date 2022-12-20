@@ -49,7 +49,7 @@ contract AssetExchangeContract is ERC1155Holder {
         address indexed receiver,
         bytes32 indexed lockContractId,
         bytes32 hashLock,
-        bytes32 preimage,
+        string preimage,
         HashMechanism hashMechanism
     );
 
@@ -79,7 +79,7 @@ contract AssetExchangeContract is ERC1155Holder {
         }
     }
 
-    function stringToUint(string memory s) internal returns (uint256 result) {
+    function stringToUint(string memory s) internal pure returns (uint256 result) {
         bytes memory b = bytes(s);
         uint256 i;
         result = 0;
@@ -100,7 +100,7 @@ contract AssetExchangeContract is ERC1155Holder {
         uint256 tokenId,
         uint256 amount,
         bytes memory data
-    ) external returns (bytes32 lockContractId) {
+    ) public returns (bytes32 lockContractId) {
         address sender = msg.sender;
 
         // Checking the validity of the input parameters
@@ -273,9 +273,8 @@ contract AssetExchangeContract is ERC1155Holder {
             claimInfoProtobuf,
             uint64(claimInfoProtobuf.length)
         );
-        bytes32 preimage = bytesTobytes32(
-            slice(params.hashPreimageBase64, 2, 32)
-        );
+        string memory preimage = string(slice(params.hashPreimageBase64, 2, params.hashPreimageBase64.length-2));
+        
         // Check the validity of the claim
         require(c.status == LOCKED, "lockContract is not active");
         require(block.timestamp < c.expirationTime, "lockContract has expired");
@@ -285,7 +284,7 @@ contract AssetExchangeContract is ERC1155Holder {
                 "Invalid SHA256 preimage, its hash does not equal the hashLock"
             );
         } else {
-            require(false, "HashMechanism not supported")
+            require(false, "HashMechanism not supported");
         }
         transferStruct.Info memory transInfo = transferStruct.Info({
             sender: address(this),
@@ -320,7 +319,7 @@ contract AssetExchangeContract is ERC1155Holder {
 
         return true;
     }
-
+ 
     // Unlocking and reclaiming a locked asset for the sender after the expiration time. Can be called by anyone, not just the sender.
     function unlockAsset(bytes32 lockContractId) external returns (bool) {
         LockContract storage c = lockContracts[lockContractId];
