@@ -148,13 +148,14 @@ const command: GluegunCommand = {
           )
         })
     } else if (options.asset_type == 'ERC721') {
-      await tokenContract
+      const response = await tokenContract
         .mint(account, { from: contractOwner })
         .catch(function() {
           console.log(
             'tokenContract transfer threw an error; Probably the token supply is used up!'
           )
         })
+      console.log(`New ERC721 token minted with id ${response.logs[0].args.id}`)
     } else if (options.asset_type == 'ERC1155') {
       await tokenContract
         .mint(
