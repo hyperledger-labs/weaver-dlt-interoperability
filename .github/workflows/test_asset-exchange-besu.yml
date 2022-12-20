@@ -146,26 +146,27 @@ jobs:
 
           ###### test unlock #######
           timeout=20
-          initAmount=10
+          initAmount=5
+          recipientAmt=5
           transferAmount=2
-          tokenId=1
           if [ ${{ matrix.app_contract }} == "AliceERC20" ]; then
-              besu-cli asset issue --network=network1 --account=1 --amount=${initAmount} --asset_type=ERC20
+              # besu-cli asset issue --network=network1 --account=1 --amount=${initAmount} --asset_type=ERC20
               besu-cli asset lock --network=network1 --sender_account=1 --recipient_account=2 --amount=${transferAmount} --timeout=${timeout} --hash_base64=${hashBase64} 1> tmp.out
           elif [ ${{ matrix.app_contract }} == "AliceERC1155" ]; then
-              besu-cli asset issue --network=network1 --account=1 --amount=${initAmount} --token_id=${tokenId} --token_data="" --asset_type=ERC1155 
+              # besu-cli asset issue --network=network1 --account=1 --amount=${initAmount} --token_id=${tokenId} --token_data="" --asset_type=ERC1155 
               besu-cli asset lock --network=network1 --sender_account=1 --recipient_account=2 --amount=${transferAmount} --token_id=${tokenId} --timeout=${timeout} --asset_type=ERC1155 --hash_base64=${hashBase64} 1> tmp.out
           else
               initAmount=1
               transferAmount=1
+              recipientAmt=1
               besu-cli asset issue --network=network1 --account=1 --amount=${initAmount} --token_id=${tokenId} --asset_type=ERC721 
               besu-cli asset lock --network=network1 --sender_account=1 --recipient_account=2 --amount=${transferAmount} --token_id=${tokenId} --asset_type=ERC721 --timeout=${timeout} --hash_base64=${hashBase64} 1> tmp.out
           fi
           
           balanceRem=$((initAmount-transferAmount))
-          cat tmp.out | grep "Account balance of the sender in Network network1: ${initAmount} " && COUNT=$(( COUNT + 1 )) && echo "PASS"
+          cat tmp.out | grep "Account balance of the sender in Network network1: ${initAmount}" && COUNT=$(( COUNT + 1 )) && echo "PASS"
           cat tmp.out | grep "Account balance of the sender in Network network1: ${balanceRem}" && COUNT=$(( COUNT + 1 )) && echo "PASS"
-          cat tmp.out | grep "Account balance of the recipient in Network network1: 0" && COUNT=$(( COUNT + 1 )) && echo "PASS"
+          cat tmp.out | grep "Account balance of the recipient in Network network1: ${recipientAmt}" && COUNT=$(( COUNT + 1 )) && echo "PASS"
           cat tmp.out
 
           tmp_string=$(cat tmp.out | grep "Lock contract ID:")
@@ -178,7 +179,7 @@ jobs:
           cat tmp.out | grep "before unlocking: ${balanceRem}" && COUNT=$(( COUNT + 1 )) && echo "PASS"
           cat tmp.out | grep "after unlocking: ${initAmount}" && COUNT=$(( COUNT + 1 )) && echo "PASS"
           cat tmp.out
-          done
+          
           # RESULT
           echo "Passed $COUNT/$TOTAL Tests."
 
