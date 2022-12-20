@@ -66,7 +66,7 @@ const command: GluegunCommand = {
           {
             name: '--token_id',
             description:
-              'token ID for issuing tokens. Only applicable for ERC1155'
+              'token ID for issuing tokens. Only applicable for ERC721 and ERC1155. Default: 0'
           }
         ],
         command,
@@ -82,6 +82,9 @@ const command: GluegunCommand = {
     if (!options.network) {
       print.error('Network ID not provided.')
       return
+    }
+    if (!options.token_id) {
+      options.token_id=0
     }
     const networkConfig = getNetworkConfig(options.network)
 

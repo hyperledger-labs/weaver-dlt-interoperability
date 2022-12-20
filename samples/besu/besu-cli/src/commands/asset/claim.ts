@@ -56,6 +56,11 @@ const command: GluegunCommand = {
               'The address of the recipient account. We can set this parameter if we want to use account address instead of account index '
           },
           {
+            name: '--token_id',
+            description:
+              'token ID for issuing tokens. Only applicable for ERC721 and ERC1155. Default: 0'
+          },
+          {
             name: '--network_host',
             description:
               'The network host. Default value is taken from config.json'
@@ -77,6 +82,9 @@ const command: GluegunCommand = {
     if (!options.network) {
       print.error('Network ID not provided.')
       return
+    }
+    if (!options.token_id) {
+      options.token_id=0
     }
     const networkConfig = getNetworkConfig(options.network)
 
@@ -143,7 +151,7 @@ const command: GluegunCommand = {
     console.log('Preimage bytes:', preimage_bytes)
 
     // Balance of the recipient before claiming
-    var recipientBalance = await getBalances(tokenContract, recipient)
+    var recipientBalance = await getBalances(tokenContract, recipient, options.token_id)
     console.log(
       `Account balance of the recipient in Network ${options.network
       } before claiming: ${recipientBalance.toString()}`
@@ -163,7 +171,7 @@ const command: GluegunCommand = {
       })
 
     // Balance of the recipient after claiming
-    var recipientBalance = await getBalances(tokenContract, recipient)
+    var recipientBalance = await getBalances(tokenContract, recipient, options.token_id)
     console.log(
       `Account balance of the recipient in Network ${options.network
       } after claiming: ${recipientBalance.toString()}`
