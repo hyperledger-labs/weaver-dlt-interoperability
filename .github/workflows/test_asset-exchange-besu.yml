@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
       
     strategy:
+      fail-fast: false
       matrix:
         app_contract: ["AliceERC1155", "AliceERC20", "AliceERC721"]
 
