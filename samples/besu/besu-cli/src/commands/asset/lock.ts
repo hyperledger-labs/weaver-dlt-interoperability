@@ -241,10 +241,6 @@ const command: GluegunCommand = {
     if (options.asset_type == 'ERC721') {
         await tokenContract
             .approve(tokenContract.address, options.token_id, { from: sender })
-            .catch(function () {
-                console.log('ERC 721 Token approval failed!!!')
-                return;
-            })
         try {
             lockTx = await assetManager.createHTLC(
                 interopContract,
@@ -264,10 +260,6 @@ const command: GluegunCommand = {
     } else if (options.asset_type == 'ERC1155') {
         await tokenContract
             .setApprovalForAll(tokenContract.address, true, { from: sender })
-            .catch(function () {
-                console.log('Token approval failed!!!')
-                return;
-            })
         try {
             lockTx = await assetManager.createHybridHTLC(
                 interopContract,
@@ -289,10 +281,6 @@ const command: GluegunCommand = {
     } else {
         await tokenContract
             .approve(tokenContract.address, amount, { from: sender })
-            .catch(function () {
-                console.log('Token approval failed!!!')
-                return;
-            })
         try {
             lockTx = await assetManager.createFungibleHTLC(
                 interopContract,
