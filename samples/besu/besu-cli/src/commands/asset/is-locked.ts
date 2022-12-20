@@ -89,6 +89,7 @@ const command: GluegunCommand = {
     console.log(
       `Is there an asset locked in ${lockContractId} in Network ${options.network}: ${isLocked}`
     ) //Todo: Debug. isLocked is not printing correctly.
+    process.exit()
   }
 }
 

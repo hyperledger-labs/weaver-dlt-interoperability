@@ -178,6 +178,7 @@ const command: GluegunCommand = {
         options.network
       }: ${balance.toString()}`
     )
+    process.exit()
   }
 }
 

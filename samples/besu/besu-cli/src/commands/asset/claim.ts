@@ -176,6 +176,7 @@ const command: GluegunCommand = {
       `Account balance of the recipient in Network ${options.network
       } after claiming: ${recipientBalance.toString()}`
     )
+    process.exit()
   }
 }
 

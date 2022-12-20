@@ -253,6 +253,7 @@ const command: GluegunCommand = {
     console.log(`Account balances after withdrawal in Network 2`)
     await getBalances(tokenContract2, sender2, recipient2)
     // TODO: check whether the claim is successful
+    process.exit()
   }
 }
 

@@ -170,6 +170,7 @@ const command: GluegunCommand = {
         options.network
       } after unlocking: ${senderBalance.toString()}`
     )
+    process.exit()
   }
 }
 
