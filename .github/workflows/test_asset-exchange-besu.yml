@@ -162,6 +162,7 @@ jobs:
           else
               initAmount=1
               transferAmount=1
+              recipientAmt=1
               besu-cli asset issue --network=network1 --account=1 --token_id=${tokenId} --asset_type=ERC721 1> tmp.out
               tokenId=$(cat tmp.out | grep "New ERC721 token minted with id " | sed -e 's/New ERC721 token minted with id //')
               cat tmp.out
