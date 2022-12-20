@@ -113,13 +113,13 @@ jobs:
               besu-cli asset issue --network=network1 --account=1 --amount=${initAmount} --asset_type=ERC20
               besu-cli asset lock --network=network1 --sender_account=1 --recipient_account=2 --amount=${transferAmount} --timeout=${timeout} --hash_base64=${hashBase64} 1> tmp.out
           elif [ ${{ matrix.app_contract }} == "AliceERC1155" ]; then
-              besu-cli asset issue --network=network1 --account=1 --amount=${initAmount} --token_id=${token_id} --token_data="" --asset_type=ERC1155 
-              besu-cli asset lock --network=network1 --sender_account=1 --recipient_account=2 --amount=${transferAmount} --token_id=${token_id} --timeout=${timeout} --asset_type=ERC1155 --hash_base64=${hashBase64} 1> tmp.out
+              besu-cli asset issue --network=network1 --account=1 --amount=${initAmount} --token_id=${tokenId} --token_data="" --asset_type=ERC1155 
+              besu-cli asset lock --network=network1 --sender_account=1 --recipient_account=2 --amount=${transferAmount} --token_id=${tokenId} --timeout=${timeout} --asset_type=ERC1155 --hash_base64=${hashBase64} 1> tmp.out
           else
               initAmount=1
               transferAmount=1
-              besu-cli asset issue --network=network1 --account=1 --amount=${initAmount} --token_id=${token_id} --asset_type=ERC721 
-              besu-cli asset lock --network=network1 --sender_account=1 --recipient_account=2 --amount=${transferAmount} --token_id=${token_id} --asset_type=ERC721 --timeout=${timeout} --hash_base64=${hashBase64} 1> tmp.out
+              besu-cli asset issue --network=network1 --account=1 --amount=${initAmount} --token_id=${tokenId} --asset_type=ERC721 
+              besu-cli asset lock --network=network1 --sender_account=1 --recipient_account=2 --amount=${transferAmount} --token_id=${tokenId} --asset_type=ERC721 --timeout=${timeout} --hash_base64=${hashBase64} 1> tmp.out
           fi
           
           balanceRem=$((initAmount-transferAmount))
@@ -131,25 +131,20 @@ jobs:
           tmp_string=$(cat tmp.out | grep "Lock contract ID:")
           arrIN=(${tmp_string//:/ })
           LOCK_ID=${arrIN[3]}
-          # tmp_string=$(cat tmp.out | grep "Preimage:")
-          # arrIN=(${tmp_string//:/ })
-          # PREIMAGE=${arrIN[1]}
 
           # Is Asset locked
           besu-cli asset is-locked --network=network1 --lock_contract_id=$LOCK_ID 1> tmp.out
           cat tmp.out | grep "in Network network1: true" && COUNT=$(( COUNT + 1 )) && echo "PASS"
           cat tmp.out
-
-          sleep 30
           
           # Claim asset
-          besu-cli asset claim --network=network1 --recipient_account=2 --preimage=${preimage} --token_id=${token_id} --lock_contract_id=$LOCK_ID 1> tmp.out
+          besu-cli asset claim --network=network1 --recipient_account=2 --preimage=${preimage} --token_id=${tokenId} --lock_contract_id=$LOCK_ID 1> tmp.out
           cat tmp.out | grep "Account balance of the recipient in Network network1 before claiming: 0" && COUNT=$(( COUNT + 1 )) && echo "PASS"
           cat tmp.out | grep "Account balance of the recipient in Network network1 after claiming: ${transferAmount}" && COUNT=$(( COUNT + 1 )) && echo "PASS"
           cat tmp.out
 
           ###### test unlock #######
-          timeout=5
+          timeout=20
           initAmount=10
           transferAmount=2
           tokenId=1
@@ -157,13 +152,13 @@ jobs:
               besu-cli asset issue --network=network1 --account=1 --amount=${initAmount} --asset_type=ERC20
               besu-cli asset lock --network=network1 --sender_account=1 --recipient_account=2 --amount=${transferAmount} --timeout=${timeout} --hash_base64=${hashBase64} 1> tmp.out
           elif [ ${{ matrix.app_contract }} == "AliceERC1155" ]; then
-              besu-cli asset issue --network=network1 --account=1 --amount=${initAmount} --token_id=${token_id} --token_data="" --asset_type=ERC1155 
-              besu-cli asset lock --network=network1 --sender_account=1 --recipient_account=2 --amount=${transferAmount} --token_id=${token_id} --timeout=${timeout} --asset_type=ERC1155 --hash_base64=${hashBase64} 1> tmp.out
+              besu-cli asset issue --network=network1 --account=1 --amount=${initAmount} --token_id=${tokenId} --token_data="" --asset_type=ERC1155 
+              besu-cli asset lock --network=network1 --sender_account=1 --recipient_account=2 --amount=${transferAmount} --token_id=${tokenId} --timeout=${timeout} --asset_type=ERC1155 --hash_base64=${hashBase64} 1> tmp.out
           else
               initAmount=1
               transferAmount=1
-              besu-cli asset issue --network=network1 --account=1 --amount=${initAmount} --token_id=${token_id} --asset_type=ERC721 
-              besu-cli asset lock --network=network1 --sender_account=1 --recipient_account=2 --amount=${transferAmount} --token_id=${token_id} --asset_type=ERC721 --timeout=${timeout} --hash_base64=${hashBase64} 1> tmp.out
+              besu-cli asset issue --network=network1 --account=1 --amount=${initAmount} --token_id=${tokenId} --asset_type=ERC721 
+              besu-cli asset lock --network=network1 --sender_account=1 --recipient_account=2 --amount=${transferAmount} --token_id=${tokenId} --asset_type=ERC721 --timeout=${timeout} --hash_base64=${hashBase64} 1> tmp.out
           fi
           
           balanceRem=$((initAmount-transferAmount))
@@ -178,7 +173,7 @@ jobs:
           
           sleep $timeout
 
-          besu-cli asset unlock --network=network1 --lock_contract_id=$LOCK_ID --sender_account=1 --token_id=${token_id} 1> tmp.out
+          besu-cli asset unlock --network=network1 --lock_contract_id=$LOCK_ID --sender_account=1 --token_id=${tokenId} 1> tmp.out
           cat tmp.out | grep "before unlocking: ${balanceRem}" && COUNT=$(( COUNT + 1 )) && echo "PASS"
           cat tmp.out | grep "after unlocking: ${initAmount}" && COUNT=$(( COUNT + 1 )) && echo "PASS"
           cat tmp.out
