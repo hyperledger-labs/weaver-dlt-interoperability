@@ -10,12 +10,12 @@ import * as Web3 from 'web3-utils';
 import { Hash } from "./HashFunctions";
 
 // Create an asset exchange agreement structure
-function createAssetExchangeAgreementSerialized(assetType: string, assetID: string, recipientECert: string, lockerECert: string) {
+function createAssetExchangeAgreementSerialized(assetType: string, assetID: string, locker: string, recipient: string) {
     const assetExchangeAgreement = new assetLocksPb.AssetExchangeAgreement();
     assetExchangeAgreement.setAssettype(assetType);
     assetExchangeAgreement.setId(assetID);
-    assetExchangeAgreement.setRecipient(recipientECert);
-    assetExchangeAgreement.setLocker(lockerECert);
+    assetExchangeAgreement.setRecipient(recipient);
+    assetExchangeAgreement.setLocker(locker);
     return Buffer.from(assetExchangeAgreement.serializeBinary())
 }
 
