@@ -1,1 +1,1 @@
-com.weaver.corda.driver.CustomSerializationWhitelist
+com.weaver.corda.driver.CustomSerializationAllowlist
