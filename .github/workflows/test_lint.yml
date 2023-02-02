@@ -1,0 +1,24 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
+name: Lint Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  DCI-Lint:
+    name: DCI-Lint
+    runs-on: ubuntu-20.04
+    steps:
+      - id: lint-git-repo
+        name: Lint Git Repo
+        uses: petermetz/gh-action-dci-lint@v0.6.1
+        with:
+          lint-git-repo-request: '{"cloneUrl": "${{ github.server_url }}/${{ github.repository }}.git", "fetchArgs": ["--update-head-ok", "--no-tags", "--prune", "--progress", "--no-recurse-submodules", "--depth=1", "origin" ,"+${{ github.sha }}:${{ github.ref }}"], "checkoutArgs": [ "${{ github.ref }}"], "targetPhrasePatterns": [], "configDefaultsUrl": "https://inclusivenaming.org/json/dci-lint-config-recommended-v1.json" }'
+      - name: Get the output response
+        run: echo "${{ steps.lint-git-repo.outputs.lint-git-repo-response }}"
