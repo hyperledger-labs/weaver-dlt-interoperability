@@ -64,7 +64,7 @@ version = "0.0.1"
 dependencies = [
  "prost",
  "serde",
- "tokio 1.8.4",
+ "tokio 1.18.5",
  "tonic",
  "tonic-build",
 ]
@@ -785,11 +785,10 @@ dependencies = [
 
 [[package]]
 name = "tokio"
-version = "1.8.4"
+version = "1.18.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "50dae83881bc9b0403dd5b44ea9deed3e939856cc8722d5be37f0d6e5c6d53dd"
+checksum = "0e050c618355082ae5a89ec63bbf897225d5ffe84c7c4e036874e4d185a5044e"
 dependencies = [
- "autocfg",
  "pin-project-lite 0.2.9",
  "tokio-macros",
 ]
