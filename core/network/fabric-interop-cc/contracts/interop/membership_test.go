@@ -1065,7 +1065,7 @@ func TestDeleteMembership(t *testing.T) {
 
 	// Case when caller is not an IIN Agent
 	err := interopcc.DeleteMembership(ctx, securityDomainId)
-	require.EqualError(t, err, "Caller not an IIN Agent; access denied")
+	require.EqualError(t, err, "Caller neither a network admin nor an IIN Agent; access denied")
 
 	// Case when a Membership exists
 	clientIdentity := &mocks.ClientIdentity{}
