@@ -156,7 +156,7 @@ async function invoke(
 
         // submit query transaction and get result from chaincode
         const proposalResponseResult = await queryProposal.send(proposalRequest);
-        //console.debug(JSON.stringify(proposalResponseResult, null, 2))
+        //logger.debug(JSON.stringify(proposalResponseResult, null, 2))
 
         // 4. Prepare the view and return.
         const viewPayload = new view_data.FabricView();

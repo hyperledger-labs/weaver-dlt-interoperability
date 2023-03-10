@@ -250,7 +250,7 @@ const configSetup = async () => {
     }
     // Register all listeners again
     const status = await loadEventSubscriptionsFromStorage(process.env.NETWORK_NAME ? process.env.NETWORK_NAME : 'network1');
-    console.debug('Load Event Subscriptions Status: ', status);
+    logger.info('Load Event Subscriptions Status: ', status);
 };
 
 // SERVER: Start the server with the provided url.

@@ -94,7 +94,7 @@ class LevelDBConnector implements DBConnector {
         var value: any
         try {
             value = await this.dbHandle.get(key);
-            console.debug(`read() got value: ${JSON.stringify(value)}`)
+            logger.debug(`read() got value: ${JSON.stringify(value)}`)
         } catch (error: any) {
             logger.error(`failed to read key ${JSON.stringify(key)} with error: ${error.toString()}`);
             if (error.code == 'LEVEL_NOT_FOUND') {

@@ -97,7 +97,7 @@ async function dbConnectionTest(
 async function eventSubscriptionTest(
     eventSub: eventsPb.EventSubscription
 ): Promise<boolean> {
-    console.debug(`Start eventSubscriptionTest()`);
+    logger.info(`Start eventSubscriptionTest()`);
 
     try {
         var eventMatcher: eventsPb.EventMatcher = eventSub.getEventMatcher()!;
@@ -115,7 +115,7 @@ async function eventSubscriptionTest(
         return false;
     }
 
-    console.debug(`End eventSubscriptionTest()`);
+    logger.info(`End eventSubscriptionTest()`);
     return true;
 }
 
