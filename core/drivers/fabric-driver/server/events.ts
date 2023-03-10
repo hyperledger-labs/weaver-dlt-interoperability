@@ -49,7 +49,7 @@ async function subscribeEventHelper(
         client.sendDriverSubscriptionStatus(ack_send_error, relayCallback);
     } else {
         const ack_send = new ack_pb.Ack();
-        logger.debug(newRequestId, requestId);
+        logger.debug(`${newRequestId}, ${requestId}`);
         if (newRequestId == requestId) {    // event being subscribed for the first time
             // Start an appropriate type of event listener for this event subscription if one is not already active
             const [listenerHandle, error] = await handlePromise(registerListenerForEventSubscription(call_request.getEventMatcher()!, network_name));

@@ -31,7 +31,7 @@ if (process.env.DEBUG === 'true') {
 
 const server = new Server();
 logger.info('driver def', JSON.stringify(driver_pb_grpc));
-logger.debug('Hello');
+logger.debug('Debug Logs ON');
 
 
 const mockedB64Data =
@@ -41,7 +41,7 @@ const mockedB64Data =
 function mockCommunication(query: query_pb.Query) {
     logger.info('Mock Communication');
     // Query object from requestor
-    logger.info('query', query.getRequestId());
+    logger.info(`query ${query.getRequestId()}`);
     setTimeout(() => {
         logger.info('Sending state');
         const meta = new state_pb.Meta();
@@ -53,7 +53,7 @@ function mockCommunication(query: query_pb.Query) {
         view.setMeta(meta);
         //@ts-ignore
         const viewDataBinary = fabricViewPb.FabricView.deserializeBinary(mockedB64Data).serializeBinary();
-        logger.info('viewData', viewDataBinary);
+        logger.info(`viewData ${viewDataBinary}`);
         view.setData(viewDataBinary);
         const viewPayload = new state_pb.ViewPayload();
         viewPayload.setView(view);
@@ -72,7 +72,7 @@ function mockCommunication(query: query_pb.Query) {
 // Handles communication with fabric network and sends resulting data to the relay
 const fabricCommunication = async (query: query_pb.Query, networkName: string) => {
     // Query object from requestor
-    logger.info('query', query.getRequestId());
+    logger.info(`query ${query.getRequestId()}`);
 
     // Client created using the relay_endpoint in the env.
     // TODO: need credentials here to ensure the local relay is only communicating with local drivers
@@ -97,7 +97,7 @@ const fabricCommunication = async (query: query_pb.Query, networkName: string) =
         client.sendDriverState(errorViewPayload, relayCallback);
     } else {
         // Process response from invoke to send to relay
-        logger.info('Result of fabric invoke', result);
+        logger.info(`Result of fabric invoke ${result}`);
         logger.info('Sending state');
         const viewPayload: state_pb.ViewPayload = packageFabricView(query, result);
 
@@ -250,7 +250,7 @@ const configSetup = async () => {
     }
     // Register all listeners again
     const status = await loadEventSubscriptionsFromStorage(process.env.NETWORK_NAME ? process.env.NETWORK_NAME : 'network1');
-    logger.info('Load Event Subscriptions Status: ', status);
+    logger.info(`Load Event Subscriptions Status: ${status}`);
 };
 
 // SERVER: Start the server with the provided url.

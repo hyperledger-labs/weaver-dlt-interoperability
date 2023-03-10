@@ -28,7 +28,7 @@ const walletSetup = async (walletPath: string, conn_profile_path: string, networ
         ? path.resolve(__dirname, conn_profile_path)
         : path.resolve(__dirname, '../', 'connection_profile.json');
     if (!fs.existsSync(ccpPath)) {
-        logger.error('File does not exist at path: ', ccpPath);
+        logger.error(`File does not exist at path: ${ccpPath}`);
         logger.error(
             'Please check the CONNECTION_PROFILE environemnt variable in your .env. The path will default to the root of the fabric-driver folder if not supplied',
         );
@@ -38,11 +38,11 @@ const walletSetup = async (walletPath: string, conn_profile_path: string, networ
     const config = getConfig();
     // Create a new CA client for interacting with the CA.
     const org = ccp.client["organization"];
-    logger.debug('Org', org);
+    logger.debug(`Org ${org}`);
     const caName =  ccp.organizations[org]["certificateAuthorities"][0];
-    logger.debug('CA Name', caName);
+    logger.debug(`CA Name ${caName}`);
     const caURL = config.caUrl ? config.caUrl : ccp.certificateAuthorities[caName].url;
-    logger.debug('CA URL', caURL);
+    logger.debug(`CA URL ${caURL}`);
     const ca = new FabricCAServices(caURL);
     const ident = ca.newIdentityService();
 
@@ -56,7 +56,7 @@ const walletSetup = async (walletPath: string, conn_profile_path: string, networ
         logger.info('An identity for the admin user "admin" already exists in the wallet');
     } else {
         // Enroll the admin user, and import the new identity into the wallet.
-        logger.debug('Enrolling Admin...', adminName, adminSecret);
+        logger.debug(`Enrolling Admin... ${adminName}, ${adminSecret}`);
         const enrollment = await ca.enroll({
             enrollmentID: adminName,
             enrollmentSecret: adminSecret,

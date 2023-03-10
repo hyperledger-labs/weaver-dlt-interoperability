@@ -35,7 +35,7 @@ const getNetworkGateway = async (networkName: string): Promise<Gateway> => {
             ? path.resolve(__dirname, process.env.CONNECTION_PROFILE)
             : path.resolve(__dirname, '../connection_profile.json');
         if (!fs.existsSync(ccpPath)) {
-            logger.error('File does not exist at path: ', ccpPath);
+            logger.error(`File does not exist at path: ${ccpPath}`);
             logger.error(
                 'Please check the CONNECTION_PROFILE environemnt variable in your .env. The path will default to the root of the fabric-driver folder if not supplied',
             );
@@ -88,20 +88,20 @@ async function invoke(
         // 2. Prepare info required for query (address/policy)
         const parsedAddress = parseAddress(query.getAddress());
         // Get the network (channel) our contract is deployed to.
-        logger.debug(parsedAddress.channel);
+        logger.debug(`Channel: %${parsedAddress.channel}`);
         const network = await gateway.getNetwork(parsedAddress.channel);
         const currentChannel = network.getChannel();
         const endorsers = currentChannel.getEndorsers();
-        logger.info('policy', query.getPolicyList());
+        logger.info(`policy: ${query.getPolicyList()}`);
         const chaincodeId = process.env.INTEROP_CHAINCODE ? process.env.INTEROP_CHAINCODE : 'interop';
 
         // LOGIC for getting identities from the provided policy. If none can be found it will default to all.
         const identities = query.getPolicyList();
 
-        logger.debug('Message: ', query.getAddress() + query.getNonce(), identities);
+        logger.debug('Message: %s %s', query.getAddress() + query.getNonce(), identities);
         const cert = Certificate.fromPEM(Buffer.from(query.getCertificate()));
         const orgName = cert.issuer.organizationName;
-        logger.info(
+        console.log(
             'CC ARGS',
             parsedAddress.ccFunc,
             ...parsedAddress.args,
@@ -140,14 +140,14 @@ async function invoke(
                 const orgName = cert.issuer.organizationName;
                 return identities.includes(endorser.mspid) || identities.includes(orgName);
             });
-            logger.debug('Set endorserList', endorserList);
+            logger.debug(`Set endorserList: ${endorserList}`);
             proposalRequest = {
                     targets: endorserList,
                     requestTimeout: 30000
             };
         } else {
             // When no identities provided it will default to all peers
-            logger.debug('Set endorsers', endorsers);
+            logger.debug(`Set endorsers: ${endorsers}`);
             proposalRequest = {
                     targets: endorsers,
                     requestTimeout: 30000
@@ -156,7 +156,7 @@ async function invoke(
 
         // submit query transaction and get result from chaincode
         const proposalResponseResult = await queryProposal.send(proposalRequest);
-        //logger.debug(JSON.stringify(proposalResponseResult, null, 2))
+        //logger.debug(`${JSON.stringify(proposalResponseResult, null, 2)}`)
 
         // 4. Prepare the view and return.
         const viewPayload = new view_data.FabricView();
@@ -179,8 +179,8 @@ async function invoke(
             // Add to list of endorsedProposalResponses
             endorsedProposalResponses.push(endorsedProposalResponse);
             
-            logger.info('InteropPayload', endorsementCounter, Buffer.from(response.response.payload).toString('base64'));
-            logger.info('Endorsement', endorsementCounter, Buffer.from(endorsement.serializeBinary()).toString('base64'));
+            logger.info('InteropPayload %d: %s', endorsementCounter, Buffer.from(response.response.payload).toString('base64'));
+            logger.info('Endorsement %d: %s', endorsementCounter, Buffer.from(endorsement.serializeBinary()).toString('base64'));
             endorsementCounter++;
         });
         viewPayload.setEndorsedProposalResponsesList(endorsedProposalResponses);

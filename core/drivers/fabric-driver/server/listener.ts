@@ -52,7 +52,7 @@ const initBlockEventListenerForChannel = async (
                     // const responsePayload = transaction.payload.action.proposal_response_payload.extension.events.payload;
                     // Get transaction function name: first argument according to convention
                     const chaincodeFunc = transaction.payload.chaincode_proposal_payload.input.chaincode_spec.input.args[0].toString();
-                    logger.info('Trying to find match for channel', channelId, 'chaincode', chaincodeId, 'function', chaincodeFunc);
+                    logger.info(`Trying to find match for channel: ${channelId}, chaincode: ${chaincodeId}, function: ${chaincodeFunc}`);
                     // Find all matching event subscriptions stored in the database
                     let eventMatcher = new events_pb.EventMatcher();
                     eventMatcher.setEventType(events_pb.EventType.LEDGER_STATE);
@@ -75,7 +75,7 @@ const initBlockEventListenerForChannel = async (
                     }
                     // Iterate through the view requests in the matching event subscriptions
                     eventSubscriptionQueries.forEach(async (eventSubscriptionQuery: query_pb.Query) => {
-                        logger.info('Generating view and collecting proof for channel', channelId, 'chaincode', chaincodeId, 'function', chaincodeFunc, 'responsePayload', responsePayload.toString());
+                        logger.info(`Generating view and collecting proof for channel: ${channelId}, chaincode: ${chaincodeId}, function: ${chaincodeFunc}, responsePayload: ${responsePayload.toString()}`);
                         // Trigger proof collection
                         const [result, invokeError] = await handlePromise(
                             invoke(
@@ -101,7 +101,7 @@ const initBlockEventListenerForChannel = async (
     };
     await network.addBlockListener(listener);
     channelBlockListenerMap.set(channelId, listener);
-    logger.info('Added block listener for channel', channelId);
+    logger.info(`Added block listener for channel ${channelId}`);
     return listener;
 }
 
@@ -115,7 +115,7 @@ const initContractEventListener = (
     chaincodeId: string,
 ): any => {
     const listener: ContractListener = async (event: ContractEvent) => {
-        logger.info('Trying to find match for channel', channelId, 'chaincode', chaincodeId, 'event class', event.eventName);
+        logger.info(`Trying to find match for channel: ${channelId}, chaincode: ${chaincodeId}, event class: ${event.eventName}`);
         // Find all matching event subscriptions stored in the database
         let eventMatcher = new events_pb.EventMatcher();
         eventMatcher.setEventType(events_pb.EventType.LEDGER_STATE);
@@ -138,7 +138,7 @@ const initContractEventListener = (
         }
         // Iterate through the view requests in the matching event subscriptions
         eventSubscriptionQueries.forEach(async (eventSubscriptionQuery: query_pb.Query) => {
-            logger.info('Generating view and collecting proof for event class', event.eventName, 'channel', channelId, 'chaincode', chaincodeId, 'event.payload', event.payload.toString());
+            logger.info(`Generating view and collecting proof for event class: ${event.eventName}, channel: ${channelId}, chaincode: ${chaincodeId}, event.payload: ${event.payload.toString()}`);
             // Trigger proof collection
             const [result, invokeError] = await handlePromise(
                 invoke(
@@ -161,7 +161,7 @@ const initContractEventListener = (
     };
     contract.addContractListener(listener);
     channelContractListenerMap.set(getChannelContractKey(channelId, chaincodeId), listener);
-    logger.info('Added contract listener for channel', channelId, 'and contract', chaincodeId);
+    logger.info(`Added contract listener for channel: ${channelId}, and contract: ${chaincodeId}`);
     return listener;
 }
 
