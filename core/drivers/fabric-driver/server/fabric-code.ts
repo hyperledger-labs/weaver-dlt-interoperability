@@ -88,7 +88,7 @@ async function invoke(
         // 2. Prepare info required for query (address/policy)
         const parsedAddress = parseAddress(query.getAddress());
         // Get the network (channel) our contract is deployed to.
-        logger.debug(`Channel: %${parsedAddress.channel}`);
+        logger.debug(`Channel: ${parsedAddress.channel}`);
         const network = await gateway.getNetwork(parsedAddress.channel);
         const currentChannel = network.getChannel();
         const endorsers = currentChannel.getEndorsers();
@@ -98,18 +98,18 @@ async function invoke(
         // LOGIC for getting identities from the provided policy. If none can be found it will default to all.
         const identities = query.getPolicyList();
 
-        logger.debug('Message: %s %s', query.getAddress() + query.getNonce(), identities);
+        logger.debug(`Message: ${query.getAddress() + query.getNonce()} ${identities}`);
         const cert = Certificate.fromPEM(Buffer.from(query.getCertificate()));
         const orgName = cert.issuer.organizationName;
-        console.log(
-            'CC ARGS',
-            parsedAddress.ccFunc,
-            ...parsedAddress.args,
-            query.getRequestingNetwork(),
-            query.getRequestingOrg() ? query.getRequestingOrg() : orgName,
-            query.getCertificate(),
-            query.getRequestorSignature(),
-            query.getAddress() + query.getNonce(),
+        logger.info(
+            `CC ARGS:
+            ${parsedAddress.ccFunc},
+            ${...parsedAddress.args},
+            ${query.getRequestingNetwork()},
+            ${query.getRequestingOrg() ? query.getRequestingOrg() : orgName},
+            ${query.getCertificate()},
+            ${query.getRequestorSignature()},
+            ${query.getAddress() + query.getNonce()}`
         );
         const b64QueryBytes = Buffer.from(query.serializeBinary()).toString('base64');
 
@@ -179,8 +179,8 @@ async function invoke(
             // Add to list of endorsedProposalResponses
             endorsedProposalResponses.push(endorsedProposalResponse);
             
-            logger.info('InteropPayload %d: %s', endorsementCounter, Buffer.from(response.response.payload).toString('base64'));
-            logger.info('Endorsement %d: %s', endorsementCounter, Buffer.from(endorsement.serializeBinary()).toString('base64'));
+            logger.info(`InteropPayload: ${endorsementCounter}, ${Buffer.from(response.response.payload).toString('base64')}`);
+            logger.info(`Endorsement: ${endorsementCounter}, ${Buffer.from(endorsement.serializeBinary()).toString('base64')}`);
             endorsementCounter++;
         });
         viewPayload.setEndorsedProposalResponsesList(endorsedProposalResponses);
