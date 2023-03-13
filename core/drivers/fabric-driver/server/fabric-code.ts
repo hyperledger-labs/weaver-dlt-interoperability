@@ -104,7 +104,7 @@ async function invoke(
         logger.info(
             `CC ARGS:
             ${parsedAddress.ccFunc},
-            ${...parsedAddress.args},
+            ${parsedAddress.args},
             ${query.getRequestingNetwork()},
             ${query.getRequestingOrg() ? query.getRequestingOrg() : orgName},
             ${query.getCertificate()},
