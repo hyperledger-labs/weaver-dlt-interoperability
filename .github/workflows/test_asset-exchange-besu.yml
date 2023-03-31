@@ -35,6 +35,11 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
+          
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
 
       - name: Use Protoc 3.15
         run: |
@@ -209,6 +214,11 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
+          
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
 
       - name: Use Protoc 3.15
         run: |
@@ -231,9 +241,7 @@ jobs:
 
       # BESU SDK
       - name: Setup BESU SDK
-        run: |
-         npm link
-         make build-local
+        run: make build-local
         working-directory: sdks/besu/interoperation-node-sdk 
         
       # BESU NETWORK
