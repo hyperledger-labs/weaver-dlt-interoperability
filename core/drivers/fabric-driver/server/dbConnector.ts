@@ -44,6 +44,7 @@ class LevelDBConnector implements DBConnector {
     DB_TYPE: string = "Level";
     DB_NAME: string;
     dbHandle: any;
+    dbOpenMaxRetries: number;
     
     constructor(
         dbName: string
@@ -53,15 +54,17 @@ class LevelDBConnector implements DBConnector {
         }
         this.DB_NAME = dbName;
         this.dbHandle = new Level(path.join(process.env.DB_PATH ? process.env.DB_PATH : "./driverdbs", dbName), { valueEncoding: 'json' });
+        this.dbOpenMaxRetries = process.env.LEVELDB_LOCKED_MAX_RETRIES ? parseInt(process.env.LEVELDB_LOCKED_MAX_RETRIES) : 10;
     }
 
     async open(
         i: number = 0
     ): Promise<boolean> {
+        logger.debug(`attempt #${i} to open database ${this.DB_NAME}`)
         try {
             await this.dbHandle.open();
         } catch (error: any) {
-            if (i>=10) {
+            if (i>=this.dbOpenMaxRetries) {
                 logger.error(`failed to open database connection with error: ${error.toString()}`);
                 if (error.code == 'LEVEL_DATABASE_NOT_OPEN' && error.cause && error.cause.code == 'LEVEL_LOCKED') {
                     throw new DBLockedError(error.toString());
@@ -70,6 +73,7 @@ class LevelDBConnector implements DBConnector {
                 }
             }
             else {
+                logger.debug(`failed to open database connection with error: ${error.toString()}`);
                 await delay(1000);
                 await this.open(i+1);
             }

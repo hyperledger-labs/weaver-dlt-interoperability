@@ -4,6 +4,8 @@ hostname="localhost"
 db_path="db/requests"
 # This will be replaced by the task queue.
 remote_db_path="db/remote_requests"
+# max retries opening sled db if it is locked lock
+db_open_max_retries=30
 
 [networks]
 [networks.Fabric_Network]

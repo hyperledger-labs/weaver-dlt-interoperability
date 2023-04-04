@@ -5,6 +5,8 @@ hostname="localhost"
 db_path="db/Corda_Relay/requests"
 # This will be replaced by the task queue.
 remote_db_path="db/Corda_Relay/remote_request"
+# max retries opening sled db if it is locked lock
+db_open_max_retries=30
 
 # FOR TLS
 cert_path="credentials/fabric_cert.pem"
