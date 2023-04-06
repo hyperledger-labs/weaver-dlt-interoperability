@@ -4,8 +4,10 @@ hostname="localhost"
 db_path="db/Fabric_Relay/requests"
 # This will be replaced by the task queue.
 remote_db_path="db/Fabric_Relay/remote_request"
-# max retries opening sled db if it is locked lock
-db_open_max_retries=30
+# max retries opening sled db if it is locked
+db_open_max_retries=100
+# retry back off time in ms if sled db is locked
+db_open_retry_backoff_time=100
 
 
 # FOR TLS

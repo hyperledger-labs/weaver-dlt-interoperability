@@ -8,6 +8,7 @@ use crate::error::Error;
 pub struct Database {
     pub db_path: String,
     pub db_open_max_retries: u32,
+    pub db_open_retry_backoff_time: u32,
 }
 
 impl Database {
@@ -24,7 +25,7 @@ impl Database {
                 return match error.to_string().find(retry_error) {
                     Some(_index) => {
                         println!("Db locked temporarily with error: {:?}", error.to_string());
-                        sleep(time::Duration::from_millis(1000));
+                        sleep(time::Duration::from_millis(self.db_open_retry_backoff_time.clone() as u64));
                         println!("Retrying DB open attempt #{:?}...", retry.clone()+1);
                         let db_result = self.open_db(retry+1);
                         db_result

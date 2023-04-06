@@ -29,16 +29,18 @@ then
     uncomment 79,80 docker-compose.yaml
     uncomment 89 docker-compose.yaml
     uncomment 96 docker-compose.yaml
-    uncomment 113 docker-compose.yaml
-    comment 112 docker-compose.yaml
+    uncomment 98 docker-compose.yaml
+    uncomment 115 docker-compose.yaml
+    comment 114 docker-compose.yaml
 else
     comment 59,61 docker-compose.yaml
     comment 69,73 docker-compose.yaml
     comment 79,80 docker-compose.yaml
     comment 89 docker-compose.yaml
     comment 96 docker-compose.yaml
-    comment 113 docker-compose.yaml
-    uncomment 112 docker-compose.yaml
+    comment 98 docker-compose.yaml
+    comment 115 docker-compose.yaml
+    uncomment 114 docker-compose.yaml
 fi
 
 rm -f docker-compose.yaml.scriptbak

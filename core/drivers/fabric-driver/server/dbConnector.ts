@@ -45,6 +45,7 @@ class LevelDBConnector implements DBConnector {
     DB_NAME: string;
     dbHandle: any;
     dbOpenMaxRetries: number;
+    dbRetryBackoffTime: number;
     
     constructor(
         dbName: string
@@ -54,7 +55,10 @@ class LevelDBConnector implements DBConnector {
         }
         this.DB_NAME = dbName;
         this.dbHandle = new Level(path.join(process.env.DB_PATH ? process.env.DB_PATH : "./driverdbs", dbName), { valueEncoding: 'json' });
-        this.dbOpenMaxRetries = process.env.LEVELDB_LOCKED_MAX_RETRIES ? parseInt(process.env.LEVELDB_LOCKED_MAX_RETRIES) : 10;
+        // Retry max attempts, default 100
+        this.dbOpenMaxRetries = process.env.LEVELDB_LOCKED_MAX_RETRIES ? parseInt(process.env.LEVELDB_LOCKED_MAX_RETRIES) : 100;
+        // Retry back off time in ms, default 100ms
+        this.dbRetryBackoffTime = process.env.LEVELDB_LOCKED_RETRY_BACKOFF_TIME ? parseInt(process.env.LEVELDB_LOCKED_RETRY_BACKOFF_TIME) : 100;
     }
 
     async open(
@@ -74,7 +78,7 @@ class LevelDBConnector implements DBConnector {
             }
             else {
                 logger.debug(`failed to open database connection with error: ${error.toString()}`);
-                await delay(1000);
+                await delay(this.dbRetryBackoffTime);
                 await this.open(i+1);
             }
         }

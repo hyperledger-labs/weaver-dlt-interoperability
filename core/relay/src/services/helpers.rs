@@ -23,6 +23,7 @@ pub fn update_event_subscription_status(
     new_status: ack::Status,
     curr_db_path: String,
     db_open_max_retries: u32,
+    db_open_retry_backoff_time: u32,
     message: String,
 ) {
     let driver_error_constants = fs::read_to_string("./driver/driver-error-constants.json").expect("Unable to read file: ./driver/driver-error-constants.json");
@@ -34,6 +35,7 @@ pub fn update_event_subscription_status(
     let db = Database {
         db_path: curr_db_path,
         db_open_max_retries: db_open_max_retries,
+        db_open_retry_backoff_time: db_open_retry_backoff_time,
     };
     let event_sub_key = get_event_subscription_key(curr_request_id.clone());
     let result = db.get::<EventSubscriptionState>(event_sub_key.to_string());
@@ -279,11 +281,13 @@ pub fn update_event_state(
     new_status: request_state::Status,
     curr_db_path: String,
     db_open_max_retries: u32,
+    db_open_retry_backoff_time: u32,
     message: String,
 ) {
     let db = Database {
         db_path: curr_db_path,
         db_open_max_retries: db_open_max_retries,
+        db_open_retry_backoff_time: db_open_retry_backoff_time,
     };
     let event_publish_key = get_event_publication_key(request_id.to_string());
     let result = db.get::<EventStates>(event_publish_key.to_string());
@@ -364,11 +368,13 @@ pub fn delete_event_pub_spec(
     request_id: String,
     event_pub_spec: EventPublication,
     curr_db_path: String,
-    db_open_max_retries: u32
+    db_open_max_retries: u32,
+    db_open_retry_backoff_time: u32,
 ) -> u8 {
     let db = Database {
         db_path: curr_db_path,
         db_open_max_retries: db_open_max_retries,
+        db_open_retry_backoff_time: db_open_retry_backoff_time,
     };
     let mut event_sub_key = get_event_subscription_key(request_id.to_string());
     let mut event_sub_state = db.get::<EventSubscriptionState>(event_sub_key.to_string())
