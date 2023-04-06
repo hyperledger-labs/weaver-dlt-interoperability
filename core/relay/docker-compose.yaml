@@ -111,8 +111,8 @@ services:
     # any of the default configurations.
     #
     # - ./config/Network1.toml:/opt/relay/config/Network1.toml
-    --- ${PATH_TO_CONFIG}:/opt/relay/config/server.toml
-    --# - ${PATH_TO_REMOTE_RELAYS_DEFINITIONS}:/opt/relay/config/relays
+    - ${PATH_TO_CONFIG}:/opt/relay/config/server.toml
+    # - ${PATH_TO_REMOTE_RELAYS_DEFINITIONS}:/opt/relay/config/relays
     # - <path/to/custom-configuration-template>:/opt/relay/config/server.template.toml
     - ./credentials/docker:/opt/relay/credentials/docker
     # Uncomment this to expose ports internally and externally from the container

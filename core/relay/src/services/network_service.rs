@@ -37,8 +37,8 @@ impl Network for NetworkService {
         let conf = self.config_lock.read().await.clone();
         let db = Database {
             db_path: conf.get_str("db_path").unwrap(),
-            db_open_max_retries: conf.get_int("db_open_max_retries").unwrap_or(100) as u32,
-            db_open_retry_backoff_time: conf.get_int("db_open_retry_backoff_time").unwrap_or(100) as u32,
+            db_open_max_retries: conf.get_int("db_open_max_retries").unwrap_or(500) as u32,
+            db_open_retry_backoff_time: conf.get_int("db_open_retry_backoff_time").unwrap_or(10) as u32,
         };
         let request_id = request.into_inner().request_id;
         let result = db.get::<RequestState>(request_id.to_string());
@@ -125,8 +125,8 @@ impl Network for NetworkService {
         // Database access/storage
         let db = Database {
             db_path: conf.get_str("db_path").unwrap(),
-            db_open_max_retries: conf.get_int("db_open_max_retries").unwrap_or(100) as u32,
-            db_open_retry_backoff_time: conf.get_int("db_open_retry_backoff_time").unwrap_or(100) as u32,
+            db_open_max_retries: conf.get_int("db_open_max_retries").unwrap_or(500) as u32,
+            db_open_retry_backoff_time: conf.get_int("db_open_retry_backoff_time").unwrap_or(10) as u32,
         };
 
         let request_id = Uuid::new_v4();
@@ -205,8 +205,8 @@ impl Network for NetworkService {
         // Database access/storage
         let db = Database {
             db_path: conf.get_str("db_path").unwrap(),
-            db_open_max_retries: conf.get_int("db_open_max_retries").unwrap_or(100) as u32,
-            db_open_retry_backoff_time: conf.get_int("db_open_retry_backoff_time").unwrap_or(100) as u32,
+            db_open_max_retries: conf.get_int("db_open_max_retries").unwrap_or(500) as u32,
+            db_open_retry_backoff_time: conf.get_int("db_open_retry_backoff_time").unwrap_or(10) as u32,
         };
 
         let request_id = Uuid::new_v4();
@@ -258,8 +258,8 @@ impl Network for NetworkService {
         let conf = self.config_lock.read().await.clone();
         let db = Database {
             db_path: conf.get_str("db_path").unwrap(),
-            db_open_max_retries: conf.get_int("db_open_max_retries").unwrap_or(100) as u32,
-            db_open_retry_backoff_time: conf.get_int("db_open_retry_backoff_time").unwrap_or(100) as u32,
+            db_open_max_retries: conf.get_int("db_open_max_retries").unwrap_or(500) as u32,
+            db_open_retry_backoff_time: conf.get_int("db_open_retry_backoff_time").unwrap_or(10) as u32,
         };
         let event_sub_key = get_event_subscription_key(request.into_inner().request_id);
         let result = db.get::<EventSubscriptionState>(event_sub_key.to_string());
@@ -306,8 +306,8 @@ impl Network for NetworkService {
         // Database access/storage
         let db = Database {
             db_path: conf.get_str("db_path").unwrap(),
-            db_open_max_retries: conf.get_int("db_open_max_retries").unwrap_or(100) as u32,
-            db_open_retry_backoff_time: conf.get_int("db_open_retry_backoff_time").unwrap_or(100) as u32,
+            db_open_max_retries: conf.get_int("db_open_max_retries").unwrap_or(500) as u32,
+            db_open_retry_backoff_time: conf.get_int("db_open_retry_backoff_time").unwrap_or(10) as u32,
         };
         
         let net_event_sub = request.into_inner().clone();
@@ -319,8 +319,8 @@ impl Network for NetworkService {
             request_id.to_string(), 
             requested_unsub_pub_spec, 
             conf.get_str("db_path").unwrap().to_string(),
-            conf.get_int("db_open_max_retries").unwrap_or(100) as u32,
-            conf.get_int("db_open_retry_backoff_time").unwrap_or(100) as u32
+            conf.get_int("db_open_max_retries").unwrap_or(500) as u32,
+            conf.get_int("db_open_retry_backoff_time").unwrap_or(10) as u32
         );
         
         if delete_pub_spec_status == 0 {
@@ -388,8 +388,8 @@ impl Network for NetworkService {
         let conf = self.config_lock.read().await.clone();
         let db = Database {
             db_path: conf.get_str("db_path").unwrap(),
-            db_open_max_retries: conf.get_int("db_open_max_retries").unwrap_or(100) as u32,
-            db_open_retry_backoff_time: conf.get_int("db_open_retry_backoff_time").unwrap_or(100) as u32,
+            db_open_max_retries: conf.get_int("db_open_max_retries").unwrap_or(500) as u32,
+            db_open_retry_backoff_time: conf.get_int("db_open_retry_backoff_time").unwrap_or(10) as u32,
         };
         let request_id = request.into_inner().request_id;
         let event_publish_key = get_event_publication_key(request_id.to_string());
@@ -606,16 +606,16 @@ fn spawn_send_request(
                             request_id.to_string(),
                             request_state::Status::Pending,
                             db_path.to_string(),
-                            conf.get_int("db_open_max_retries").unwrap_or(100) as u32,
-                            conf.get_int("db_open_retry_backoff_time").unwrap_or(100) as u32,
+                            conf.get_int("db_open_max_retries").unwrap_or(500) as u32,
+                            conf.get_int("db_open_retry_backoff_time").unwrap_or(10) as u32,
                             None,
                         ),
                         ack::Status::Error => update_request_status(
                             request_id.to_string(),
                             request_state::Status::Error,
                             db_path.to_string(),
-                            conf.get_int("db_open_max_retries").unwrap_or(100) as u32,
-                            conf.get_int("db_open_retry_backoff_time").unwrap_or(100) as u32,
+                            conf.get_int("db_open_max_retries").unwrap_or(500) as u32,
+                            conf.get_int("db_open_retry_backoff_time").unwrap_or(10) as u32,
                             Some(request_state::State::Error(
                                 ack_response_into_inner.message.to_string(),
                             )),
@@ -625,8 +625,8 @@ fn spawn_send_request(
                         request_id.to_string(),
                         request_state::Status::Error,
                         db_path.to_string(),
-                        conf.get_int("db_open_max_retries").unwrap_or(100) as u32,
-                        conf.get_int("db_open_retry_backoff_time").unwrap_or(100) as u32,
+                        conf.get_int("db_open_max_retries").unwrap_or(500) as u32,
+                        conf.get_int("db_open_retry_backoff_time").unwrap_or(10) as u32,
                         Some(request_state::State::Error(
                             "Status is not supported or is invalid".to_string(),
                         )),
@@ -637,8 +637,8 @@ fn spawn_send_request(
                 request_id.to_string(),
                 request_state::Status::Error,
                 db_path.to_string(),
-                conf.get_int("db_open_max_retries").unwrap_or(100) as u32,
-                conf.get_int("db_open_retry_backoff_time").unwrap_or(100) as u32,
+                conf.get_int("db_open_max_retries").unwrap_or(500) as u32,
+                conf.get_int("db_open_retry_backoff_time").unwrap_or(10) as u32,
                 Some(request_state::State::Error(format!("{:?}", result_error))),
             ),
         }
@@ -704,8 +704,8 @@ fn spawn_send_event_subscription_request(
     // Spawning new thread to make the subscribe_event_call to remote relay
     tokio::spawn(async move {
         let db_path = conf.get_str("db_path").unwrap();
-        let db_open_max_retries = conf.get_int("db_open_max_retries").unwrap_or(100) as u32;
-        let db_open_retry_backoff_time = conf.get_int("db_open_retry_backoff_time").unwrap_or(100) as u32;
+        let db_open_max_retries = conf.get_int("db_open_max_retries").unwrap_or(500) as u32;
+        let db_open_retry_backoff_time = conf.get_int("db_open_retry_backoff_time").unwrap_or(10) as u32;
 
         // Iterate through the relay entries in the configuration to find a match
         let relays_table = conf.get_table("relays").unwrap();
