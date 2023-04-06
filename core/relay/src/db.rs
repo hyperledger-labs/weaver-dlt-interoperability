@@ -25,7 +25,7 @@ impl Database {
                     Some(_index) => {
                         println!("Db locked temporarily with error: {:?}", error.to_string());
                         sleep(time::Duration::from_millis(1000));
-                        println!("Retrying DB open...");
+                        println!("Retrying DB open attempt #{:?}...", retry.clone()+1);
                         let db_result = self.open_db(retry+1);
                         db_result
                     },

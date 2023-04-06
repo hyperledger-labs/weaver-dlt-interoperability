@@ -173,7 +173,6 @@ pub fn update_event_subscription_status(
                 .expect("Failed to insert into DB");
             println!("Successfully written EventSubscriptionState to database");
             println!("{:?}\n", db.get::<EventSubscriptionState>(event_sub_key.to_string()).unwrap())
-
         },
         Err(e) => {
             println!("EventSubscription Request not found. Error: {:?}", e);
@@ -313,7 +312,6 @@ pub fn update_event_state(
             db.set(&event_publish_key.to_string(), &updated_event_states)
                 .expect("Failed to insert into DB");
             println!("Successfully updated EventStates in database");
-            println!("{:?}\n", updated_event_states);
         },
         Err(e) => {
             println!("EventStates not found. Error: {:?}", e);

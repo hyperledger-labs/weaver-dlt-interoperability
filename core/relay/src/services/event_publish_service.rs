@@ -333,7 +333,7 @@ async fn handle_event(
                 match result {
                     Ok(driver_info) => {
                         let client = get_driver_client(driver_info).await?;
-                        println!("Sending Received Event to driver: {:?}", state.clone());
+                        println!("Sending Received Event to driver: {:?}", state.clone().request_id.to_string());
                         let write_external_state_message: WriteExternalStateMessage = WriteExternalStateMessage {
                             view_payload: Some(state),
                             ctx: Some(ctx),
