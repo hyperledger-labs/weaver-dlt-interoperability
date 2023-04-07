@@ -453,7 +453,7 @@ async function writeExternalStateHelper(
             throw responseError;
         }
         logger.debug(`write successful`);
-	      gateway.disconnect();
+        gateway.disconnect();
     } else {
         const errorString: string = `erroneous viewPayload identified in WriteExternalState processing`;
         logger.error(`error viewPayload.getError(): ${JSON.stringify(viewPayload.getError())}`);

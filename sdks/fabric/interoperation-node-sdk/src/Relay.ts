@@ -26,7 +26,7 @@ class Relay {
     _useTls = false;
     _tlsRootCACerts = '';
     // TODO: make this configurable parameter
-    backOffTime = 500
+    backOffMSec = 500;
 
     /**
      * Construct a Relay object with the given url. A Relay object
@@ -174,7 +174,7 @@ class Relay {
             if (dateObj.getTime() < Date.now()) {
                 throw new Error("Timeout: State is still pending.");
             } else {
-                await helpers.delay(this.backOffTime);
+                await helpers.delay(this.backOffMSec);
                 return await this.recursiveState(requestID, dateObj);
             }
         } else {
@@ -308,7 +308,7 @@ class Relay {
             if (dateObj.getTime() < Date.now()) {
                 throw new Error("Timeout: State is still pending.");
             } else {
-                await helpers.delay(this.backOffTime);
+                await helpers.delay(this.backOffMSec);
                 return await this.recursiveEventSubscriptionState(requestID, dateObj);
             }
         } else {

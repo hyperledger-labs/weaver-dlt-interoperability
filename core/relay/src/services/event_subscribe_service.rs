@@ -41,7 +41,7 @@ impl EventSubscribe for EventSubscribeService {
         let remote_db = Database {
             db_path: conf.get_str("remote_db_path").unwrap(),
             db_open_max_retries: conf.get_int("db_open_max_retries").unwrap_or(500) as u32,
-            db_open_retry_backoff_time: conf.get_int("db_open_retry_backoff_time").unwrap_or(10) as u32,
+            db_open_retry_backoff_msec: conf.get_int("db_open_retry_backoff_msec").unwrap_or(10) as u32,
         };
         match subscribe_event_helper(remote_db, request_id.to_string(), event_subscription, conf.clone()) {
             Ok(ack) => {
@@ -78,7 +78,7 @@ impl EventSubscribe for EventSubscribeService {
         let remote_db = Database {
             db_path: conf.get_str("remote_db_path").unwrap(),
             db_open_max_retries: conf.get_int("db_open_max_retries").unwrap_or(500) as u32,
-            db_open_retry_backoff_time: conf.get_int("db_open_retry_backoff_time").unwrap_or(10) as u32,
+            db_open_retry_backoff_msec: conf.get_int("db_open_retry_backoff_msec").unwrap_or(10) as u32,
         };
         
         let result =
@@ -114,14 +114,14 @@ impl EventSubscribe for EventSubscribeService {
         // Database access/storage
         let db_path = conf.get_str("db_path").unwrap();
         let db_open_max_retries = conf.get_int("db_open_max_retries").unwrap_or(500) as u32;
-        let db_open_retry_backoff_time = conf.get_int("db_open_retry_backoff_time").unwrap_or(10) as u32;
+        let db_open_retry_backoff_msec = conf.get_int("db_open_retry_backoff_msec").unwrap_or(10) as u32;
         
         let result = send_subscription_status_helper(
             request_ack, 
             request_id.clone().to_string(), 
             db_path, 
             db_open_max_retries, 
-            db_open_retry_backoff_time
+            db_open_retry_backoff_msec
         );
 
         match result {
@@ -187,7 +187,7 @@ fn spawn_driver_subscribe_event(event_subscription: EventSubscription, driver_in
                 let remote_db = Database {
                     db_path: conf.get_str("remote_db_path").unwrap(),
                     db_open_max_retries: conf.get_int("db_open_max_retries").unwrap_or(500) as u32,
-                    db_open_retry_backoff_time: conf.get_int("db_open_retry_backoff_time").unwrap_or(10) as u32,
+                    db_open_retry_backoff_msec: conf.get_int("db_open_retry_backoff_msec").unwrap_or(10) as u32,
                 };
                 let error_ack = Ack {
                     status: ack::Status::Error as i32,
@@ -373,7 +373,7 @@ fn send_subscription_status_helper(
     request_id: String,
     db_path: String,
     db_open_max_retries: u32,
-    db_open_retry_backoff_time: u32,
+    db_open_retry_backoff_msec: u32,
 ) -> Result<(), Error> {
     match ack::Status::from_i32(request_ack.status) {
         Some(status) => update_event_subscription_status(
@@ -381,7 +381,7 @@ fn send_subscription_status_helper(
                 status,
                 db_path.to_string(),
                 db_open_max_retries,
-                db_open_retry_backoff_time,
+                db_open_retry_backoff_msec,
                 request_ack.message.to_string(),
         ),
         None => update_event_subscription_status(
@@ -389,7 +389,7 @@ fn send_subscription_status_helper(
             ack::Status::Error,
             db_path.to_string(),
             db_open_max_retries,
-            db_open_retry_backoff_time,
+            db_open_retry_backoff_msec,
             "Status is not supported or is invalid".to_string(),
         ),
     };

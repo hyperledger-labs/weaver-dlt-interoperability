@@ -58,7 +58,7 @@ class LevelDBConnector implements DBConnector {
         // Retry max attempts, default 250, making it 5 seconds for retries
         this.dbOpenMaxRetries = process.env.LEVELDB_LOCKED_MAX_RETRIES ? parseInt(process.env.LEVELDB_LOCKED_MAX_RETRIES) : 250;
         // Retry back off time in ms, default 20ms
-        this.dbRetryBackoffTime = process.env.LEVELDB_LOCKED_RETRY_BACKOFF_TIME ? parseInt(process.env.LEVELDB_LOCKED_RETRY_BACKOFF_TIME) : 20;
+        this.dbRetryBackoffTime = process.env.LEVELDB_LOCKED_RETRY_BACKOFF_MSEC ? parseInt(process.env.LEVELDB_LOCKED_RETRY_BACKOFF_MSEC) : 20;
     }
 
     async open(
@@ -68,7 +68,7 @@ class LevelDBConnector implements DBConnector {
         try {
             await this.dbHandle.open();
         } catch (error: any) {
-            if (i>=this.dbOpenMaxRetries) {
+            if (i >= this.dbOpenMaxRetries) {
                 logger.error(`failed to open database connection with error: ${error.toString()}`);
                 if (error.code == 'LEVEL_DATABASE_NOT_OPEN' && error.cause && error.cause.code == 'LEVEL_LOCKED') {
                     throw new DBLockedError(error.toString());

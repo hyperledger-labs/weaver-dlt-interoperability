@@ -47,7 +47,7 @@ impl EventPublish for EventPublishService {
         let remote_db = Database {
             db_path: conf.get_str("remote_db_path").unwrap(),
             db_open_max_retries: conf.get_int("db_open_max_retries").unwrap_or(500) as u32,
-            db_open_retry_backoff_time: conf.get_int("db_open_retry_backoff_time").unwrap_or(10) as u32,
+            db_open_retry_backoff_msec: conf.get_int("db_open_retry_backoff_msec").unwrap_or(10) as u32,
         };
 
         let result =
@@ -87,7 +87,7 @@ impl EventPublish for EventPublishService {
         let db = Database {
             db_path: conf.get_str("db_path").unwrap(),
             db_open_max_retries: conf.get_int("db_open_max_retries").unwrap_or(500) as u32,
-            db_open_retry_backoff_time: conf.get_int("db_open_retry_backoff_time").unwrap_or(10) as u32,
+            db_open_retry_backoff_msec: conf.get_int("db_open_retry_backoff_msec").unwrap_or(10) as u32,
         };
         let result = send_state_helper(request_view_payload, request_id.to_string(), db, conf);
 
@@ -300,7 +300,7 @@ fn spawn_handle_event(state: ViewPayload, publication_spec: EventPublication, re
                         request_state::Status::EventWritten,
                         conf.get_str("db_path").unwrap(),
                         conf.get_int("db_open_max_retries").unwrap_or(500) as u32,
-                        conf.get_int("db_open_retry_backoff_time").unwrap_or(10) as u32,
+                        conf.get_int("db_open_retry_backoff_msec").unwrap_or(10) as u32,
                         message.to_string(),
                     )
                 }
@@ -315,7 +315,7 @@ fn spawn_handle_event(state: ViewPayload, publication_spec: EventPublication, re
                     request_state::Status::EventWriteError,
                     conf.get_str("db_path").unwrap(),
                     conf.get_int("db_open_max_retries").unwrap_or(500) as u32,
-                    conf.get_int("db_open_retry_backoff_time").unwrap_or(10) as u32,
+                    conf.get_int("db_open_retry_backoff_msec").unwrap_or(10) as u32,
                     format!("Write Error: {:?}", e),
                 )
             }

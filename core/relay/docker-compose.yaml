@@ -95,7 +95,7 @@ services:
     #
     # - DB_OPEN_MAX_RETRIES=${DB_OPEN_MAX_RETRIES}
     # max retries opening sled db if it is locked
-    # - DB_OPEN_RETRY_BACKOFF_TIME=${DB_OPEN_RETRY_BACKOFF_TIME}
+    # - DB_OPEN_RETRY_BACKOFF_MSEC=${DB_OPEN_RETRY_BACKOFF_MSEC}
     # retries back off time for opening sled db if it is locked
     #
     volumes:
