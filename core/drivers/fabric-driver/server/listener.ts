@@ -359,8 +359,7 @@ const monitorBlockForMissedEvents = async (networkName: string) => {
                 const currBlockNum = await getCurrBlockNumber(network, channelId);
                 const lastBlockNum = await getLastReadBlockNumber(bh_db, channelId);
                 logger.debug(`Monitor: Current Block #${currBlockNum}; LastReadBlock #${lastBlockNum}`);
-                // Process if there are events missed 
-                if (currBlockNum > lastBlockNum + 1) {
+                if (currBlockNum > lastBlockNum) {
                     for (let bnum=lastBlockNum+1; bnum<=currBlockNum; bnum++) {
                         const block = await getBlockByNum(network, channelId, bnum);
                         await processBlockForEvents(block, channelId, networkName, "Monitor");
