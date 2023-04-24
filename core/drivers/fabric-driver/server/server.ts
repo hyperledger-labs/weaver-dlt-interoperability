@@ -259,7 +259,7 @@ const monitorService = async () => {
     const flagEnable = process.env.ENABLE_MONITOR === 'false' ? false : true;
     if (flagEnable) {
         logger.info("Starting monitor...");
-        logger.info("Monitor sync period: ", delayTime);
+        logger.info(`Monitor sync period: ${delayTime}`);
     } else {
         logger.info("Monitor disabled.");
     }
