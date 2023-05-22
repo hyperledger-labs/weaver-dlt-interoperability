@@ -9,8 +9,7 @@ RUN cd /fabric-interop-cc/contracts/interop && go build -o interop
 # Pass the binary to the prod image
 FROM alpine:3.11 as prod
 
-RUN apk add libc6-compat \
-        libstdc++
+RUN apk add libc6-compat libstdc++ zlib>1.2.11-r4 zlib-dev>1.2.11-r4
 COPY --from=build /fabric-interop-cc/contracts/interop/interop /app/interop
 RUN chmod +x /app/interop
 RUN chown 1000 /app
