@@ -3,7 +3,9 @@ FROM golang:1.20 AS build
 COPY .  /fabric-interop-cc
 WORKDIR /fabric-interop-cc
 
-RUN cd /fabric-interop-cc/contracts/interop && go build -o interop
+RUN apt-get update && apt-get install musl-tools -y
+
+RUN cd /fabric-interop-cc/contracts/interop && CC=musl-gcc go build -o interop
 
 # Production ready image
 # Pass the binary to the prod image
