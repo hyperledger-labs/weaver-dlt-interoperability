@@ -15,6 +15,7 @@ import com.weaver.corda.app.interop.states.NetworkIdState
 import com.weaver.protos.common.asset_transfer.AssetTransfer
 import com.weaver.protos.corda.ViewDataOuterClass
 import com.google.protobuf.ByteString
+import com.weaver.protos.common.interop_payload.InteropPayloadOuterClass
 
 import net.corda.core.contracts.ContractState
 import net.corda.core.contracts.CommandData
@@ -474,7 +475,8 @@ object ReclaimPledgedAsset {
 
             val viewData = subFlow(GetExternalStateByLinearId(claimStatusLinearId))
             val externalStateView = ViewDataOuterClass.ViewData.parseFrom(viewData)
-            val payloadDecoded = Base64.getDecoder().decode(externalStateView.notarizedPayloadsList[0].payload.toByteArray())
+            val interopPayload = InteropPayloadOuterClass.InteropPayload.parseFrom(externalStateView.notarizedPayloadsList[0].payload)
+            val payloadDecoded = Base64.getDecoder().decode(interopPayload.payload.toByteArray())
             val assetClaimStatus = AssetTransfer.AssetClaimStatus.parseFrom(payloadDecoded)
             println("Asset claim status details obtained via interop query: ${assetClaimStatus}")
 
@@ -683,7 +685,8 @@ object ClaimRemoteAsset {
             // get the asset pledge details fetched earlier via interop query from import to export n/w
             val viewData = subFlow(GetExternalStateByLinearId(pledgeStatusLinearId))
             val externalStateView = ViewDataOuterClass.ViewData.parseFrom(viewData)
-            val payloadDecoded = Base64.getDecoder().decode(externalStateView.notarizedPayloadsList[0].payload.toByteArray())
+            val interopPayload = InteropPayloadOuterClass.InteropPayload.parseFrom(externalStateView.notarizedPayloadsList[0].payload)
+            val payloadDecoded = Base64.getDecoder().decode(interopPayload.payload.toByteArray())
             val assetPledgeStatus = AssetTransfer.AssetPledge.parseFrom(payloadDecoded)
             println("Asset pledge status details obtained via interop query: ${assetPledgeStatus}")
             println("getAssetAndContractIdFlowName: ${getAssetAndContractIdFlowName} assetIdOrQuantity: ${assetIdOrQuantity}")
