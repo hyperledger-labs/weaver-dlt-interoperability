@@ -16,7 +16,6 @@ cp ../artifacts/network$1/createKeyFile.js .
 key=`cat $Node/data/key`
 sed -i "s/<AccountPrivateKey>/$key/g" createKeyFile.js
 touch keys/keyFile_${Node}
-npm install web3
 node createKeyFile.js > keys/keyFile_${Node}
 rm createKeyFile.js
 cp ../artifacts/account.toml keys/
