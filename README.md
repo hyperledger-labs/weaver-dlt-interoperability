@@ -29,7 +29,7 @@ Weaver, in effect, allows smart contracts managing data and assets on their resp
 
 Each capability is implemented as a protocol with the endpoints being the respective peer networks that arrive at ledger state update decisions through consensus. See the [project overview](./OVERVIEW.md) for more information and references.
 
-With Weaver, limited-scope blockchain networks can be scaled up to a _network-of-networks_ where different DLT networks can interoperate using Weaver's protocols ad hoc, thereby creating an illusion of a worldwide distributed ledger (or blockchain) without requiring netowrks to sacrifice their independence. This is illustrated in the figure below.
+With Weaver, limited-scope blockchain networks can be scaled up to a _network-of-networks_ where different DLT networks can interoperate using Weaver's protocols ad hoc, thereby creating an illusion of a worldwide distributed ledger (or blockchain) without requiring networks to sacrifice their independence. This is illustrated in the figure below.
 
 <img src="./resources/images/weaver-vision.png">
 
