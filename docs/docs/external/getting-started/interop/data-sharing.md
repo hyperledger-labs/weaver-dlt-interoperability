@@ -25,9 +25,9 @@ We assume that one of the following chaincodes have been deployed in either Fabr
 
 ## Corda to Corda
 
-To test the scenario where `Corda_Network` requests the value of the state (key) `H` from `Corda_Network2`, do the following:
+To test the scenario where `Corda_Network` requests the value of the state (key) `H` from `Corda_Network2` and writes the value to a key `H` in its local state, do the following:
 - (_Make sure the following are running_: `Corda_Network`, relay, and driver; `Corda_Network2`, relay, and driver)
-- Navigate to the `samples/corda/corda-simple-application` folder.
+- Navigate to the `samples/corda/corda-simple-application` folder in your clone of the Weaver repository.
 - Run the following:
   * If Relays and Drivers are deployed in the host machine:
     - Without TLS:
@@ -52,9 +52,9 @@ To test the scenario where `Corda_Network` requests the value of the state (key)
   NETWORK_NAME=Corda_Network CORDA_PORT=10006 ./clients/build/install/clients/bin/clients get-state H
   ```
 
-To test the scenario where `Corda_Network2` requests the value of the state (key) `C` from `Corda_Network`, do the following:
+To test the scenario where `Corda_Network2` requests the value of the state (key) `C` from `Corda_Network` and writes the value to a key `C` in its local state, do the following:
 - (_Make sure the following are running_: `Corda_Network`, relay, and driver; `Corda_Network2`, relay, and driver)
-- Navigate to the `samples/corda/corda-simple-application` folder.
+- Navigate to the `samples/corda/corda-simple-application` folder in your clone of the Weaver repository.
 - Run the following:
   * If Relays and Drivers are deployed in the host machine:
     - Without TLS:
@@ -81,9 +81,9 @@ To test the scenario where `Corda_Network2` requests the value of the state (key
 
 ## Corda to Fabric
 
-To test the scenario where `Corda_Network` requests the value of the state (key) `a` from `network1`, do the following:
+To test the scenario where `Corda_Network` requests the value of the state (key) `a` from `network1` and writes the value to a key `a` in its local state, do the following:
 - (_Make sure the following are running_: Corda network, relay, and driver; Fabric `network1`, relay, and driver)
-- Navigate to the `samples/corda/corda-simple-application` folder.
+- Navigate to the `samples/corda/corda-simple-application` folder in your clone of the Weaver repository.
 - Run the following:
   * If Relays and Drivers are deployed in the host machine:
     - Without TLS:
@@ -108,9 +108,9 @@ To test the scenario where `Corda_Network` requests the value of the state (key)
   NETWORK_NAME=Corda_Network CORDA_PORT=10006 ./clients/build/install/clients/bin/clients get-state a
   ```
 
-To test the scenario where `Corda_Network` requests the value of the state (key) `Arcturus` from `network2`, do the following:
+To test the scenario where `Corda_Network` requests the value of the state (key) `Arcturus` from `network2` and writes the value to a key `Arcturus` in its local state, do the following:
 - (_Make sure the following are running_: Corda network, relay, and driver; Fabric `network2`, relay, and driver)
-- Navigate to the `samples/corda/corda-simple-application` folder.
+- Navigate to the `samples/corda/corda-simple-application` folder in your clone of the Weaver repository.
 - Run the following:
   * If Relays and Drivers are deployed in the host machine:
     - Without TLS:
@@ -141,9 +141,9 @@ To test the scenario where `Corda_Network` requests the value of the state (key)
 
 ## Fabric to Corda
 
-To test the scenario where `network1` requests the value of the state (key) `H` from `Corda_Network`, do the following:
+To test the scenario where `network1` requests the value of the state (key) `H` from `Corda_Network` and writes the value to a key `H` in its local state, do the following:
 - (_Make sure the following are running_: Corda network, relay, and driver; Fabric `network1`, relay, and driver)
-- Navigate to the `samples/fabric/fabric-cli` (for the Node.js version) or the `samples/fabric/go-cli` (for the Golang version) folder.
+- Navigate to the `samples/fabric/fabric-cli` (for the Node.js version) or the `samples/fabric/go-cli` (for the Golang version) folder in your clone of the Weaver repository.
 - (Make sure you have configured `fabric-cli` as per earlier instructions)
 - Edit `chaincode.json`: in the `simplestate:Create:args` attribute, replace the argument `"a"` with `"H"` (this specifies the key to which the data from the remote view is to be written into); i.e.,:
   ```json
@@ -177,9 +177,9 @@ To test the scenario where `network1` requests the value of the state (key) `H` 
   ./bin/fabric-cli chaincode query mychannel simplestate read '["H"]' --local-network=network1
   ```
 
-To test the scenario where `network2` requests the value of the state (key) `H` from `Corda_Network`, do the following:
+To test the scenario where `network2` requests the value of the state (key) `H` from `Corda_Network` and writes the value to a key `H` in its local state, do the following:
 - (_Make sure the following are running_: Corda network, relay, and driver; Fabric `network2`, relay, and driver)
-- Navigate to the `samples/fabric/fabric-cli` (for the Node.js version) or the `samples/fabric/go-cli` (for the Golang version) folder.
+- Navigate to the `samples/fabric/fabric-cli` (for the Node.js version) or the `samples/fabric/go-cli` (for the Golang version) folder in your clone of the Weaver repository.
 - (Make sure you have configured `fabric-cli` as per earlier instructions)
 - Edit `chaincode.json`: in the `simplestate:Create:args` attribute, replace the argument `"a"` with `"H"` (this specifies the key to which the data from the remote view is to be written into); i.e.,:
   ```json
@@ -219,9 +219,9 @@ To test the scenario where `network2` requests the value of the state (key) `H` 
 
 ## Fabric to Fabric
 
-To test the scenario where `network1` requests the value of the state (key) `Arcturus` from `network2`, do the following:
+To test the scenario where `network1` requests the value of the state (key) `Arcturus` from `network2` and writes the value to a key `Arcturus` in its local state, do the following:
 - (_Make sure the following are running_: Fabric `network1`, relay, and driver; Fabric `network2`, relay, and driver)
-- Navigate to the `samples/fabric/fabric-cli` (for the Node.js version) or the `samples/fabric/go-cli` (for the Golang version) folder.
+- Navigate to the `samples/fabric/fabric-cli` (for the Node.js version) or the `samples/fabric/go-cli` (for the Golang version) folder in your clone of the Weaver repository.
 - (Make sure you have configured `fabric-cli` as per earlier instructions)
 - Edit `chaincode.json`: in the `simplestate:Create:args` attribute, replace the argument `"a"` with `"Arcturus"` (this specifies the key to which the data from the remote view is to be written into); i.e.,:
   ```json
@@ -259,9 +259,9 @@ To test the scenario where `network1` requests the value of the state (key) `Arc
   ./bin/fabric-cli chaincode query mychannel simplestate read '["Arcturus"]' --local-network=network1
   ```
 
-To test the scenario where `network2` requests the value of the state (key) `a` from `network1`, do the following:
+To test the scenario where `network2` requests the value of the state (key) `a` from `network1` and writes the value to a key `a` in its local state, do the following:
 - (_Make sure the following are running_: Fabric `network1`, relay, and driver; Fabric `network2`, relay, and driver)
-- Navigate to the `samples/fabric/fabric-cli` (for the Node.js version) or the `samples/fabric/go-cli` (for the Golang version) folder.
+- Navigate to the `samples/fabric/fabric-cli` (for the Node.js version) or the `samples/fabric/go-cli` (for the Golang version) folder in your clone of the Weaver repository.
 - (Make sure you have configured `fabric-cli` as per earlier instructions)
 - (There is no need to edit `chaincode.json` to change the key as the default argument `"a"` is what we intend to use in this data sharing use scenario.)
 - Run the following:

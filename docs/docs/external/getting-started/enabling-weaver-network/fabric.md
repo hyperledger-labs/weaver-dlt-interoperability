@@ -282,13 +282,13 @@ To import and use the Weaver SDK, you need to add the following dependency to th
 ```
 (Instead of `latest`, you can select a particular version from the [package website](https://github.com/hyperledger-labs/weaver-dlt-interoperability/packages/888424).)
 
-Before you run `npm install` to fetch the dependencies, make sure you create a [personal access token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) with `read:packages` access in Github. Create an `.npmrc` file in the same folder as the `package.json` with the following contents:
+Before you run `npm install` to fetch the dependencies, make sure you create a [personal access token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) with `read:packages` access in GitHub. Create an `.npmrc` file in the same folder as the `package.json` with the following contents:
 
 ```
 registry=https://npm.pkg.github.com/hyperledger-labs
 //npm.pkg.github.com/:_authToken=<personal-access-token>
 ```
-Replace `<personal-access-token>` in this file with the token you created in Github.
+Replace `<personal-access-token>` in this file with the token you created in GitHub.
 
 First, you must incorporate some code for Weaver's network administration, specifically identity management. Then, using the given sample code and examples, you can adapt your applications for each interoperability mode.
 
@@ -365,7 +365,7 @@ if (!flowResponse.views || flowResponse.views.length === 0 || !flowResponse.resu
     throw <error>;
 }
 ```
-Let us understand this code snippet better. The structure in lines 20-25 specifies the local chaincode transaction that is to be triggered after remote data (view) has been requested and obtained via relays. The function `RecordBillOfLading` expects two arguments as specified in line 24: the first is the common shipment reference that is used by the letter of credit in `trade-finance-network` and the bill of lading in `trade-logistics-network`, and the second is the bill of lading contents. When the `interopFlow` function is called, this argument is left blank because it is supposed to be filled with contents obtained from a view request. The array list `indices`, which is passed as an argument to `interopFlow` therefore contains the index value `1` (line 14), indicating which argument ought to be substituted  with view data. The `interopJSONs` array correspondingly contains a list of view addresses that are to be supplied to the relay. The `<confidential-flag>` if set to `true` will enable end-to-end confidentiality, i.e. payload will be encrypted from `trade-finance-network`'s weaver chaincode, and will be decrypted in SDK (i.e. Layer-2 client application) at `trade-logistics-network`, but relays and drivers in between will not be able to see the payload. By default this flag is set to `false`.
+Let us understand this code snippet better. The structure in lines 20-25 specifies the local chaincode transaction that is to be triggered after remote data (view) has been requested and obtained via relays. The function `RecordBillOfLading` expects two arguments as specified in line 24: the first is the common shipment reference that is used by the letter of credit in `trade-finance-network` and the bill of lading in `trade-logistics-network`, and the second is the bill of lading contents. When the `interopFlow` function is called, this argument is left blank because it is supposed to be filled with contents obtained from a view request. The array list `indices`, which is passed as an argument to `interopFlow` therefore contains the index value `1` (line 14), indicating which argument ought to be substituted  with view data. The `interopJSONs` array correspondingly contains a list of view addresses that are to be supplied to the relay. The `<confidential-flag>` if set to `true` will enable end-to-end confidentiality, i.e. payload will be encrypted from `trade-finance-network`'s Weaver chaincode, and will be decrypted in SDK (i.e. Layer-2 client application) at `trade-logistics-network`, but relays and drivers in between will not be able to see the payload. By default this flag is set to `false`.
 
 | Notes |
 |:------|
@@ -535,7 +535,7 @@ Weaver provides a [pre-built image](https://github.com/hyperledger-labs/weaver-d
   - The `RELAY_NAME` variable specifies a unique name for this relay. It should match what's specified in the `config.toml` (more on that below).
   - The `RELAY_PORT` variable specifies the port this relay server will listen on. It should match what's specified in the `config.toml` (more on that below).
   - The `EXTERNAL_NETWORK` variable should be set to the [name](https://docs.docker.com/compose/networking/) of your Fabric network.
-  - The `DOCKER_*` variables are used to specify the image on which the container will be built. Make sure you set `DOCKER_TAG` to the latest version you see on [Github](https://github.com/hyperledger-labs/weaver-dlt-interoperability/pkgs/container/weaver-relay-server).
+  - The `DOCKER_*` variables are used to specify the image on which the container will be built. Make sure you set `DOCKER_TAG` to the latest version you see on [GitHub](https://github.com/hyperledger-labs/weaver-dlt-interoperability/pkgs/container/weaver-relay-server).
 
   For more details, see the [Relay Docker README](https://github.com/hyperledger-labs/weaver-dlt-interoperability/blob/main/core/relay/relay-docker.md) ("Relay Server Image" and "Running With Docker Compose" sections).
 
@@ -611,7 +611,7 @@ docker-compose up -d relay-server
 You need to run one or more drivers through which your relay can interact with your Fabric network. Here we provide instructions to run one Fabric driver running in a Docker container, which is sufficient for data sharing. (Later, we will provide instructions to run multiple drivers, which will be useful both from a failover perspective and to interact with different subsets of your Fabric network, like private data collections.)
 
 Weaver provides a [pre-built image](https://github.com/hyperledger-labs/weaver-dlt-interoperability/pkgs/container/weaver-fabric-driver) for the Fabric driver. Before launching a container, you just need to customize its configuration for your Fabric network, which you can do by simply creating a folder (let's call it `driver_config`) and configuring the following files in it:
-- `.env`: This sets suitable environment variables within the driver container. Copy the `.env.template` file [from the repository](https://github.com/hyperledger-labs/weaver-dlt-interoperability/blob/main/core/drivers/fabric-driver/.env.docker.template) and customize it for your purposes, as indicated in the below sample:
+- `.env`: This sets suitable environment variables within the driver container. Copy the `.env.docker.template` file [from the repository](https://github.com/hyperledger-labs/weaver-dlt-interoperability/blob/main/core/drivers/fabric-driver/.env.docker.template) and customize it for your purposes, as indicated in the below sample:
   ```
   CONNECTION_PROFILE=<path_to_connection_profile>
   DRIVER_CONFIG=./config.json
