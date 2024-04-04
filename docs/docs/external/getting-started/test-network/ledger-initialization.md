@@ -19,7 +19,7 @@ Follow the below instructions to prepare your networks for data sharing tests.
 
 ### Initializing the Fabric Networks
 
-We use the Fabric CLI (`fabric-cli`) built earlier (in `samples/fabric/fabric-cli` and `samples/fabric/go-cli`) for this purpose.
+We use the Fabric CLI (`fabric-cli`) built earlier (in `samples/fabric/fabric-cli` for the Node.js version and `samples/fabric/go-cli` for the Golang version) for this purpose.
 
 #### Configuring the Fabric CLI
 
@@ -57,13 +57,14 @@ Prepare `fabric-cli` for configuration suitably as follows.
     CONFIG_PATH=./config.json
     CHAINCODE_PATH=./chaincode.json
     ```
-  * In each case, replace `<PATH-TO-WEAVER>` with the location of your clone of Weaver and `<chaincode-name>` with the name of the deployed chaincode, either `simplestate` or `simplestatewithacl`.
+  * In each case, replace `<PATH-TO-WEAVER>` with the absolute path location of your clone of Weaver and `<chaincode-name>` with the name of the deployed chaincode, either `simplestate` or `simplestatewithacl`.
   * If `simplestate` is deployed, set `<function-name>` to `Create`, and if `simplestatewithacl` if deployed, set `<function-name>` to `CreateFromRemote`.
   * Leave the default values unchanged for the other parameters.
 - Run the following command:
   ```bash
   ./bin/fabric-cli env set-file ./.env
   ```
+
 | Notes |
 |:------|
 | If the `CONFIG_PATH` environment variable is omitted from `.env`, then you must also run:<br/>```./bin/fabric-cli config set-file ./config.json``` |
@@ -116,6 +117,14 @@ Bootstrap the Corda networks and application states as follows (_the following i
     ```bash
     make initialise-vault-docker
     ```
+  Even upon successful execution (as indicated by the console output), you may see errors of the following form:
+  ```
+  [ERROR] 07:51:17.206 [epollEventLoopGroup-19-1] client.exceptionCaught - AMQ214015: Failed to execute connection life cycle listener
+  java.util.concurrent.RejectedExecutionException: Task org.apache.activemq.artemis.utils.actors.ProcessorBase$$Lambda$34/681158875@666df796 rejected from java.util.concurrent.ThreadPoolExecutor@236f653f[Terminated, pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 6]
+         at java.util.concurrent.ThreadPoolExecutor$AbortPolicy.rejectedExecution(ThreadPoolExecutor.java:2063) ~[?:1.8.0_402]
+  ..........
+  ```
+  You can ignore these as they are transient errors that don't impact the operations.
 
 ### Next Steps
 
@@ -128,7 +137,7 @@ Follow the below instructions to prepare your networks for asset exchange tests.
 
 ### Initializing the Fabric Networks
 
-We use the Fabric CLI (`fabric-cli`) built earlier (in `samples/fabric/fabric-cli` and `samples/fabric/go-cli`) for this purpose.
+We use the Fabric CLI (`fabric-cli`) built earlier (in `samples/fabric/fabric-cli` for the Node.js version and `samples/fabric/go-cli` for the Golang version) for this purpose.
 
 #### Configuring the Fabric CLI
 
@@ -152,12 +161,13 @@ Prepare `fabric-cli` for configuration suitably as follows.
     MEMBER_CREDENTIAL_FOLDER=<PATH-TO-WEAVER>/samples/fabric/fabric-cli/src/data/credentials_docker
     CONFIG_PATH=./config.json
     ```
-  * In each case, replace `<PATH-TO-WEAVER>` with the location of your clone of Weaver.
+  * In each case, replace `<PATH-TO-WEAVER>` with the absolute path location of your clone of Weaver.
   * Leave the default values unchanged for the other parameters.
 - Run the following command:
   ```bash
   ./bin/fabric-cli env set-file ./.env
   ```
+
 | Notes |
 |:------|
 | If the `CONFIG_PATH` environment variable is omitted from `.env`, then you must also run:<br/>```./bin/fabric-cli config set-file ./config.json``` |
@@ -216,7 +226,7 @@ Follow the below instructions to prepare your networks for asset transfer tests.
 
 ### Initializing the Fabric Networks
 
-We use the Fabric CLI (`fabric-cli`) built earlier (in `samples/fabric/fabric-cli` and `samples/fabric/go-cli`) for this purpose.
+We use the Fabric CLI (`fabric-cli`) built earlier (in `samples/fabric/fabric-cli` for the Node.js version and `samples/fabric/go-cli` for the Golang version) for this purpose.
 
 #### Configuring the Fabric CLI
 
@@ -263,12 +273,13 @@ Prepare `fabric-cli` for configuration suitably as follows.
     REMOTE_CONFIG_PATH=./remote-network-config.json
     CHAINCODE_PATH=./chaincode.json
     ```
-  * In each case, replace `<PATH-TO-WEAVER>` with the location of your clone of Weaver.
+  * In each case, replace `<PATH-TO-WEAVER>` with the absolute path location of your clone of Weaver.
   * Leave the default values unchanged for the other parameters.
 - Run the following command:
   ```
   ./bin/fabric-cli env set-file ./.env
   ```
+
 | Notes |
 |:------|
 | If the `CONFIG_PATH` environment variable is omitted from `.env`, then you must also run:<br/>```./bin/fabric-cli config set-file ./config.json``` |
@@ -336,6 +347,15 @@ Bootstrap the Corda networks and application states as follows (_the following i
     ```bash
     make initialise-vault-asset-transfer-docker
     ```
+  Even upon successful execution (as indicated by the console output), you may see errors of the following form:
+  ```
+  [ERROR] 07:51:17.206 [epollEventLoopGroup-19-1] client.exceptionCaught - AMQ214015: Failed to execute connection life cycle listener
+  java.util.concurrent.RejectedExecutionException: Task org.apache.activemq.artemis.utils.actors.ProcessorBase$$Lambda$34/681158875@666df796 rejected from java.util.concurrent.ThreadPoolExecutor@236f653f[Terminated, pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 6]
+         at java.util.concurrent.ThreadPoolExecutor$AbortPolicy.rejectedExecution(ThreadPoolExecutor.java:2063) ~[?:1.8.0_402]
+  ..........
+  ```
+  You can ignore these as they are transient errors that don't impact the operations.
+
 ### Next Steps
 
 The test networks are now configured and their ledgers are initialized. You can now run the [asset transfer flows](../interop/asset-transfer.md).

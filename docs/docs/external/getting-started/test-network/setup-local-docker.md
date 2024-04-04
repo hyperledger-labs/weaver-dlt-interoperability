@@ -11,7 +11,7 @@ Copyright IBM Corp. All Rights Reserved.
 SPDX-License-Identifier: CC-BY-4.0
 -->
 
-In this document, we detail the steps using which you can bring up networks using the default configuration settings and by fetching pre-built Weaver interoperation modules, SDK libraries, and relay docker image, drivers docker images from Github Package repositories. To customize these settings (e.g., hostnames, ports), refer to the [Advanced Configuration page](./advanced-configuration.md).
+In this document, we detail the steps using which you can bring up networks using the default configuration settings and by fetching pre-built Weaver interoperation modules, SDK libraries, and relay docker image, drivers docker images from GitHub Package repositories. To customize these settings (e.g., hostnames, ports), refer to the [Advanced Configuration page](./advanced-configuration.md).
 
 | Notes |
 |:------|
@@ -48,6 +48,7 @@ Before starting, make sure you have the following software installed on your hos
     go install google.golang.org/protobuf/cmd/protoc-gen-go
     go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
     ```
+
     | Notes |
     |:------|
     | The latest version at present is `3.15.6`, but you should check the above link to find the most current version before running the above steps. |
@@ -79,6 +80,20 @@ To compile the protobufs for Golang, do the following:
 
 To compile the protobufs for Java, do the following:
 - Navigate to the `common/protos-java-kt` folder.
+- Run the following command:
+  ```bash
+  make build
+  ```
+
+To compile the protobufs for Solidity, do the following:
+- Navigate to the `common/protos-sol` folder.
+- Run the following command:
+  ```bash
+  make build
+  ```
+
+To compile the protobufs for Rust, do the following:
+- Navigate to the `common/protos-rs` folder.
 - Run the following command:
   ```bash
   make build
@@ -317,7 +332,7 @@ If you are using a Linux system, make sure that lib64 is installed.
 #### Installation
 
 You can install `fabric-cli` as follows (for both the Node.js and Golang versions):
-- Navigate to the `samples/fabric/fabric-cli` folder or the `samples/fabric/go-cli` folder.
+- Navigate to the `samples/fabric/fabric-cli` folder (for the Node.js version) or the `samples/fabric/go-cli` folder (for the Golang version).
 - Run the following to install dependencies (for the Node.js version) or the executable (for the Golang version):
   ```bash
   make build-local

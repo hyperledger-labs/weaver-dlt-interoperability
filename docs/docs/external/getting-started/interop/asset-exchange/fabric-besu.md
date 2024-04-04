@@ -7,7 +7,7 @@ pagination_prev: external/getting-started/interop/asset-exchange/overview
 ---
 
 We will demonstrate asset exchange of a bond in Fabric `network1` with `10 BobERC20` tokens on Besu `network2`.
-For Fabric commands, run from `samples/fabric/fabric-cli` folder, and for Besu commands, run from `ssamples/besu/besu-cli` folder. Here `Alice` and `Bob` in Fabric `network1` correspond to account `1` and account `2` in Besu `network2` respectively. Following are the step-by-step asset exchange process:
+For Fabric commands, run from `samples/fabric/fabric-cli` folder, and for Besu commands, run from `samples/besu/besu-cli` folder, in your clone of the Weaver repository. Here `Alice` and `Bob` in Fabric `network1` correspond to account `1` and account `2` in Besu `network2` respectively. Following are the step-by-step asset exchange process:
 
 | Notes |
 |:------|

@@ -23,6 +23,7 @@ Follow the instructions below to build and run components followed by interopera
 
 ### Software
 Before starting, make sure you have the following software installed on your host machine:
+- OpenSSL: _install using package manager, like `apt` on Debian/Ubuntu Linux (specifically packages `openssl` and `libssl-dev`)_
 - Curl: _install using package manager, like `apt` on Debian/Ubuntu Linux_
 - Git: [sample instructions](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 - Docker: [sample instructions](https://docs.docker.com/engine/install/) (Latest version)
@@ -49,6 +50,7 @@ Before starting, make sure you have the following software installed on your hos
     go install google.golang.org/protobuf/cmd/protoc-gen-go
     go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
     ```
+
     | Notes |
     |:------|
     | The latest version at present is `3.15.6`, but you should check the above link to find the most current version before running the above steps. |
@@ -84,9 +86,16 @@ To compile the protobufs for Java, do the following:
   ```bash
   make build
   ```
-  
+
 To compile the protobufs for Solidity, do the following:
 - Navigate to the `common/protos-sol` folder.
+- Run the following command:
+  ```bash
+  make build
+  ```
+
+To compile the protobufs for Rust, do the following:
+- Navigate to the `common/protos-rs` folder.
 - Run the following command:
   ```bash
   make build
@@ -174,7 +183,7 @@ If you are using a Linux system, make sure that lib64 is installed.
 #### Installation
 
 You can install `fabric-cli` as follows (for both the Node.js and Golang versions):
-- Navigate to the `samples/fabric/fabric-cli` folder or the `samples/fabric/go-cli` folder.
+- Navigate to the `samples/fabric/fabric-cli` folder (for the Node.js version) or the `samples/fabric/go-cli` folder (for the Golang version).
 - Run the following to install dependencies (for the Node.js version) or the executable (for the Golang version):
   ```bash
   make build-local
@@ -196,9 +205,10 @@ Build the generic (i.e., common to all DLTs) relay module as follows:
   ```bash
   make
   ```
-- To avoid errors during Weaver Relay compilation, update certain packages (on which the Weaver Relay is dependent) to their latest versions as follows:
+- If you observe errors during the above compilation, update certain packages (on which the Weaver Relay is dependent) to their latest versions and recompile as follows:
   ```bash
   make update-pkgs
+  make
   ```
 
 #### Deployment
@@ -347,7 +357,7 @@ Run a Fabric driver for `network1` as follows:
 
 Run a Fabric driver for `network2` as follows (_do this only if you wish to test interoperation between the two Fabric networks `network1` and `network2`_)
 - Navigate to the `core/drivers/fabric-driver` folder.
-- Run the following:
+- Run the following (replace `<PATH-TO-WEAVER>` with the absolute path of the `weaver-dlt-interoperability` clone folder):
   ```bash
   CONNECTION_PROFILE=<PATH-TO-WEAVER>/tests/network-setups/fabric/shared/network2/peerOrganizations/org1.network2.com/connection-org1.json NETWORK_NAME=network2 RELAY_ENDPOINT=localhost:9083 DRIVER_ENDPOINT=localhost:9095 npm run dev
   ```
@@ -374,7 +384,7 @@ Ledger config file specifies ledger specific IIN Agent details such as identity 
 
 1. To create config file for `Org1MSP`'s Fabric IIN Agent of `network1`, follow the steps:
     * Create copy of template config file for Fabric IIN Agent: `src/fabric-ledger/config.json.template`, say to location `src/fabric-ledger/config-n1-org1.json`.
-    * Replace `<path-to-connection-profile>` with `<PATH-TO-WEAVER>/tests/network-setups/fabric/shared/network1/peerOrganizations/org1.network1.com/connection-org1.json`, where replace `<PATH-TO-WEAVER>` with the location of your clone of Weaver.
+    * Replace `<path-to-connection-profile>` with `<PATH-TO-WEAVER>/tests/network-setups/fabric/shared/network1/peerOrganizations/org1.network1.com/connection-org1.json`, where `<PATH-TO-WEAVER>` should be substituted with the absolute path location of your clone of Weaver.
     * Set `mspId` as `Org1MSP`.
     * Set `agent.affiliation` as `org1.department1`.
 
@@ -507,7 +517,7 @@ AUTO_SYNC=true
 ```
 2. If IIN Agent has to be started with TLS enabled, also update following values:
 ```
-IIN_AGENT_TLS=false
+IIN_AGENT_TLS=true
 IIN_AGENT_TLS_CERT_PATH=../../relay/credentials/fabric_cert.pem
 IIN_AGENT_TLS_KEY_PATH=../../relay/credentials/fabric_key
 ```
