@@ -3,7 +3,24 @@
 
  SPDX-License-Identifier: CC-BY-4.0
  -->
+
 # Weaver: DLT Interoperability
+
+-----------------------------------------------------------
+
+## IMPORTANT: Notice of Deprecation and Archival!
+
+Feature development in the Weaver project ended in early 2023 when it merged with Hyperledger Cactus to produce Hyperledger Cacti. See the following announcements for information and perspective:
+- <a href="https://www.hyperledger.org/blog/2022/11/07/introducing-hyperledger-cacti-a-multi-faceted-pluggable-interoperability-framework">Introducing Hyperledger Cacti, a multi-faceted pluggable interoperability framework</a>
+- <a href="https://www.hyperledger.org/blog/hyperledger-cacti-a-general-purpose-modular-interoperability-framework-moves-to-graduated-status">Hyperledger Cacti, A General-Purpose Modular Interoperability Framework, Moves to Graduated Status</a>
+
+To follow the progress of the Weaver system under the Cacti framework, use the system, or contribute to it, visit the <a href="https://github.com/hyperledger/cacti">Hyperledger Cacti repository</a>. The <a href="https://hyperledger.github.io/cacti/">official Cacti documentation</a> has <a href="https://hyperledger.github.io/cacti/weaver/introduction/">Weaver-specific pages</a> that resemble the <a href="https://labs.hyperledger.org/weaver-dlt-interoperability/docs/external/introduction/">Weaver docs</a> for those who are familiar with the latter.
+
+_**We will soon be archiving this repository. Before doing so, we will publish updated and final versions of the Weaver packages.**_
+
+We have provided a [set of tips](./MIGRATION_TO_CACTI.md) for existing Weaver users and contributors to migrate to using Cacti modules and packages instead of Weaver packages and modules.
+
+-----------------------------------------------------------
 
 <div align="center">
 
