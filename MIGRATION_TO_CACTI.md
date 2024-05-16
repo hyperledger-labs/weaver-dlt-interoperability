@@ -13,7 +13,7 @@ The entire source code of `github.com/hyperledger-labs/weaver-dlt-interoperabili
 
 ## Documentation
 
-Weaver philosphophy and usage was documented in https://labs.hyperledger.org/weaver-dlt-interoperability/docs/external/introduction. The philosophy and usage of Weaver components as part of the Cacti framework are now documented in https://hyperledger.github.io/cacti/weaver/introduction/.
+Weaver philosophy and usage was documented in https://labs.hyperledger.org/weaver-dlt-interoperability/docs/external/introduction. The philosophy and usage of Weaver components as part of the Cacti framework are now documented in https://hyperledger.github.io/cacti/weaver/introduction/.
 
 Users can compare the instructions for setting up test networks and testing protocols in https://labs.hyperledger.org/weaver-dlt-interoperability/docs/external/getting-started/guide with the newer Cacti version in https://hyperledger.github.io/cacti/weaver/getting-started/guide/. The instructions look very similar; only the references (URLs, package names, Docker image names, etc.) have changed.
 
@@ -28,12 +28,12 @@ Below we list the published Weaver packages and images, and their corresponding 
 | NPM (JavaScript & TypeScript) | Common Protobufs (JS/TS) | [@hyperledger-labs/weaver-protos-js](https://github.com/orgs/hyperledger-labs/packages/npm/package/weaver-protos-js) | [@hyperledger/cacti-weaver-protos-js](https://github.com/hyperledger/cacti/pkgs/npm/cacti-weaver-protos-js) |
 |  | Node SDK for Fabric | [@hyperledger-labs/weaver-fabric-interop-sdk](https://github.com/orgs/hyperledger-labs/packages/npm/package/weaver-fabric-interop-sdk) | [@hyperledger/cacti-weaver-sdk-fabric](https://github.com/hyperledger/cacti/pkgs/npm/cacti-weaver-sdk-fabric) |
 |  | Node SDK for Besu | [@hyperledger-labs/weaver-besu-interop-sdk](https://github.com/orgs/hyperledger-labs/packages/npm/package/weaver-besu-interop-sdk) | [@hyperledger/cacti-weaver-sdk-besu](https://github.com/hyperledger/cacti/pkgs/npm/cacti-weaver-sdk-besu) |
-| Go | Common Protobufs (Go) | `github.com/hyperledger-labs/weaver-dlt-interoperability/common/protos-go` | `github.com/hyperledger/cacti/weaver/common/protos-go` |
-|  | Go SDK for Fabric | `github.com/hyperledger-labs/weaver-dlt-interoperability/sdks/fabric/go-sdk` | `github.com/hyperledger/cacti/weaver/sdks/fabric/go-sdk` |
-|  | Fabric Interop Chaincode | `github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/contracts/interop` | `github.com/hyperledger/cacti/weaver/core/network/fabric-interop-cc/contracts/interop` |
-|  | Fabric Utils Library for Chaincode | `github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/libs/utils` | `github.com/hyperledger/cacti/weaver/core/network/fabric-interop-cc/libs/utils` |
-|  | Fabric Asset Exchange Library for Chaincode | `github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/libs/assetexchange` | `github.com/hyperledger/cacti/weaver/core/network/fabric-interop-cc/libs/assetexchange` |
-|  | Fabric Asset Management Interface for Chaincode | `github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/interfaces/asset-mgmt` | `github.com/hyperledger/cacti/weaver/core/network/fabric-interop-cc/interfaces/asset-mgmt` |
+| Go | Common Protobufs (Go) | `github.com/hyperledger-labs/weaver-dlt-interoperability/common/protos-go` | `github.com/hyperledger/cacti/weaver/common/protos-go/v2` |
+|  | Go SDK for Fabric | `github.com/hyperledger-labs/weaver-dlt-interoperability/sdks/fabric/go-sdk` | `github.com/hyperledger/cacti/weaver/sdks/fabric/go-sdk/v2` |
+|  | Fabric Interop Chaincode | `github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/contracts/interop` | `github.com/hyperledger/cacti/weaver/core/network/fabric-interop-cc/contracts/interop/v2` |
+|  | Fabric Utils Library for Chaincode | `github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/libs/utils` | `github.com/hyperledger/cacti/weaver/core/network/fabric-interop-cc/libs/utils/v2` |
+|  | Fabric Asset Exchange Library for Chaincode | `github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/libs/assetexchange` | `github.com/hyperledger/cacti/weaver/core/network/fabric-interop-cc/libs/assetexchange/v2` |
+|  | Fabric Asset Management Interface for Chaincode | `github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/interfaces/asset-mgmt` | `github.com/hyperledger/cacti/weaver/core/network/fabric-interop-cc/interfaces/asset-mgmt/v2` |
 | Maven (Java & Kotlin) | Common Protobufs (Java/Kotlin) | [com.weaver.protos-java-kt](https://github.com/hyperledger-labs/weaver-dlt-interoperability/packages/883244) | [org.hyperledger.cacti.weaver.protos.protos-java-kt](https://github.com/hyperledger/cacti/packages/1856824) |
 |  | Java/Kotlin SDK for Corda | [com.weaver.corda.sdk.weaver-corda-sdk](https://github.com/hyperledger-labs/weaver-dlt-interoperability/packages/952245) | [org.hyperledger.cacti.weaver.sdk.corda.weaver-sdk-corda](https://github.com/hyperledger/cacti/packages/1856827) |
 |  | Interop CorDapp Contracts | [com.weaver.corda.app.interop.interop-contracts](https://github.com/hyperledger-labs/weaver-dlt-interoperability/packages/906215) | [org.hyperledger.cacti.weaver.imodule.corda.interop-contracts](https://github.com/hyperledger/cacti/packages/1856825) |
