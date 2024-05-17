@@ -20,8 +20,7 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
-        jcenter()
-        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
+        maven { url 'https://download.corda.net/maven/corda-releases' }
     }
 
     dependencies {
@@ -57,11 +56,11 @@ dependencies {
 
 repositories {
     mavenLocal()
-    jcenter()
     mavenCentral()
-    maven { url 'https://software.r3.com/artifactory/corda' }
     maven { url 'https://jitpack.io' }
-    maven { url 'https://software.r3.com/artifactory/corda-lib' }
+    maven { url 'https://download.corda.net/maven/corda-dependencies' }
+    maven { url 'https://download.corda.net/maven/corda-releases' }
+    maven { url 'https://download.corda.net/maven/corda-lib' }
 }
 
 task ganache {

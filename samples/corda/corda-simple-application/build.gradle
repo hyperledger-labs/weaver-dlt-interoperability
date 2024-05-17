@@ -21,7 +21,7 @@ buildscript {
         mavenLocal()
         mavenCentral()
         maven { url 'https://repo1.maven.org/maven2' }
-        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
+        maven { url 'https://download.corda.net/maven/corda-releases' }
     }
 
     dependencies {
@@ -47,7 +47,9 @@ allprojects {
         mavenLocal()
         maven { url 'https://repo1.maven.org/maven2' }
         mavenCentral()
-        maven { url 'https://software.r3.com/artifactory/corda' }
+        maven { url 'https://download.corda.net/maven/corda-dependencies' }
+        maven { url 'https://download.corda.net/maven/corda-releases' }
+        maven { url 'https://download.corda.net/maven/corda-lib' }
         maven { url 'https://jitpack.io' }
 
 	if (file("$projectDir/github.properties").exists()) {
