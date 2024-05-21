@@ -3,9 +3,11 @@ module github.com/hyperledger-labs/weaver-dlt-interoperability/samples/fabric/si
 go 1.20
 
 require (
-	github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/libs/testutils v0.0.0-20210920170720-5d5bf2a54081
+	github.com/golang/protobuf v1.5.4
+	github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/libs/testutils v0.0.0-20240521164517-4cb6d4e59bfa
 	github.com/hyperledger/fabric-chaincode-go v0.0.0-20240425200701-0431f709af2c
 	github.com/hyperledger/fabric-contract-api-go v1.2.2
+	github.com/hyperledger/fabric-protos-go v0.3.3
 	github.com/stretchr/testify v1.9.0
 )
 
@@ -18,8 +20,6 @@ require (
 	github.com/gobuffalo/envy v1.10.2 // indirect
 	github.com/gobuffalo/packd v1.0.2 // indirect
 	github.com/gobuffalo/packr v1.30.1 // indirect
-	github.com/golang/protobuf v1.5.4 // indirect
-	github.com/hyperledger/fabric-protos-go v0.3.3 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
