@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Root of repo
-ROOT_DIR=${1:-'..'}
+ROOT_DIR=${1:-'.'}
 
 GOMODULE_PATHS=("core/network/fabric-interop-cc/libs/utils"
 "core/network/fabric-interop-cc/libs/assetexchange"
@@ -18,6 +18,7 @@ GOMODULE_PATHS=("core/network/fabric-interop-cc/libs/utils"
 for GOMODULE in ${GOMODULE_PATHS[@]}; do
   echo "############# START $GOMODULE ################"
   pushd $ROOT_DIR/$GOMODULE > /dev/null
+  go mod tidy
   make run-vendor || (go mod tidy && make run-vendor)
   make undo-vendor
   go mod tidy

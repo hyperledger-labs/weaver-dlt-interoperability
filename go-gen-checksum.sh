@@ -14,25 +14,24 @@ GOMODULE_PATHS=("core/network/fabric-interop-cc/libs/utils"
 "core/network/fabric-interop-cc/contracts/interop")
 
 for GOMODULE in ${GOMODULE_PATHS[@]}; do
-  echo "!!!!! START !!!!!!!"
+  echo "############# START $GOMODULE ################"
   echo $GOMODULE
   pushd $ROOT_DIR/$GOMODULE
-  GOMOD_DEPS=$(go mod graph | grep "$REPO/$GOMODULE $REPO" | cut -d ' ' -f 2)
-  cp go.sum go.sum.bkp
+  GOMOD_DEPS=$((go mod graph | grep "$REPO/$GOMODULE $REPO" | cut -d ' ' -f 2) || (echo "ERROR: In generating dependency graph" && exit 1))
   popd
 
   for GOMOD_DEP in ${GOMOD_DEPS[@]}; do
-    echo "######## START MOD DEP ############"
+    echo "--------- START DEP -----------"
     GOMOD_PATH=$(echo $GOMOD_DEP | cut -d '@' -f 1 | awk -F "$REPO/" '{print $2}')
-    echo $GOMOD_DEP
-    echo $GOMOD_PATH
+    echo "DEP: $GOMOD_DEP"
+    echo "DEP: $GOMOD_PATH"
     cp $ROOT_DIR/LICENSE $ROOT_DIR/$GOMOD_PATH
     pushd $ROOT_DIR/$GOMOD_PATH
     GOMOD_NAME="$REPO/$GOMOD_PATH"
     if [ ! -f VERSION ]; then
-      echo "VERSION absent"
+      echo "INFO: VERSION absent"
       popd
-      echo "######## END ############"
+      echo "------------ END --------------"
       continue
     fi
     GOMOD_VERSION=v$(cat VERSION)
@@ -41,21 +40,34 @@ for GOMODULE in ${GOMODULE_PATHS[@]}; do
     GOMOD_SUM_ENTRY="$GOMOD_NAME $GOMOD_VERSION $GOMOD_SUM"
     GOMOD_DOTMOD_SUM_ENTRY="$GOMOD_NAME $GOMOD_VERSION/go.mod $GOMOD_DOTMOD_SUM"
     echo "----"
-    echo $GOMOD_SUM_ENTRY
-    echo $GOMOD_DOTMOD_SUM_ENTRY
+    echo "GOSUM: $GOMOD_SUM_ENTRY"
+    echo "GOSUM: $GOMOD_DOTMOD_SUM_ENTRY"
     echo "----"
     popd
     rm $ROOT_DIR/$GOMOD_PATH/LICENSE
     
     pushd $ROOT_DIR/$GOMODULE
-    go mod edit -require $GOMOD_NAME@$GOMOD_VERSION
-    # mv go.sum go.sum.old
-    # grep -v "$GOMOD_NAME $GOMOD_VERSION" go.sum.old > go.sum
-    echo $GOMOD_SUM_ENTRY >> go.sum
-    echo $GOMOD_DOTMOD_SUM_ENTRY >> go.sum
+    UPDATE=false
+    (cat go.mod | grep -q "$GOMOD_NAME $GOMOD_VERSION") || UPDATE=True
+    if $UPDATE; then
+      go mod edit -require $GOMOD_NAME@$GOMOD_VERSION
+    else
+      echo "ERROR: Version $GOMOD_VERSION already there in go.mod, skipping $GOMOD_PATH in $GOMODULE"
+    fi
+    UPDATE=false
+    (cat go.sum | grep -q "$GOMOD_SUM_ENTRY") || UPDATE=True
+    (cat go.sum | grep -q "$GOMOD_DOTMOD_SUM_ENTRY") || UPDATE=True
+    if $UPDATE; then
+      # mv go.sum go.sum.old
+      # grep -v "$GOMOD_NAME $GOMOD_VERSION" go.sum.old > go.sum
+      echo "$GOMOD_SUM_ENTRY" >> go.sum
+      echo "$GOMOD_DOTMOD_SUM_ENTRY" >> go.sum
+    else
+      echo "ERROR: Version $GOMOD_VERSION already there in go.sum, skipping $GOMOD_PATH in $GOMODULE"
+    fi
     popd
-    echo "######## END ############"
+    echo "------------ END --------------"
   done
-  echo "!!!!! END !!!!!!!"
+  echo "############# END $GOMODULE ################\n"
 done
 
