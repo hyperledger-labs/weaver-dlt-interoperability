@@ -116,10 +116,10 @@ repositories {
   }
 }
 dependencies {
-  implementation(group: 'com.weaver.corda.sdk', name: 'weaver-corda-sdk', version: "1.2.13")
-  implementation(group: 'com.weaver.corda.app.interop', name: 'interop-contracts', version: "1.2.13")
-  implementation(group: 'com.weaver.corda.app.interop', name: 'interop-workflows', version: "1.2.13")
-  implementation(group: 'com.weaver', name: 'protos-java-kt', version: "1.5.7")
+  implementation(group: 'com.weaver.corda.sdk', name: 'weaver-corda-sdk', version: "1.6.0")
+  implementation(group: 'com.weaver.corda.app.interop', name: 'interop-contracts', version: "1.6.0")
+  implementation(group: 'com.weaver.corda.app.interop', name: 'interop-workflows', version: "1.6.0")
+  implementation(group: 'com.weaver', name: 'protos-java-kt', version: "1.6.0")
 }
 ```
 (Or check out the [package website](https://github.com/hyperledger-labs/weaver-dlt-interoperability/packages/952245) and select a different version.)
@@ -438,7 +438,7 @@ Weaver provides a [pre-built image](https://github.com/hyperledger-labs/weaver-d
   EXTERNAL_NETWORK=<docker-bridge-network>
   DOCKER_REGISTRY=ghcr.io/hyperledger-labs
   DOCKER_IMAGE_NAME=weaver-relay
-  DOCKER_TAG=1.5.4
+  DOCKER_TAG=1.6.0
   ```
   - The `PATH_TO_CONFIG` variable should point to the properties file typically named `config.toml` (you can name this whatever you wish). See further below for instructions to write this file.
   - The `RELAY_NAME` variable specifies a unique name for this relay. It should match what's specified in the `config.toml` (more on that below).
@@ -528,7 +528,7 @@ Weaver provides a [pre-built image](https://github.com/hyperledger-labs/weaver-d
   DRIVER_RPC_PASSWORD=<driver-rpc-username>
   EXTERNAL_NETWORK=<docker-bridge-network>
   DOCKER_IMAGE_NAME=ghcr.io/hyperledger-labs/weaver-corda-driver
-  DOCKER_TAG=1.2.13
+  DOCKER_TAG=1.6.0
   RELAY_TLS=<true|false>
   RELAY_TLSCA_TRUST_STORE=<truststore-jks-file-path>
   RELAY_TLSCA_TRUST_STORE_PASSWORD=<truststore-jks-file-password>

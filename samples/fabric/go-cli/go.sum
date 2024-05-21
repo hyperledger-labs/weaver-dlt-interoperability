@@ -921,3 +921,7 @@ rsc.io/quote/v3 v3.1.0/go.mod h1:yEA65RcK8LyAZtP9Kv3t0HmxON59tX3rD+tICJqUlj0=
 rsc.io/sampler v1.3.0/go.mod h1:T1hPZKmBbMNahiBKFy5HrXp6adAjACjK9JXDnKaTXpA=
 sigs.k8s.io/yaml v1.1.0/go.mod h1:UJmg0vDUVViEyp3mgSv9WPwZCDxu4rQW1olrI1uml+o=
 sourcegraph.com/sourcegraph/appdash v0.0.0-20190731080439-ebfcffb1b5c0/go.mod h1:hI742Nqp5OhwiqlzhgfbWU4mW4yO10fP+LoT9WOswdU=
+github.com/hyperledger-labs/weaver-dlt-interoperability/common/protos-go v1.6.0 h1:6k9njgcIcWkNmrSeaN9SU1f7jzYu0+CMIMzHUHNWZow=
+github.com/hyperledger-labs/weaver-dlt-interoperability/common/protos-go v1.6.0/go.mod h1:HjNaNm5F7UDoLY4qsIwoAJ1tWEsmLK8yNcCjEQWyzXQ=
+github.com/hyperledger-labs/weaver-dlt-interoperability/sdks/fabric/go-sdk v1.6.0 h1:gJB2kIQ1JXmVNO2FQyOL+3qdQD3cjMuenG5/gs6sH5I=
+github.com/hyperledger-labs/weaver-dlt-interoperability/sdks/fabric/go-sdk v1.6.0/go.mod h1:8TraX5tcDzW/aCFMwdX8PQl4nQTydtB5ycqGszvkdEo=
