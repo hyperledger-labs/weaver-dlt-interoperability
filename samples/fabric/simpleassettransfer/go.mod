@@ -6,7 +6,7 @@ require (
 	github.com/golang/protobuf v1.5.4
 	github.com/hyperledger-labs/weaver-dlt-interoperability/common/protos-go v1.5.11
 	github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/interfaces/asset-mgmt v1.5.11
-	github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/libs/testutils v0.0.0-20211117075003-d4cef34c8832
+	github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/libs/testutils v0.0.0-20240521164517-4cb6d4e59bfa
 	github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/libs/utils v1.5.11
 	github.com/hyperledger/fabric-chaincode-go v0.0.0-20240425200701-0431f709af2c
 	github.com/hyperledger/fabric-contract-api-go v1.2.2
