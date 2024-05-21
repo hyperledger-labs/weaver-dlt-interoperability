@@ -10,11 +10,15 @@ on:
   pull_request:
     branches: [ main ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test_interopcc:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4.1.1
 
     - name: Set up Go
       uses: actions/setup-go@v2
@@ -37,7 +41,7 @@ jobs:
     # if: ${{ false }}  # disable
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4.1.1
 
     - name: Set up Go
       uses: actions/setup-go@v2
@@ -135,7 +139,7 @@ jobs:
   test_simplestate:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4.1.1
 
     - name: Set up Go
       uses: actions/setup-go@v2
@@ -157,7 +161,7 @@ jobs:
   test_simpleasset:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4.1.1
 
     - name: Set up Go
       uses: actions/setup-go@v2
@@ -179,7 +183,7 @@ jobs:
   test_simpleassetandinterop:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4.1.1
 
     - name: Set up Go
       uses: actions/setup-go@v2
@@ -201,7 +205,7 @@ jobs:
   test_simpleassettransfer:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4.1.1
 
     - name: Set up Go
       uses: actions/setup-go@v2
