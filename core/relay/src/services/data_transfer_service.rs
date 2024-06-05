@@ -39,6 +39,8 @@ impl DataTransfer for DataTransferService {
         // Database access/storage
         let remote_db = Database {
             db_path: conf.get_str("remote_db_path").unwrap(),
+            db_open_max_retries: conf.get_int("db_open_max_retries").unwrap_or(500) as u32,
+            db_open_retry_backoff_msec: conf.get_int("db_open_retry_backoff_msec").unwrap_or(10) as u32,
         };
         match request_state_helper(remote_db, request_id.to_string(), query, conf.clone()) {
             Ok(ack) => {
@@ -76,6 +78,8 @@ impl DataTransfer for DataTransferService {
         // Database access/storage
         let remote_db = Database {
             db_path: conf.get_str("remote_db_path").unwrap(),
+            db_open_max_retries: conf.get_int("db_open_max_retries").unwrap_or(500) as u32,
+            db_open_retry_backoff_msec: conf.get_int("db_open_retry_backoff_msec").unwrap_or(10) as u32,
         };
 
         let result =
@@ -114,6 +118,8 @@ impl DataTransfer for DataTransferService {
         // Database access/storage
         let db = Database {
             db_path: conf.get_str("db_path").unwrap(),
+            db_open_max_retries: conf.get_int("db_open_max_retries").unwrap_or(500) as u32,
+            db_open_retry_backoff_msec: conf.get_int("db_open_retry_backoff_msec").unwrap_or(10) as u32,
         };
         let result = send_state_helper(request_view_payload.state, request_id.to_string(), db);
 
@@ -280,6 +286,8 @@ fn spawn_request_driver_state(query: Query, driver_info: Driver, conf: config::C
                 // Database access/storage
                 let remote_db = Database {
                     db_path: conf.get_str("remote_db_path").unwrap(),
+                    db_open_max_retries: conf.get_int("db_open_max_retries").unwrap_or(500) as u32,
+                    db_open_retry_backoff_msec: conf.get_int("db_open_retry_backoff_msec").unwrap_or(10) as u32,
                 };
                 let error_state = ViewPayload {
                     request_id: query.request_id.to_string(),
@@ -322,8 +330,8 @@ fn spawn_send_state(state: ViewPayload, requestor_host: String, requester_port: 
                 .ca_certificate(ca)
                 .domain_name(requestor_host);
 
-            let channel = Channel::from_shared(client_addr).unwrap()
-                .tls_config(tls)
+            let channel = Channel::from_shared(client_addr.to_string()).unwrap()
+                .tls_config(tls).expect(&format!("Error in TLS configuration for client: {}", client_addr.to_string()))
                 .connect()
                 .await
                 .unwrap();

@@ -3,7 +3,24 @@
 
  SPDX-License-Identifier: CC-BY-4.0
  -->
+
 # Weaver: DLT Interoperability
+
+-----------------------------------------------------------
+
+## IMPORTANT: Notice of Deprecation and Archival!
+
+Feature development in the Weaver project ended in early 2023 when it merged with Hyperledger Cactus to produce Hyperledger Cacti. See the following announcements for information and perspective:
+- <a href="https://www.hyperledger.org/blog/2022/11/07/introducing-hyperledger-cacti-a-multi-faceted-pluggable-interoperability-framework">Introducing Hyperledger Cacti, a multi-faceted pluggable interoperability framework</a>
+- <a href="https://www.hyperledger.org/blog/hyperledger-cacti-a-general-purpose-modular-interoperability-framework-moves-to-graduated-status">Hyperledger Cacti, A General-Purpose Modular Interoperability Framework, Moves to Graduated Status</a>
+
+To follow the progress of the Weaver system under the Cacti framework, use the system, or contribute to it, visit the <a href="https://github.com/hyperledger/cacti">Hyperledger Cacti repository</a>. The <a href="https://hyperledger.github.io/cacti/">official Cacti documentation</a> has <a href="https://hyperledger.github.io/cacti/weaver/introduction/">Weaver-specific pages</a> that resemble the <a href="https://labs.hyperledger.org/weaver-dlt-interoperability/docs/external/introduction/">Weaver docs</a> for those who are familiar with the latter.
+
+_**We will soon be archiving this repository. Before doing so, we will publish updated and final versions of the Weaver packages.**_
+
+We have provided a [set of tips](./MIGRATION_TO_CACTI.md) for existing Weaver users and contributors to migrate to using Cacti modules and packages instead of Weaver packages and modules.
+
+-----------------------------------------------------------
 
 <div align="center">
 
@@ -29,7 +46,7 @@ Weaver, in effect, allows smart contracts managing data and assets on their resp
 
 Each capability is implemented as a protocol with the endpoints being the respective peer networks that arrive at ledger state update decisions through consensus. See the [project overview](./OVERVIEW.md) for more information and references.
 
-With Weaver, limited-scope blockchain networks can be scaled up to a _network-of-networks_ where different DLT networks can interoperate using Weaver's protocols ad hoc, thereby creating an illusion of a worldwide distributed ledger (or blockchain) without requiring netowrks to sacrifice their independence. This is illustrated in the figure below.
+With Weaver, limited-scope blockchain networks can be scaled up to a _network-of-networks_ where different DLT networks can interoperate using Weaver's protocols ad hoc, thereby creating an illusion of a worldwide distributed ledger (or blockchain) without requiring networks to sacrifice their independence. This is illustrated in the figure below.
 
 <img src="./resources/images/weaver-vision.png">
 

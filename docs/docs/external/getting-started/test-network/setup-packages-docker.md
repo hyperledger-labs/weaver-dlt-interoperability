@@ -11,7 +11,7 @@ pagination_next: external/getting-started/test-network/ledger-initialization
  SPDX-License-Identifier: CC-BY-4.0
  -->
 
- In this document, we detail the steps using which you can bring up networks using the default configuration settings and by fetching pre-built Weaver interoperation modules, SDK libraries, and relay docker image, drivers docker images from Github Package repositories. To customize these settings (e.g., hostnames, ports), refer to the [Advanced Configuration page](./advanced-configuration.md).
+ In this document, we detail the steps using which you can bring up networks using the default configuration settings and by fetching pre-built Weaver interoperation modules, SDK libraries, and relay docker image, drivers docker images from GitHub Package repositories. To customize these settings (e.g., hostnames, ports), refer to the [Advanced Configuration page](./advanced-configuration.md).
 
 | Notes |
 |:------|
@@ -36,9 +36,9 @@ Before starting, make sure you have the following software installed on your hos
 Make sure you have an SSH or GPG key registered in https://github.com to allow seamless cloning of repositories (at present, various setup scripts clone repositories using the `https://` prefix but this may change to `git@` in the future).
 
 #### Package Access Token:
-Create a personal access token with `read:packages` access in github in order to use modules published in github packages. Refer [Creating a Personal Access Token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) for help.
+Create a personal access token with `read:packages` access in GitHub in order to use modules published in GitHub packages. Refer [Creating a Personal Access Token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) for help.
 
-Run `docker login ghcr.io`,  and provide github email id as username and personal access token created above as password. This will allow the docker to fetch images of `relay`, `fabric-driver` and `corda-driver` from `hyperledger-labs/weaver-dlt-interoperability`.
+Run `docker login ghcr.io`,  and provide GitHub email id as username and personal access token created above as password. This will allow the docker to fetch images of `relay`, `fabric-driver` and `corda-driver` from `hyperledger-labs/weaver-dlt-interoperability`.
 
 ## Getting the Code and Documentation
 
@@ -92,7 +92,7 @@ Follow the instructions below to build and launch the networks:
 | If you do not wish to test Fabric-Fabric interoperation, you can choose to launch only one of the two networks along with its interoperation chaincode. For `network1`, run `make start-interop-network1`, and for `network2`, run `make start-interop-network2` |
 | If you wish to enable end-to-end confidentiality by default in the interoperation modules that are deployed during network launch, set the environment variable `E2E_CONFIDENTIALITY` to `true` in the command line as follows: `E2E_CONFIDENTIALITY=true make start-interop` |
 
-For more information, refer to the associated [README](https://github.com/hyperledger-labs/weaver-dlt-interoperability/tree/master/tests/network-setups/fabric/dev).
+For more information, refer to the associated [README](https://github.com/hyperledger-labs/weaver-dlt-interoperability/tree/main/tests/network-setups/fabric/dev).
 
 **Troubleshooting Tips**:
 - If you see any errors during the launches, re-check the prerequisites (software installations and credentials). Ensure your network connection is working. As a safe bet, you can retry after cleanup: kill and remove all Docker containers and associated volumes.
@@ -131,7 +131,7 @@ Navigate to the `core/relay` folder and run a relay as follows:
   make convert-compose-method1
   ```
 
-For more information, see the [relay-docker README](https://github.com/hyperledger-labs/weaver-dlt-interoperability/tree/master/core/relay/relay-docker.md).
+For more information, see the [relay-docker README](https://github.com/hyperledger-labs/weaver-dlt-interoperability/tree/main/core/relay/relay-docker.md).
 
 ### Fabric Driver
 
@@ -233,7 +233,7 @@ If you are using a Linux system, make sure that lib64 is installed.
 #### Installation
 
 You can install `fabric-cli` as follows (for both the Node.js and Golang versions):
-- Navigate to the `samples/fabric/fabric-cli` folder or the `samples/fabric/go-cli` folder.
+- Navigate to the `samples/fabric/fabric-cli` folder (for the Node.js version) or the `samples/fabric/go-cli` folder (for the Golang version).
 - Create `.npmrc` from template `.npmrc.template`, by replacing `<personal-access-token>` with yours created [above](#package-access-token)..
 - Run the following to install dependencies (for the Node.js version) or the executable (for the Golang version):
   ```bash
@@ -251,12 +251,12 @@ The Corda networks' code lies in the `tests/network-setups/corda` folder. You ca
 
 The following steps will, in addition to launching the network, build the CorDapp and a Corda client in `samples/corda/corda-simple-application/client`.
 
-#### Running with Interoperation CorDapp from Github Packages
+#### Running with Interoperation CorDapp from GitHub Packages
 
 Follow the instructions below to build and launch the network:
 - Navigate to the `tests/network-setups/corda` folder.
 - Create copy of `github.properties.template` as `github.properties`.
-- Replace `<GITHUB email>` with your github email, and `<GITHUB Personal Access Token>` with the access token created [above](#package-access-token).
+- Replace `<GITHUB email>` with your GitHub email, and `<GITHUB Personal Access Token>` with the access token created [above](#package-access-token).
 - To spin up the Corda networks with the Interoperation CorDapps:
   - Each consisting of 1 node and a notary (for data-transfer), run:
     ```bash

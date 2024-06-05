@@ -6,6 +6,8 @@
 
 import { Level } from 'level';
 import * as path from 'path';
+import logger from './logger';
+import { delay } from './utils';
 
 /*
  * Interfaces for all database connectors to be used for event subscriptions 
@@ -42,27 +44,46 @@ class LevelDBConnector implements DBConnector {
     DB_TYPE: string = "Level";
     DB_NAME: string;
     dbHandle: any;
+    dbOpenMaxRetries: number;
+    dbRetryBackoffTime: number;
     
     constructor(
-        dbName: string
+        dbName: string,
+        retryTimeout: number = 0
     ) {
         if (!dbName || dbName.length == 0) {
             dbName = "driverdb";
         }
         this.DB_NAME = dbName;
         this.dbHandle = new Level(path.join(process.env.DB_PATH ? process.env.DB_PATH : "./driverdbs", dbName), { valueEncoding: 'json' });
+        // Retry max attempts, default 250, making it 5 seconds for retries
+        this.dbOpenMaxRetries = process.env.LEVELDB_LOCKED_MAX_RETRIES ? parseInt(process.env.LEVELDB_LOCKED_MAX_RETRIES) : 250;
+        // Retry back off time in ms, default 20ms
+        this.dbRetryBackoffTime = process.env.LEVELDB_LOCKED_RETRY_BACKOFF_MSEC ? parseInt(process.env.LEVELDB_LOCKED_RETRY_BACKOFF_MSEC) : 20;
+        if (retryTimeout > 0) {
+            this.dbOpenMaxRetries = Math.floor(retryTimeout / this.dbRetryBackoffTime);
+        }
     }
 
     async open(
+        i: number = 0
     ): Promise<boolean> {
+        logger.debug(`attempt #${i} to open database ${this.DB_NAME}`)
         try {
             await this.dbHandle.open();
         } catch (error: any) {
-            console.error(`failed to open database connection with error: ${error.toString()}`);
-            if (error.code == 'LEVEL_DATABASE_NOT_OPEN' && error.cause && error.cause.code == 'LEVEL_LOCKED') {
-                throw new DBLockedError(error.toString());
-            } else {
-                throw new DBNotOpenError(error.toString());
+            if (i >= this.dbOpenMaxRetries) {
+                logger.error(`failed to open database connection with error: ${error.toString()}`);
+                if (error.code == 'LEVEL_DATABASE_NOT_OPEN' && error.cause && error.cause.code == 'LEVEL_LOCKED') {
+                    throw new DBLockedError(error.toString());
+                } else {
+                    throw new DBNotOpenError(error.toString());
+                }
+            }
+            else {
+                logger.debug(`failed to open database connection with error: ${error.toString()}`);
+                await delay(this.dbRetryBackoffTime);
+                await this.open(i+1);
             }
         }
 
@@ -76,7 +97,7 @@ class LevelDBConnector implements DBConnector {
         try {
             await this.dbHandle.put(key, value);
         } catch (error: any) {
-            console.error(`failed to insert key ${JSON.stringify(key)} with error: ${error.toString()}`);
+            logger.error(`failed to insert key ${JSON.stringify(key)} with error: ${error.toString()}`);
             if (error.code == 'LEVEL_DATABASE_NOT_OPEN') {
                 throw new  DBNotOpenError(error.toString());
             } else {
@@ -93,9 +114,9 @@ class LevelDBConnector implements DBConnector {
         var value: any
         try {
             value = await this.dbHandle.get(key);
-            console.debug(`read() got value: ${JSON.stringify(value)}`)
+            logger.debug(`read() got value: ${JSON.stringify(value)}`)
         } catch (error: any) {
-            console.error(`failed to read key ${JSON.stringify(key)} with error: ${error.toString()}`);
+            logger.error(`failed to read key ${JSON.stringify(key)} with error: ${error.toString()}`);
             if (error.code == 'LEVEL_NOT_FOUND') {
                 throw new DBKeyNotFoundError(error.toString());
             } else if (error.code == 'LEVEL_DATABASE_NOT_OPEN') {
@@ -115,7 +136,7 @@ class LevelDBConnector implements DBConnector {
         try {
             await this.dbHandle.put(key, value);
         } catch (error: any) {
-            console.error(`failed to update key ${JSON.stringify(key)} with error: ${error.toString()}`);
+            logger.error(`failed to update key ${JSON.stringify(key)} with error: ${error.toString()}`);
             if (error.code == 'LEVEL_DATABASE_NOT_OPEN') {
                 throw new DBNotOpenError(error.toString());
             } else {
@@ -134,7 +155,7 @@ class LevelDBConnector implements DBConnector {
             value = this.read(key);
             await this.dbHandle.del(key);
         } catch (error: any) {
-            console.error(`failed to delete key ${JSON.stringify(key)} with error: ${error.toString()}`);
+            logger.error(`failed to delete key ${JSON.stringify(key)} with error: ${error.toString()}`);
             if (error.code == 'LEVEL_NOT_FOUND') {
                 throw new DBKeyNotFoundError(error.toString());
             } else if (error.code == 'LEVEL_DATABASE_NOT_OPEN') {
@@ -158,7 +179,7 @@ class LevelDBConnector implements DBConnector {
 
             return retVal;
         } catch (error: any) {
-            console.error(`filteredRead error: ${error.toString()}`);
+            logger.error(`filteredRead error: ${error.toString()}`);
             if (error.code == 'LEVEL_DATABASE_NOT_OPEN') {
                 throw new DBNotOpenError(error.toString());
             } else {
@@ -172,7 +193,7 @@ class LevelDBConnector implements DBConnector {
         try {
             await this.dbHandle.close();
         } catch (error: any) {
-            console.error(`failed to close database connection with error: ${error.toString()}`);
+            logger.error(`failed to close database connection with error: ${error.toString()}`);
             if (error.code == 'LEVEL_DATABASE_NOT_OPEN') {
                 throw new DBNotOpenError(error.toString());
             } else {

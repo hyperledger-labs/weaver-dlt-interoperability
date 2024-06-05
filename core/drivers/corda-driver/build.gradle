@@ -11,11 +11,11 @@ buildscript {
     ext.corda_core_version = "4.8"
     ext.arrow_version = "0.10.4"
     ext.weaver_protos_version = "1.5.7"
-    ext.weaver_corda_version = "1.2.13"
+    ext.weaver_corda_version = "1.2.14"
 
     repositories {
         mavenCentral()
-        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
+        maven { url 'https://download.corda.net/maven/corda-releases' }
     }
    dependencies {
        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -36,7 +36,9 @@ repositories {
     mavenCentral()
     mavenLocal()
     maven { url 'https://repo1.maven.org/maven2' }
-    maven { url 'https://software.r3.com/artifactory/corda' }
+    maven { url 'https://download.corda.net/maven/corda-dependencies' }
+    maven { url 'https://download.corda.net/maven/corda-releases' }
+    maven { url 'https://download.corda.net/maven/corda-lib' }
     if (file("$projectDir/./github.properties").exists()) {
         def styler = 'black red green yellow blue magenta cyan white'
                 .split().toList().withIndex(30)

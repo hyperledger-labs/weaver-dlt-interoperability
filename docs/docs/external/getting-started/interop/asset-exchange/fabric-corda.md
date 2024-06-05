@@ -7,7 +7,7 @@ pagination_prev: external/getting-started/interop/asset-exchange/overview
 ---
 
 We will demonstrate asset exchange of a bond in Fabric `network1` with tokens on `Corda_Network`.
-For Fabric commands, run from `samples/fabric/fabric-cli` folder, and for Corda commands, run from `samples/corda/corda-simple-application` folder. Here `Alice` and `Bob` in Fabric `network1` correspond to `PartyA` (`CORDA_PORT=10006`) and `PartyB` (`CORDA_PORT=10009`) in `Corda_Network` respectively. Following are the step-by-step asset exchange process:
+For Fabric commands, run from `samples/fabric/fabric-cli` folder, and for Corda commands, run from `samples/corda/corda-simple-application` folder, in your clone of the Weaver repository. Here `Alice` and `Bob` in Fabric `network1` correspond to `PartyA` (`CORDA_PORT=10006`) and `PartyB` (`CORDA_PORT=10009`) in `Corda_Network` respectively. Following are the step-by-step asset exchange process:
 
 | Notes |
 |:------|

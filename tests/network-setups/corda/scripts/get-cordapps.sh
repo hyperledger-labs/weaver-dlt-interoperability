@@ -3,7 +3,7 @@
 directory=$(dirname $0)
 app=${1:-simple}
 local=$2
-weaverCordaVersion="1.2.13"
+weaverCordaVersion="1.2.14"
 weaverProtosVersion="1.5.7"
 
 if [ "simple" = "$app" ]; then
@@ -69,9 +69,9 @@ elif [ "house" = "$app" ]; then
 
   ### Token SDK ###
 
-  (cd $directory/../shared/artifacts && curl -O https://software.r3.com/artifactory/corda-lib/com/r3/corda/lib/ci/ci-workflows/1.0/ci-workflows-1.0.jar) || exit 1
-  (cd $directory/../shared/artifacts && curl -O https://software.r3.com/artifactory/corda-lib/com/r3/corda/lib/tokens/tokens-contracts/$tokenVersion/tokens-contracts-$tokenVersion.jar) || exit 1
-  (cd $directory/../shared/artifacts && curl -O https://software.r3.com/artifactory/corda-lib/com/r3/corda/lib/tokens/tokens-workflows/$tokenVersion/tokens-workflows-$tokenVersion.jar) || exit 1
+  (cd $directory/../shared/artifacts && curl -O https://download.corda.net/maven/corda-lib/com/r3/corda/lib/ci/ci-workflows/1.0/ci-workflows-1.0.jar) || exit 1
+  (cd $directory/../shared/artifacts && curl -O https://download.corda.net/maven/corda-lib/com/r3/corda/lib/tokens/tokens-contracts/$tokenVersion/tokens-contracts-$tokenVersion.jar) || exit 1
+  (cd $directory/../shared/artifacts && curl -O https://download.corda.net/maven/corda-lib/com/r3/corda/lib/tokens/tokens-workflows/$tokenVersion/tokens-workflows-$tokenVersion.jar) || exit 1
 
 else
   echo "Cordapp not found" && exit 1

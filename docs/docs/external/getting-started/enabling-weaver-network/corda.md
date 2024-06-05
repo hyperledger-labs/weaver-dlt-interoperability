@@ -25,7 +25,7 @@ The relay and driver are the only additional infrastructure that need to be inst
 
 Existing CorDapp flows and contracts deployed on the network's nodes remain undisturbed. All that is required is the deployment of an Interoperation CorDapp (flows and contracts) on every node that needs to offer or consume state from foreign networks.
 
-Client applications will need some additional code and configuration because the decisions to exercise interoperation mechanisms (relay queries for data sharing or atomic asset exchanges) are strictly part of business logic. But Weaver's Corda Interoperation Node SDK offers various helper functions to ease this process and keep the adaptation to a minimum, as we wil see later in this document. Finally, an _identity service_ must be offered by the network to expose its CAs' certificate chains to foreign networks, thereby laying the basis for interoperation. This service simply needs to offer a REST endpoint, and can be implemented as a standalone application or (more conveniently) as an augmentation of one or more of the existing client layer applications.
+Client applications will need some additional code and configuration because the decisions to exercise interoperation mechanisms (relay queries for data sharing or atomic asset exchanges) are strictly part of business logic. But Weaver's Corda Interoperation Java-Kotlin SDK offers various helper functions to ease this process and keep the adaptation to a minimum, as we wil see later in this document. Finally, an _identity service_ must be offered by the network to expose its CAs' certificate chains to foreign networks, thereby laying the basis for interoperation. This service simply needs to offer a REST endpoint, and can be implemented as a standalone application or (more conveniently) as an augmentation of one or more of the existing client layer applications.
 
 ## Procedural Overview
 
@@ -103,7 +103,7 @@ No code changes are required for Weaver enablement. For asset exchange, Weaver a
 ## Client Layer applications
 
 Weaver provides an SDK to help you adapt your applications to exercise the various interoperability modes. These are called out as **SDK Helpers** in the network model illustrated earlier. Your Corda network's Client layer applications have business logic embedded in them that, broadly speaking, accept data from users and other external agents and invoke workflows from CorDapp over RPC. When you use Weaver for network interoperability, other options can be added, namely requesting and accepting data from foreign networks, and triggering locks and claims for atomic exchanges spanning two networks. Weaver's Corda Interoperation SDK offers a library to exercise these options. But this will involve modification to the application's business logic.
-To use Weaver's Corda SDK, you need to create a [personal access token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) with `read:packages` access in Github, to access weaver packages.
+To use Weaver's Corda SDK, you need to create a [personal access token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) with `read:packages` access in GitHub, to access Weaver packages.
 You also need to add the following to your application's `build.gradle` file:
 ```groovy
 repositories {
@@ -399,7 +399,7 @@ To launch a network using containerized components, you will typically use a Doc
 
 ### For Asset Exchange
 
-The asset exchange mode currently requires only the Interoperation CorDapp module from Weaver. Relays, drivers are not necessary. In the future, we expect to make the asset exchange protocol moe automated using these components; the instructions here will be updated appropriately.
+The asset exchange mode currently requires only the Interoperation CorDapp module from Weaver. Relays and drivers are not necessary. In the future, we expect to make the asset exchange protocol moe automated using these components; the instructions here will be updated appropriately.
 
 ### Install Interoperation CorDapp on Nodes
 
@@ -444,7 +444,7 @@ Weaver provides a [pre-built image](https://github.com/hyperledger-labs/weaver-d
   - The `RELAY_NAME` variable specifies a unique name for this relay. It should match what's specified in the `config.toml` (more on that below).
   - The `RELAY_PORT` variable specifies the port this relay server will listen on. It should match what's specified in the `config.toml` (more on that below).
   - The `EXTERNAL_NETWORK` variable should be set to the [name](https://docs.docker.com/compose/networking/) of your Fabric network.
-  - The `DOCKER_*` variables are used to specify the image on which the container will be built. Make sure you set `DOCKER_TAG` to the latest version you see on [Github](https://github.com/hyperledger-labs/weaver-dlt-interoperability/pkgs/container/weaver-relay-server).
+  - The `DOCKER_*` variables are used to specify the image on which the container will be built. Make sure you set `DOCKER_TAG` to the latest version you see on [GitHub](https://github.com/hyperledger-labs/weaver-dlt-interoperability/pkgs/container/weaver-relay-server).
 
   For more details, see the [Relay Docker README](https://github.com/hyperledger-labs/weaver-dlt-interoperability/blob/main/core/relay/relay-docker.md) ("Relay Server Image" and "Running With Docker Compose" sections).
 
@@ -520,7 +520,7 @@ docker-compose up -d relay-server
 You need to run one or more drivers through which your relay can interact with your Corda network. Here we provide instructions to run one Corda driver running in a Docker container, which is sufficient for data sharing. (Later, we will provide instructions to run multiple drivers, which will be useful both from a failover perspective and to interact with different subsets of your Corda network.)
 
 Weaver provides a [pre-built image](https://github.com/hyperledger-labs/weaver-dlt-interoperability/pkgs/container/weaver-corda-driver) for the Corda driver. Before launching a container, you just need to customize the container configuration for your Corda network, which you can do by simply configuring the following:
-- `.env`: This sets suitable environment variables within the driver container. Copy the `.env.template` file [from the repository](https://github.com/hyperledger-labs/weaver-dlt-interoperability/blob/main/core/relay/.env.template) and customize it for your purposes, as indicated in the below sample:
+- `.env`: This sets suitable environment variables within the driver container. Copy the `.env.template` file [from the repository](https://github.com/hyperledger-labs/weaver-dlt-interoperability/blob/main/core/drivers/corda-driver/.env.docker.template) and customize it for your purposes, as indicated in the below sample:
   ```
   NETWORK_NAME=<container-name-suffix>
   DRIVER_PORT=<driver-server-port>

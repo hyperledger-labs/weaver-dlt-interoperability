@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4.1.1
           
       - name: Set current date as env
         run: echo "RELEASE_DATE=$(date +%b\ %d,\ %Y)" >> $GITHUB_ENV
@@ -70,12 +70,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4.1.1
       
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.16
+          go-version: '1.20.2'
           
       - name: Set current date as env
         run: echo "RELEASE_DATE=$(date +%b\ %d,\ %Y)" >> $GITHUB_ENV
@@ -124,12 +124,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4.1.1
       
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.16
+          go-version: '1.20.2'
           
       - name: Set current date as env
         run: echo "RELEASE_DATE=$(date +%b\ %d,\ %Y)" >> $GITHUB_ENV
@@ -178,12 +178,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4.1.1
       
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.16
+          go-version: '1.20.2'
           
       - name: Set current date as env
         run: echo "RELEASE_DATE=$(date +%b\ %d,\ %Y)" >> $GITHUB_ENV
@@ -232,12 +232,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4.1.1
       
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.16
+          go-version: '1.20.2'
           
       - name: Set current date as env
         run: echo "RELEASE_DATE=$(date +%b\ %d,\ %Y)" >> $GITHUB_ENV
@@ -286,12 +286,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4.1.1
       
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.16
+          go-version: '1.20.2'
           
       - name: Set current date as env
         run: echo "RELEASE_DATE=$(date +%b\ %d,\ %Y)" >> $GITHUB_ENV
@@ -340,7 +340,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4.1.1
       
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
