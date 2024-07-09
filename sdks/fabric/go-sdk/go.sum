@@ -6,8 +6,8 @@ github.com/golang/protobuf v1.5.4/go.mod h1:lnTiLA8Wa4RWRcIUkrtSVa5nRhsEGBg48fD6
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
 github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
 github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
-github.com/hyperledger-labs/weaver-dlt-interoperability/common/protos-go v1.5.11 h1:LhRnae6aRXnkVhsZkmvg1n1n+aM79fToZbiwvzdvVDQ=
-github.com/hyperledger-labs/weaver-dlt-interoperability/common/protos-go v1.5.11/go.mod h1:X0H85M5UkJQ0NelivbqUYMr2kqOiW8fYt689+HKsxis=
+github.com/hyperledger-labs/weaver-dlt-interoperability/common/protos-go v1.6.0 h1:6k9njgcIcWkNmrSeaN9SU1f7jzYu0+CMIMzHUHNWZow=
+github.com/hyperledger-labs/weaver-dlt-interoperability/common/protos-go v1.6.0/go.mod h1:HjNaNm5F7UDoLY4qsIwoAJ1tWEsmLK8yNcCjEQWyzXQ=
 github.com/hyperledger/fabric-protos-go v0.3.3 h1:0nssqz8QWJNVNBVQz+IIfAd2j1ku7QPKFSM/1anKizI=
 github.com/hyperledger/fabric-protos-go v0.3.3/go.mod h1:BPXse9gIOQwyAePQrwQVUcc44bTW4bB5V3tujuvyArk=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
@@ -36,5 +36,3 @@ gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8
 gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
 gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=
 gopkg.in/yaml.v3 v3.0.1/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
-github.com/hyperledger-labs/weaver-dlt-interoperability/common/protos-go v1.6.0 h1:6k9njgcIcWkNmrSeaN9SU1f7jzYu0+CMIMzHUHNWZow=
-github.com/hyperledger-labs/weaver-dlt-interoperability/common/protos-go v1.6.0/go.mod h1:HjNaNm5F7UDoLY4qsIwoAJ1tWEsmLK8yNcCjEQWyzXQ=
