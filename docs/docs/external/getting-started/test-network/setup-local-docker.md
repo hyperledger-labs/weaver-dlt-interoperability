@@ -35,8 +35,8 @@ Before starting, make sure you have the following software installed on your hos
   * Default method: Run the following with `sudo` if necessary. This will install both the protobuf compiler and the Go code generator plugins.
     ```
     apt-get install protobuf-compiler
-    go install google.golang.org/protobuf/cmd/protoc-gen-go
-    go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
+    go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+    go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
     ```
   * If the above method installs an older version of `protoc` (check using `protoc --version`), say below 3.12.x, you should download pre-compiled binaries instead. (With an older version, you may see errors while attempting to launch and setup the Fabric networks).
     ```
@@ -45,8 +45,8 @@ Before starting, make sure you have the following software installed on your hos
     sudo apt-get install unzip
     unzip protoc-3.15.6-linux-x86_64.zip -d <some-folder-path>
     export PATH="$PATH:<some-folder-path>/bin"
-    go install google.golang.org/protobuf/cmd/protoc-gen-go
-    go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
+    go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+    go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
     ```
 
     | Notes |
@@ -162,7 +162,7 @@ For more information, refer to the associated [README](https://github.com/hyperl
 
 **Troubleshooting Tips**:
 - If you see any errors during the launches, re-check the prerequisites (software installations and credentials). Ensure your network connection is working. As a safe bet, you can retry after cleanup: kill and remove all Docker containers and associated volumes.
-- If `protoc` or `protoc-gen-go` throws an error, reinstall `protoc` and `protoc-gen-go` using suggestions made in the Prerequisites section above.
+- If `protoc` or `protoc-gen-go` throws an error, reinstall `protoc`, `protoc-gen-go`, and `protoc-gen-go-grpc` using suggestions made in the Prerequisites section above.
 
 ### Fabric Relay
 
