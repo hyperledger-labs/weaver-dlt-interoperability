@@ -38,7 +38,7 @@ Before starting, make sure you have the following software installed on your hos
     ```
     apt-get install protobuf-compiler
     go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-    go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+    go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.4.0
     ```
   * If the above method installs an older version of `protoc` (check using `protoc --version`), say below 3.12.x, you should download pre-compiled binaries instead. (With an older version, you may see errors while attempting to launch and setup the Fabric networks).
     ```
@@ -48,12 +48,13 @@ Before starting, make sure you have the following software installed on your hos
     unzip protoc-3.15.6-linux-x86_64.zip -d <some-folder-path>
     export PATH="$PATH:<some-folder-path>/bin"
     go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-    go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+    go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.4.0
     ```
 
     | Notes |
     |:------|
-    | The latest version at present is `3.15.6`, but you should check the above link to find the most current version before running the above steps. |
+    | The last version we tested with was `3.15.6`, but you should check the above link to find the most current version before running the above steps. |
+    | The latest version of `protoc-gen-go-grpc` that works with the Fabric test networks we will run below is `v1.4.0`, which is why that version is hardcoded here. |
 
 ### Credentials
 Make sure you have an SSH or GPG key registered in https://github.com to allow seamless cloning of repositories (at present, various setup scripts clone repositories using the `https://` prefix but this may change to `git@` in the future).
