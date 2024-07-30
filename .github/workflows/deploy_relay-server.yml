@@ -15,9 +15,32 @@ on:
   workflow_dispatch:
 
 jobs:
+  publish-protos-rs:
+      if: github.repository_owner == 'hyperledger-labs'
+      runs-on: ubuntu-latest
+
+      steps:
+        # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+        - uses: actions/checkout@v4.1.1
+
+        - name: Install RUST Toolchain minimal stable with clippy and rustfmt
+          uses: actions-rs/toolchain@v1.0.6
+          with:
+            profile: minimal
+            toolchain: stable
+            components: rustfmt, clippy
+
+        - name: Publish
+          run: cargo publish --token ${CRATES_TOKEN}
+          env:
+            CRATES_TOKEN: ${{ secrets.CARGO_CRATES_IO_TOKEN }}
+          working-directory: common/protos-rs/pkg
+
   relay-image:
     if: github.repository_owner == 'hyperledger-labs'
+    needs: publish-protos-rs
     runs-on: ubuntu-latest
+
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4.1.1

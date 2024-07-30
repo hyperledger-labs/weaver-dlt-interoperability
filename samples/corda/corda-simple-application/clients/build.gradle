@@ -39,7 +39,7 @@ repositories {
     jcenter()
     mavenCentral()
     mavenLocal()
-    maven { url 'https://software.r3.com/artifactory/corda-lib' }
+    maven { url 'https://download.corda.net/maven/corda-lib' }
     flatDir {
         dirs '../../fungible-house-token/source/contracts/build/libs'
         dirs '../../fungible-house-token/source/workflows/build/libs'
@@ -79,7 +79,7 @@ dependencies {
     // CorDapp dependencies.
     compile project(":contracts-kotlin")
     compile project(":workflows-kotlin")
-    compile "com.github.ajalt:clikt:$clikt_version"
+    implementation "com.github.ajalt.clikt:clikt:$clikt_version"
     
     implementation(group: 'com.fungiblehousetoken', name: 'contracts', version: "1.0")
     implementation(group: 'com.fungiblehousetoken', name: 'workflows', version: "1.0")

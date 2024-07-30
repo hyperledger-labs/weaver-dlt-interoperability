@@ -14,6 +14,7 @@ buildscript {
         slf4j_version = constants.getProperty("slf4jVersion")
         corda_platform_version = constants.getProperty("platformVersion").toInteger()
         weaver_version = constants.getProperty("weaverVersion")        
+        clikt_version = constants.getProperty("cliktVersion")
     }
 
     repositories {
@@ -33,7 +34,7 @@ buildscript {
 }
 
 plugins {
-    id "com.jfrog.artifactory" version "4.16.1"
+    id "com.jfrog.artifactory" version "5.2.3"
     id "maven-publish"
     id 'org.jetbrains.dokka' version '0.10.1'
 }
