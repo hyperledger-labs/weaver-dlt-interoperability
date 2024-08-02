@@ -13,7 +13,7 @@ buildscript {
     ext.corda_gradle_plugins_version = "5.0.17"
     ext.log4j_version = "2.17.1"
     ext.slf4j_version = "1.7.25"
-    ext.weaver_version = "1.6.1"
+    ext.weaver_version = "1.6.2"
     
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"

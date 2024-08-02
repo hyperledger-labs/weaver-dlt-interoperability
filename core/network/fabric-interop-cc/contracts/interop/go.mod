@@ -5,10 +5,10 @@ go 1.20
 require (
 	github.com/ethereum/go-ethereum v1.13.15
 	github.com/golang/protobuf v1.5.4
-	github.com/hyperledger-labs/weaver-dlt-interoperability/common/protos-go v1.6.1
-	github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/libs/assetexchange v1.6.1
+	github.com/hyperledger-labs/weaver-dlt-interoperability/common/protos-go v1.6.2
+	github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/libs/assetexchange v1.6.2
 	github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/libs/testutils v0.0.0-20240521164517-4cb6d4e59bfa
-	github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/libs/utils v1.6.1
+	github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/libs/utils v1.6.2
 	github.com/hyperledger/fabric-chaincode-go v0.0.0-20240425200701-0431f709af2c
 	github.com/hyperledger/fabric-contract-api-go v1.2.2
 	github.com/hyperledger/fabric-protos-go v0.3.3

@@ -11,8 +11,8 @@ To use this library, in you smart contract `go.mod`, add following in require (u
 ```
 require(
     ...
-    github.com/hyperledger-labs/weaver-dlt-interoperability/common/protos-go v1.5.3
-    github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/libs/assetexchange v1.5.3
+    github.com/hyperledger-labs/weaver-dlt-interoperability/common/protos-go v1.6.2
+    github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/libs/assetexchange v1.6.2
     ...
 )
 ```

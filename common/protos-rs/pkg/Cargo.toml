@@ -1,6 +1,6 @@
 [package]
 name = "weaver_protos_rs"
-version = "1.6.1"
+version = "1.6.2"
 authors = ["Peter Somogyvari  <peter.somogyvari@accenture.com>", "Sandeep Nishad <sandeep.nishad1@ibm.com"]
 edition = "2018"
 license = "Apache-2.0"
