@@ -79,8 +79,8 @@ Below, we list the template functions with sample code that you, as a developer,
   ```go
   require(
       ...
-      github.com/hyperledger-labs/weaver-dlt-interoperability/common/protos-go v1.6.0
-      github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/libs/assetexchange v1.6.0
+      github.com/hyperledger-labs/weaver-dlt-interoperability/common/protos-go v1.6.2
+      github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/libs/assetexchange v1.6.2
       ...
   )
   ```
@@ -172,8 +172,8 @@ Below, we list the template functions with sample code that you, as a developer,
   ```go
   require(
       ...
-      github.com/hyperledger-labs/weaver-dlt-interoperability/common/protos-go v1.6.0
-      github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/interfaces/asset-mgmt v1.6.0
+      github.com/hyperledger-labs/weaver-dlt-interoperability/common/protos-go v1.6.2
+      github.com/hyperledger-labs/weaver-dlt-interoperability/core/network/fabric-interop-cc/interfaces/asset-mgmt v1.6.2
       ...
   )
   ```
@@ -322,7 +322,7 @@ Consider a scenario inspired by the [global trade use case](../../user-stories/g
       
 (In preparation, a suitable access control policy must be recorded on `tradelogisticschannel` in `trade-logistics-network`, and a suitable verification policy must be recorded on `tradefinancechannel` in `trade-finance-network`. We will see how to do this in the "Startup and Boostrap" section later.)
 
-You will need to insert some code in the Layer-2 application that accepts a B/L and submits a `RecordBillOfLading` transaction in `trade-finance-network`. (No code changes need to be made in any application in the other network.) The logic to accept a B/L should be replaced (or you can simply add an alternative) by a call to the `interopFlow` function offered by the [weaver-fabric-interop-sdk](https://github.com/hyperledger-labs/weaver-dlt-interoperability/packages/888424) library (there's an [equivalent library in Golang](https://github.com/hyperledger-labs/weaver-dlt-interoperability/releases/tag/sdks%2Ffabric%2Fgo-sdk%2Fv1.6.0) too). The following code sample illustrates this (the Golang equivalent is left to the reader):
+You will need to insert some code in the Layer-2 application that accepts a B/L and submits a `RecordBillOfLading` transaction in `trade-finance-network`. (No code changes need to be made in any application in the other network.) The logic to accept a B/L should be replaced (or you can simply add an alternative) by a call to the `interopFlow` function offered by the [weaver-fabric-interop-sdk](https://github.com/hyperledger-labs/weaver-dlt-interoperability/packages/888424) library (there's an [equivalent library in Golang](https://github.com/hyperledger-labs/weaver-dlt-interoperability/releases/tag/sdks%2Ffabric%2Fgo-sdk%2Fv1.6.2) too). The following code sample illustrates this (the Golang equivalent is left to the reader):
 ```js showLineNumbers
 const ihelper = require('@hyperledger-labs/weaver-fabric-interop-sdk').InteroperableHelper;
 const interopcc = <handle-to-fabric-interop-chaincode>;   // Use Fabric SDK functions: (new Gateway()).getNetwork(...).getContract(<fabric-interop-chaincode-id>)
@@ -529,7 +529,7 @@ Weaver provides a [pre-built image](https://github.com/hyperledger-labs/weaver-d
   EXTERNAL_NETWORK=<docker-bridge-network>
   DOCKER_REGISTRY=ghcr.io/hyperledger-labs
   DOCKER_IMAGE_NAME=weaver-relay
-  DOCKER_TAG=1.6.0
+  DOCKER_TAG=1.6.2
   ```
   - The `PATH_TO_CONFIG` variable should point to the properties file typically named `config.toml` (you can name this whatever you wish). See further below for instructions to write this file.
   - The `RELAY_NAME` variable specifies a unique name for this relay. It should match what's specified in the `config.toml` (more on that below).
@@ -622,7 +622,7 @@ Weaver provides a [pre-built image](https://github.com/hyperledger-labs/weaver-d
   EXTERNAL_NETWORK=<docker-bridge-network>
   TLS_CREDENTIALS_DIR=<dir-with-tls-cert-and-key>
   DOCKER_IMAGE_NAME=ghcr.io/hyperledger-labs/weaver-fabric-driver
-  DOCKER_TAG=1.6.0
+  DOCKER_TAG=1.6.2
   DRIVER_TLS=<true|false>
   DRIVER_TLS_CERT_PATH=path_to_tls_cert_pem_for_driver
   DRIVER_TLS_KEY_PATH=path_to_tls_key_pem_for_driver

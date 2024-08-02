@@ -22,7 +22,7 @@
 # Steps to Use
 1) Add following in `Cargo.toml`, as dependency:
 ```
-weaver_protos_rs = "1.5.3"
+weaver_protos_rs = "1.6.2"
 ```
 2) Now to import data structures, e.g. to import `Ack` data structure in `common/ack.proto`, use:
 ```
