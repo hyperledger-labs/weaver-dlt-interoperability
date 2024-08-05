@@ -41,6 +41,6 @@ if [ "Corda_Network2" = "$nw" ]; then
     dockerProject="corda_network2"
 fi
 
-docker-compose -f dev/${nw}/docker-compose.yml -p $dockerProject --profile $profile up -d
+docker compose -f dev/${nw}/docker-compose.yml -p $dockerProject --profile $profile up -d
 docker ps -a
 #docker logs corda_partya_1 -f
