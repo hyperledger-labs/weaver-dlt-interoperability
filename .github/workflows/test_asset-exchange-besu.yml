@@ -40,10 +40,10 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
           
-      - name: Use Node.js 16.x
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v4.0.2
         with:
-          node-version: 16.x
+          node-version: 18.x
 
       - name: Use Protoc 3.15
         run: |
@@ -219,10 +219,10 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
           
-      - name: Use Node.js 16.x
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v4.0.2
         with:
-          node-version: 16.x
+          node-version: 18.x
 
       - name: Use Protoc 3.15
         run: |
