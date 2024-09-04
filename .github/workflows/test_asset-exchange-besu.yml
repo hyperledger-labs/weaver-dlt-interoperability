@@ -40,10 +40,10 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
           
-      - name: Use Node.js 16.x
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v4.0.2
         with:
-          node-version: 16.x
+          node-version: 20.x
 
       - name: Use Protoc 3.15
         run: |
@@ -64,9 +64,9 @@ jobs:
           wget https://hyperledger.jfrog.io/artifactory/besu-binaries/besu/22.7.0/besu-22.7.0.zip 
           unzip besu-22.7.0.zip 
           export PATH="${PWD}/besu-22.7.0/bin:$PATH"
-          wget https://artifacts.consensys.net/public/ethsigner/raw/names/ethsigner.zip/versions/22.1.3/ethsigner-22.1.3.zip
-          unzip ethsigner-22.1.3.zip
-          export PATH="${PWD}/ethsigner-22.1.3/bin:$PATH"
+          wget https://artifacts.consensys.net/public/ethsigner/raw/names/ethsigner.zip/versions/23.6.0/ethsigner-23.6.0.zip
+          unzip ethsigner-23.6.0.zip
+          export PATH="${PWD}/ethsigner-23.6.0/bin:$PATH"
           make start
           sleep 100
         working-directory: tests/network-setups/besu
@@ -219,10 +219,10 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
           
-      - name: Use Node.js 16.x
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v4.0.2
         with:
-          node-version: 16.x
+          node-version: 20.x
 
       - name: Use Protoc 3.15
         run: |
@@ -255,9 +255,9 @@ jobs:
           wget https://hyperledger.jfrog.io/artifactory/besu-binaries/besu/22.7.0/besu-22.7.0.zip 
           unzip besu-22.7.0.zip 
           export PATH="${PWD}/besu-22.7.0/bin:$PATH"
-          wget https://artifacts.consensys.net/public/ethsigner/raw/names/ethsigner.zip/versions/22.1.3/ethsigner-22.1.3.zip
-          unzip ethsigner-22.1.3.zip
-          export PATH="${PWD}/ethsigner-22.1.3/bin:$PATH"
+          wget https://artifacts.consensys.net/public/ethsigner/raw/names/ethsigner.zip/versions/23.6.0/ethsigner-23.6.0.zip
+          unzip ethsigner-23.6.0.zip
+          export PATH="${PWD}/ethsigner-23.6.0/bin:$PATH"
           make start
           sleep 100
         working-directory: tests/network-setups/besu

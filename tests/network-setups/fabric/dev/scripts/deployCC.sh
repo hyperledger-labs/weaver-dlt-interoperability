@@ -51,14 +51,8 @@ export NW_NAME=${NW_NAME}
 
 if [ "$CC_SRC_LANGUAGE" = "go" -o "$CC_SRC_LANGUAGE" = "golang" ] ; then
     CC_RUNTIME_LANGUAGE=golang
-    #CC_SRC_PATH="./chaincode/fabcar/go/"
     CC_SRC_PATH="$APP_R/fabric/shared/chaincode/$CC_CHAIN_CODE"
     echo "Preparing for deployment of :" $CC_SRC_PATH
-    #pushd ./chaincode/snamcc
-    #GO111MODULE=on go mod init snamcc
-    #GO111MODULE=on go mod vendor
-    #popd
-    #echo Finished vendoring Go dependencies
     sleep 1
 
 elif [ "$CC_SRC_LANGUAGE" = "javascript" ]; then
